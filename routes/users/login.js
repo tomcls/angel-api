@@ -7,10 +7,10 @@ const router = express.Router();
 router.use(express.json())
 router.post('/', async function (req, res, next) {
   const apiKey = req.headers["api_key"];
-  console.log("aaaa")
+  console.log("aaaa",req.headers)
   if (apiKey == null) {
     console.log("bbbb")
-    res.status(400).json({ error: 'apikey not present' });
+    return res.status(400).json({ error: 'apikey not present' });
   }
   const payload = req.body;
   try {
