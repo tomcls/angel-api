@@ -19,10 +19,10 @@ router.post('/', async function(req, res, next) {
     const u = new User();
     const user = await u.add(o);
     console.log('user',user)
-    res.json(user);
+    return res.json(user);
   } catch (error) {
     console.log('error',error)
-    res.json(error);
+    return res.json(error);
   }
 });
 module.exports = router;

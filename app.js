@@ -49,14 +49,15 @@ function validateToken(req, res, next) {
     if (req.path === '/users/login' || 
         req.path === '/users/request-password' ||
         req.path === '/users/reset-password'||
-        req.path === '/users/check-auth' ) return next();
+        req.path === '/users/check-auth' ||
+        req.path === '/users/add' ) return next();
     console.log("hehehehe")
     //the request header contains the token "Bearer <token>", split the string and use the second value in the split array.
     if (token == null) res.status(400).json({error:"Authorization not present"})
     console.log("huhuhuhuh")
     jwt.verify(token, process.env.API_SECRET, (err, user) => {
         if (err) {
-            res.status(403).json({error:"Authorization not valid"})
+           return res.status(403).json({error:"Authorization not valid"})
         }
         else {
             next() //proceed to the next action in the calling function
