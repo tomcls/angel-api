@@ -6,7 +6,7 @@ const User = require("../../src/models/users");
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function (req, res, next) {
-  const apiKey = req.headers["api_key"];
+  const apiKey = req.headers["apikey"];
   console.log("aaaa",req.headers)
   if (apiKey == null) {
     console.log("bbbb")
