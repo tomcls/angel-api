@@ -14,7 +14,7 @@ env=$1
 serviceName=angel-api
 APP_ROOT=/data/www/${serviceName}
 portOut=3003
-portIn=3003
+portIn=3000
 	
 cd $APP_ROOT
 # Build with dockerfile
