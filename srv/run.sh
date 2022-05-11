@@ -25,7 +25,7 @@ docker build --file=${APP_ROOT}"/srv/Dockerfile" \
 -t  node/express .
 echo ".............................Build done, execute cmd docker run ${serviceName}"
 docker run  --name ${serviceName}  \
--v /data/www/${serviceName}/.env.prod:.env \
+-v /data/www/${serviceName}/.env.prod:/usr/src/app/.env \
 -p ${portOut}:${portIn} \
 -it -d --restart always node/express
     
