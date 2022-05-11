@@ -7,13 +7,16 @@ const router = express.Router();
 router.use(express.json())
 router.post('/', async function (req, res, next) {
   const apiKey = req.headers["api_key"];
+  console.log("aaaa")
   if (apiKey == null) {
+    console.log("bbbb")
     res.status(400).json({ error: 'apikey not present' });
   }
   const payload = req.body;
   try {
     const u = new User();
     const user = await u.find(payload);
+    console.log("user",user)
     if (user && user.active) {
       if (user && user.password && user.password === CryptoJS.MD5(JSON.stringify(payload.password)).toString()) {
         bcrypt.hash(apiKey, 10).then((hashedKey) => {
@@ -26,9 +29,11 @@ router.post('/', async function (req, res, next) {
             date_created: user.date_created
           }
           const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20m" })
+          console.log("token",token)
           res.json({user:user, accessToken: token});
         });
       } else {
+        console.log("rrrrrrpassword not correct")
         res.json({ error: 'password not correct' });
       }
     } else {
