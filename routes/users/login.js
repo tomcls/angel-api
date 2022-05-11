@@ -35,6 +35,7 @@ router.post('/', async function (req, res, next) {
       res.json({ error: 'error user not found or not yet actif' });
     }
   } catch (error) {
+    console.log(error)
     res.json({ error: error });
   }
 });
