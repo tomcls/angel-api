@@ -26,16 +26,16 @@ router.post('/', async function (req, res, next) {
           date_created: user.date_created
         }
         const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20m" })
-        res.json({user:user, accessToken: token});
+        return  res.json({user:user, accessToken: token});
       } else {
-        res.json({ error: 'password not correct' });
+        return  res.json({ error: 'password not correct' });
       }
     } else {
-      res.json({ error: 'error user not found or not yet actif' });
+      return  res.json({ error: 'error user not found or not yet actif' });
     }
   } catch (error) {
     console.log(error)
-    res.json({ error: error });
+    return res.json({ error: error });
   }
 });
 module.exports = router;
