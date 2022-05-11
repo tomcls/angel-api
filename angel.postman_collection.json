@@ -1,0 +1,138 @@
+{
+	"id": "380cb485-cde1-0067-dec7-dd61399e60d6",
+	"name": "angel",
+	"description": "",
+	"order": [
+		"3857ac62-f606-bc32-4c04-6e023ef4e0ec",
+		"c5eb028d-3f1e-0dbb-c129-902730121e2c",
+		"a35df92e-6558-e4bb-5ed4-8ef339b871af",
+		"02146853-730f-b517-fa36-af55355282f8"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1651942348324,
+	"owner": 0,
+	"public": false,
+	"requests": [
+		{
+			"id": "02146853-730f-b517-fa36-af55355282f8",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:3000/users/login",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1651958746034,
+			"name": "login",
+			"description": "",
+			"collectionId": "380cb485-cde1-0067-dec7-dd61399e60d6",
+			"responses": [],
+			"rawModeData": "{\n\t\"email\": \"tomclassius@gmail.com\",\n\t\"password\":\"Mila4ever$\"\n}"
+		},
+		{
+			"id": "3857ac62-f606-bc32-4c04-6e023ef4e0ec",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:3000/users/get",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1651948421414,
+			"name": "getUser",
+			"description": "",
+			"collectionId": "380cb485-cde1-0067-dec7-dd61399e60d6",
+			"responses": [],
+			"rawModeData": "{\n\t\"id\": 1\n}"
+		},
+		{
+			"id": "a35df92e-6558-e4bb-5ed4-8ef339b871af",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:3000/users/reset-password",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1651958748402,
+			"name": "updatePassword",
+			"description": "",
+			"collectionId": "380cb485-cde1-0067-dec7-dd61399e60d6",
+			"responses": [],
+			"rawModeData": "{\n\t\"email\": \"tomclassius@gmail.com\",\n\t\"password\":\"Mila4ever$\"\n}"
+		},
+		{
+			"id": "c5eb028d-3f1e-0dbb-c129-902730121e2c",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:3000/users/request-password",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1651955600067,
+			"name": "requestPassword",
+			"description": "",
+			"collectionId": "380cb485-cde1-0067-dec7-dd61399e60d6",
+			"responses": [],
+			"rawModeData": "{\n\t\"email\": \"tomclassius@gmail.com\"\n}"
+		}
+	]
+}
