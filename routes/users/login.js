@@ -19,19 +19,17 @@ router.post('/', async function (req, res, next) {
     console.log("user",user)
     if (user && user.active) {
       if (user && user.password && user.password === CryptoJS.MD5(JSON.stringify(payload.password)).toString()) {
-        bcrypt.hash(apiKey, 10).then((hashedKey) => {
-          const o = {
-            id: user.id,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            email: user.email,
-            type: user.type,
-            date_created: user.date_created
-          }
-          const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20m" })
-          console.log("token",token)
-          res.json({user:user, accessToken: token});
-        });
+        const o = {
+          id: user.id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          type: user.type,
+          date_created: user.date_created
+        }
+        const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20m" })
+        console.log("token",token)
+        res.json({user:user, accessToken: token});
       } else {
         console.log("rrrrrrpassword not correct")
         res.json({ error: 'password not correct' });
