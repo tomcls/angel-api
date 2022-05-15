@@ -2,11 +2,91 @@ const conn = require("../utils/conn");
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken")
 const sgMail = require('@sendgrid/mail');
+const { filter } = require("async");
 sgMail.setApiKey(process.env.SENDGRID_APIKEY);
 const db = conn.conn();
 module.exports = class User {
     constructor() { }
-
+    async findAll(filters) {
+        let sql = "SELECT * FROM users where 1=1 ";
+        let params = [];
+        let filterClause = '';
+        if (filters.id) {
+            sql += " and id = ?"
+            params.push(filters.id);
+        }
+        if (filters.firstname) {
+            sql += " and firstname like ?%"
+            params.push(filters.firstname);
+        }
+        if (filters.lastname) {
+            sql += " and lastname = ?%"
+            params.push(filters.lastname);
+        }
+        if (filters.email) {
+            sql += " and email = ?%"
+            params.push(filters.email);
+        }
+        if (filters.type) {
+            sql += " and type = ?"
+            params.push(filters.type);
+        }
+        if (filters.role) {
+            sql += " and role = ?"
+            params.push(filters.role);
+        }
+        if(filters.limit) {
+            filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
+        }
+        sql += " order by date_created desc "+filterClause;
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+    async count(filters) {
+        let sql = "SELECT count(*) total FROM users where 1=1 ";
+        let params = [];
+        if (filters.id) {
+            sql += " and id = ?"
+            params.push(filters.id);
+        }
+        if (filters.firstname) {
+            sql += " and firstname like ?%"
+            params.push(filters.firstname);
+        }
+        if (filters.lastname) {
+            sql += " and lastname = ?%"
+            params.push(filters.lastname);
+        }
+        if (filters.email) {
+            sql += " and email = ?%"
+            params.push(filters.email);
+        }
+        if (filters.type) {
+            sql += " and type = ?"
+            params.push(filters.type);
+        }
+        if (filters.role) {
+            sql += " and role = ?"
+            params.push(filters.role);
+        }
+        sql += " order by date_created desc limit 30"
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows[0].total;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
     async find(filters) {
         let sql = "SELECT * FROM users where 1=1 ";
         let params = [];
@@ -80,10 +160,8 @@ module.exports = class User {
         }
     }
     async requestPassword(email) {
-        console.log('requestPassword')
         const user = await this.find({ email: email });
         if (user && user.id) {
-            console.log('userxxxxx', user)
             const o = {
                 id: user.id,
                 firstname: user.firstname,
@@ -94,7 +172,6 @@ module.exports = class User {
             }
             try {
                 const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "60m" });
-                console.log('usertoken', token)
                 const msg = {
                     to: email,
                     from: process.env.SENDER_EMAIL,

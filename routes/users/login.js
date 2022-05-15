@@ -7,7 +7,6 @@ const router = express.Router();
 router.use(express.json())
 router.post('/', async function (req, res, next) {
   const apiKey = req.headers["apikey"];
-  console.log('apikey',apiKey);
   if (apiKey == null) {
     return res.status(400).json({ error: 'apikey not present' });
   }
@@ -25,7 +24,7 @@ router.post('/', async function (req, res, next) {
           type: user.type,
           date_created: user.date_created
         }
-        const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20m" })
+        const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "3600m" })
         return  res.json({user:user, accessToken: token});
       } else {
         return  res.json({ error: 'password not correct' });
