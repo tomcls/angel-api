@@ -11,10 +11,14 @@ router.post('/', async function(req, res, next) {
       firstname: payload.firstname,
       lastname: payload.lastname,
       email: payload.email,
+      phone: payload.phone,
+      sex: payload.sex,
       type: payload.type,
+      lang: payload.lang,
+      birthday: payload.birthday,
       role: payload.role,
-      password: CryptoJS.MD5(JSON.stringify(payload.password)).toString(),
-      active: false
+      password: payload.password?CryptoJS.MD5(JSON.stringify(payload.password)).toString():CryptoJS.MD5(JSON.stringify('Password must be changed')).toString(),
+      active: payload.active?payload.active:'N'
     }
     const u = new User();
     const user = await u.add(o);

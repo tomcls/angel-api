@@ -10,12 +10,19 @@ const jwt = require("jsonwebtoken")
 
 const userListRouter = require('./routes/users/list');
 const userAddRouter = require('./routes/users/add');
-//const userUpdateRouter = require('./routes/users/update');
+const userUpdateRouter = require('./routes/users/update');
 const userGetRouter = require('./routes/users/get');
 const userRequestPasswordRouter = require('./routes/users/request-password');
 const userResetPasswordRouter = require('./routes/users/reset-password');
 const checkAuth = require('./routes/users/check-auth');
 const loginRouter = require('./routes/users/login');
+// patient
+const patientListRouter = require('./routes/patients/list');
+const patientAddRouter = require('./routes/patients/add');
+const patientUpdateRouter = require('./routes/patients/update');
+const patientGetRouter = require('./routes/patients/get');
+
+
 const app = express();
 app.use(cors())
 app.use(logger('dev'));
@@ -32,11 +39,16 @@ app.all('*', validateToken);
 app.use('/users/list', userListRouter);
 app.use('/users/add', userAddRouter);
 app.use('/users/get', userGetRouter);
-//app.use('/users/update', userUpdateRouter);
+app.use('/users/update', userUpdateRouter);
 app.use('/users/request-password', userRequestPasswordRouter);
 app.use('/users/reset-password', userResetPasswordRouter);
 app.use('/users/login', loginRouter);
 app.use('/users/check-auth', checkAuth);
+//patient
+app.use('/patients/list', patientListRouter);
+app.use('/patients/add', patientAddRouter);
+app.use('/patients/get', patientGetRouter);
+app.use('/patients/update', patientUpdateRouter);
 
 app.set('port', process.env.PORT || 3000);
 

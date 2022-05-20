@@ -1,16 +1,14 @@
 const express = require('express');
-const User = require("../../src/models/users");
+const Patient = require("../../src/models/patients");
 const CryptoJS = require("crypto-js");
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function(req, res, next) {
   const payload = req.body;
   try {
-    
-    const u = new User();
-    const user = await u.update(payload);
-    console.log('user',user)
-    return res.json(user);
+    const u = new Patient();
+    const patient = await u.add(payload);
+    return res.json(patient);
   } catch (error) {
     console.log('error',error)
     return res.json(error);

@@ -125,23 +125,68 @@ module.exports = class User {
             return error
         }
     }
-    async add(o) {
+    async add(params) {
         let sql = "INSERT INTO users SET ? ";
-        const params = {
-            firstname: o.firstname,
-            lastname: o.lastname,
-            email: o.email,
-            type: o.type,
-            role: o.role,
-            password: o.password,
-            active: false
-        };
-        console.log(params)
         try {
             const add = await db.query(sql, params);
             return {
                 saved: add.affectedRows,
                 inserted_id: add.insertId
+            };
+        }
+        catch (err) {
+            return err;
+        }
+    }
+    async update(o) {
+        let sql = "UPDATE users  ";
+        
+        const params = [];
+        if (o.id) {
+            sql += " SET id = ?";
+            params.push(o.id);
+        } else {
+            throw {error: 'No pk provided'}
+        }
+        if (o.firstname) {
+            sql += ",  firstname = ?"
+            params.push(o.firstname);
+        }
+        if (o.lastname) {
+            sql += ",   lastname = ?"
+            params.push(o.lastname);
+        }
+        if (o.email) {
+            sql += " ,  email = ?"
+            params.push(o.email);
+        }
+        if (o.type) {
+            sql += ",   type = ?"
+            params.push(o.type);
+        }
+        if (o.phone) {
+            sql += ",   phone = ?"
+            params.push(o.phone);
+        }
+        if (o.lang) {
+            sql += ",   lang = ?"
+            params.push(o.lang);
+        }
+        if (o.sex) {
+            sql += ",   sex = ?"
+            params.push(o.sex);
+        }
+        if (o.birthday) {
+            sql += ",   birthday = ?"
+            params.push(o.birthday);
+        }
+        sql += ",   date_updated = ?"
+        params.push(new Date());
+        sql += " where id="+o.id
+        try {
+            const updated = await db.query(sql, params);
+            return {
+                saved: updated
             };
         }
         catch (err) {
@@ -190,7 +235,6 @@ module.exports = class User {
                 return { error: error };
             }
         } else {
-            console.log('user not found')
             return { error: 'user not found' };
         }
     }
