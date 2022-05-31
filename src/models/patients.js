@@ -8,66 +8,56 @@ const db = conn.conn();
 module.exports = class Patient {
     constructor() { }
     async findAll(filters) {
-        let sql = "SELECT patients.id as patient_id,"+
-    "users.id as user_id,"+
-    "users.firstname,"+
-    "users.lastname,"+
-    "users.phone,"+
-    "users.email,"+
-    "users.sex,"+
-    "users.lang,"+
-    "users.active,"+
-    "users.role,"+
-    "users.type,"+
-    "users.password,"+
-    "users.date_created,"+
-    "users.date_updated,"+
-    "users.birthday,"+
-    "patients.emergency_contact_relationship,"+
-    "patients.emergency_contact_name,"+
-    "patients.emergency_contact_phone,"+
-    "patients.close_monitoring "+
-    "FROM users "+
-    "LEFT JOIN patients ON users.id = patients.user_id "+
-    "WHERE 1=1 ";
+        let sql = "SELECT patients.id as patient_id," +
+            "patients.id as id," +
+            "users.id as user_id," +
+            "users.firstname," +
+            "users.lastname," +
+            "users.phone," +
+            "users.email," +
+            "users.sex," +
+            "users.lang," +
+            "users.active," +
+            "users.role," +
+            "users.type," +
+            "users.address," +
+            "users.street_number," +
+            "users.zip," +
+            "users.city," +
+            "users.country," +
+            "users.password," +
+            "users.date_created," +
+            "users.date_updated," +
+            "users.birthday," +
+            "patients.emergency_contact_relationship," +
+            "patients.emergency_contact_name," +
+            "patients.emergency_contact_phone," +
+            "patients.close_monitoring " +
+            "FROM patients " +
+            "LEFT JOIN users ON users.id = patients.user_id " +
+            "WHERE 1=1 ";
         let params = [];
         let filterClause = '';
         if (filters.id) {
             sql += " and patients.id = ?"
             params.push(filters.id);
         }
-        if (filters.user_id) {
-            sql += " and users.id = ?"
-            params.push(filters.user_id);
-        }
-        if (filters.close_monitoring) {
-            sql += " and patients.close_monitoring = ?"
-            params.push(filters.close_monitoring);
-        }
         if (filters.firstname) {
-            sql += " and users.firstname like ?%"
-            params.push(filters.firstname);
+            sql += " or users.firstname like ?"
+            params.push(filters.firstname + '%');
         }
         if (filters.lastname) {
-            sql += " and users.lastname = ?%"
-            params.push(filters.lastname);
+            sql += " or users.lastname like ?"
+            params.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sql += " and users.email = ?%"
-            params.push(filters.email);
+            sql += " or users.email like ?"
+            params.push(filters.email + '%');
         }
-        if (filters.type) {
-            sql += " and users.type = ?"
-            params.push(filters.type);
+        if (filters.limit) {
+            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
-        if (filters.role) {
-            sql += " and users.role = ?"
-            params.push(filters.role);
-        }
-        if(filters.limit) {
-            filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
-        }
-        sql += " order by patients.date_created desc "+filterClause;
+        sql += " order by patients.date_created desc " + filterClause;
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -79,9 +69,8 @@ module.exports = class Patient {
         }
     }
     async count(filters) {
-        let sql = "SELECT count(*) FROM users left join patients on users.id = patients.user_id where 1=1  ";
+        let sql = "SELECT count(*) as total FROM patients left join users on users.id = patients.user_id where 1=1  ";
         let params = [];
-        let filterClause = '';
         if (filters.user_id) {
             sql += " and users.id = ?"
             params.push(filters.user_id);
@@ -110,10 +99,11 @@ module.exports = class Patient {
             sql += " and users.role = ?"
             params.push(filters.role);
         }
+        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
-                return rows;
+                return rows[0].total;
             }
             return null;
         } catch (error) {
@@ -121,28 +111,33 @@ module.exports = class Patient {
         }
     }
     async find(filters) {
-        let sql = "SELECT patients.id as patient_id,"+
-        "users.id as user_id,"+
-        "users.firstname,"+
-        "users.lastname,"+
-        "users.phone,"+
-        "users.email,"+
-        "users.sex,"+
-        "users.lang,"+
-        "users.active,"+
-        "users.role,"+
-        "users.type,"+
-        "users.password,"+
-        "users.date_created,"+
-        "users.date_updated,"+
-        "users.birthday,"+
-        "patients.emergency_contact_relationship,"+
-        "patients.emergency_contact_name,"+
-        "patients.emergency_contact_phone,"+
-        "patients.close_monitoring "+
-        "FROM users "+
-        "LEFT JOIN patients ON users.id = patients.user_id "+
-        "WHERE 1=1 ";
+        let sql = "SELECT patients.id as patient_id," +
+            "users.id as user_id," +
+            "users.firstname," +
+            "users.lastname," +
+            "users.phone," +
+            "users.email," +
+            "users.sex," +
+            "users.lang," +
+            "users.active," +
+            "users.role," +
+            "users.type," +
+            "users.address," +
+            "users.street_number," +
+            "users.zip," +
+            "users.city," +
+            "users.country," +
+            "users.password," +
+            "users.date_created," +
+            "users.date_updated," +
+            "users.birthday," +
+            "patients.emergency_contact_relationship," +
+            "patients.emergency_contact_name," +
+            "patients.emergency_contact_phone," +
+            "patients.close_monitoring " +
+            "FROM patients " +
+            "LEFT JOIN users ON users.id = patients.user_id " +
+            "WHERE 1=1 ";
         let params = [];
         if (filters.id) {
             sql += " and patients.id = ?"
@@ -199,13 +194,13 @@ module.exports = class Patient {
     }
     async update(o) {
         let sql = "UPDATE patients  ";
-        
+
         const params = [];
         if (o.id) {
             sql += " SET id = ?";
             params.push(o.id);
         } else {
-            throw {error: 'No pk provided'}
+            throw { error: 'No pk provided' }
         }
         if (o.user_id) {
             sql += ",  user_id = ?"
@@ -229,8 +224,7 @@ module.exports = class Patient {
         }
         sql += ",   date_updated = ?"
         params.push(new Date());
-        sql += " where id="+o.id
-        console.log(sql)
+        sql += " where id=" + o.id
         try {
             const updated = await db.query(sql, params);
             return {
@@ -242,4 +236,66 @@ module.exports = class Patient {
         }
     }
 
+    async search(filters) {
+
+        let sql = "SELECT patients.id as patient_id," +
+            "users.id as user_id," +
+            "users.firstname," +
+            "users.lastname," +
+            "users.phone," +
+            "users.email," +
+            "users.sex," +
+            "users.lang," +
+            "users.active," +
+            "users.role," +
+            "users.type," +
+            "users.address," +
+            "users.street_number," +
+            "users.zip," +
+            "users.city," +
+            "users.country," +
+            "users.password," +
+            "users.date_created," +
+            "users.date_updated," +
+            "users.birthday," +
+            "patients.emergency_contact_relationship," +
+            "patients.emergency_contact_name," +
+            "patients.emergency_contact_phone," +
+            "patients.close_monitoring " +
+            "FROM patients " +
+            "LEFT JOIN users ON users.id = patients.user_id " +
+            "WHERE  ";
+        let params = [];
+        let filterClause = '';
+        if (filters.id) {
+            sql += "  patients.id = ?"
+            params.push(filters.id);
+        }
+        if (filters.firstname) {
+            sql += ((params.length)?' OR ': '')+"  users.firstname like ?"
+            params.push(filters.firstname + '%');
+        }
+        if (filters.lastname) {
+            sql += ((params.length)?' OR ': '')+"  users.lastname like ?"
+            params.push(filters.lastname + '%');
+        }
+        if (filters.email) {
+            sql += ((params.length)?' OR ': '')+"  users.email like ?"
+            params.push(filters.email + '%');
+        }
+        if (filters.limit) {
+            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
+        }
+        sql += " order by patients.date_created desc " + filterClause;
+        console.log(sql)
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
 }

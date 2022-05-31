@@ -180,6 +180,26 @@ module.exports = class User {
             sql += ",   birthday = ?"
             params.push(o.birthday);
         }
+        if (o.address) {
+            sql += ",   address = ?"
+            params.push(o.address);
+        }
+        if (o.street_number) {
+            sql += ",   street_number = ?"
+            params.push(o.street_number);
+        }
+        if (o.zip) {
+            sql += ",   zip = ?"
+            params.push(o.zip);
+        }
+        if (o.city) {
+            sql += ",   city = ?"
+            params.push(o.city);
+        }
+        if (o.country) {
+            sql += ",   country = ?"
+            params.push(o.country);
+        }
         sql += ",   date_updated = ?"
         params.push(new Date());
         sql += " where id="+o.id

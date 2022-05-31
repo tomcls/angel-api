@@ -1,17 +1,16 @@
 const express = require('express');
-const User = require("../../src/models/users");
-const CryptoJS = require("crypto-js");
+const Doctor = require("../../src/models/doctors");
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function(req, res, next) {
   const payload = req.body;
   try {
-    
-    const u = new User();
-    const user = await u.update(payload);
-    return res.json(user);
+    const u = new Doctor();
+    const doctor = await u.find(payload);
+    res.json(doctor);
   } catch (error) {
-    return res.json(error);
+    console.log(error)
+    res.json(error);
   }
 });
 module.exports = router;

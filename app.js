@@ -21,6 +21,26 @@ const patientListRouter = require('./routes/patients/list');
 const patientAddRouter = require('./routes/patients/add');
 const patientUpdateRouter = require('./routes/patients/update');
 const patientGetRouter = require('./routes/patients/get');
+const patientSearchRouter = require('./routes/patients/search');
+// doctors
+const doctorListRouter = require('./routes/doctors/list');
+const doctorAddRouter = require('./routes/doctors/add');
+const doctorUpdateRouter = require('./routes/doctors/update');
+const doctorGetRouter = require('./routes/doctors/get');
+const doctorGetPatientsRouter = require('./routes/doctors/patients');
+const  doctorAddPatientRouter = require('./routes/doctors/addPatient');
+// nurses
+const nurseListRouter = require('./routes/nurses/list');
+const nurseAddRouter = require('./routes/nurses/add');
+const nurseUpdateRouter = require('./routes/nurses/update');
+const nurseGetRouter = require('./routes/nurses/get');
+const nurseGetPatientsRouter = require('./routes/nurses/patients');
+const nurseAddPatientRouter = require('./routes/nurses/addPatient');
+// drugs
+const drugListRouter = require('./routes/drugs/list');
+const drugAddRouter = require('./routes/drugs/add');
+const drugUpdateRouter = require('./routes/drugs/update');
+const drugGetRouter = require('./routes/drugs/get');
 
 
 const app = express();
@@ -49,6 +69,26 @@ app.use('/patients/list', patientListRouter);
 app.use('/patients/add', patientAddRouter);
 app.use('/patients/get', patientGetRouter);
 app.use('/patients/update', patientUpdateRouter);
+app.use('/patients/search', patientSearchRouter);
+//doctors
+app.use('/doctors/list', doctorListRouter);
+app.use('/doctors/add', doctorAddRouter);
+app.use('/doctors/get', doctorGetRouter);
+app.use('/doctors/update', doctorUpdateRouter);
+app.use('/doctors/patients', doctorGetPatientsRouter);
+app.use('/doctors/add-patient', doctorAddPatientRouter);
+//nurses
+app.use('/nurses/list', nurseListRouter);
+app.use('/nurses/add', nurseAddRouter);
+app.use('/nurses/get', nurseGetRouter);
+app.use('/nurses/update', nurseUpdateRouter);
+app.use('/nurses/patients', nurseGetPatientsRouter);
+app.use('/nurses/add-patient', nurseAddPatientRouter);
+//drugs
+app.use('/drugs/list', drugListRouter);
+app.use('/drugs/add', drugAddRouter);
+app.use('/drugs/get', drugGetRouter);
+app.use('/drugs/update', drugUpdateRouter);
 
 app.set('port', process.env.PORT || 3000);
 
