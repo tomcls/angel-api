@@ -1,9 +1,4 @@
 const conn = require("../utils/conn");
-const CryptoJS = require("crypto-js");
-const jwt = require("jsonwebtoken")
-const sgMail = require('@sendgrid/mail');
-const { filter } = require("async");
-sgMail.setApiKey(process.env.SENDGRID_APIKEY);
 const db = conn.conn();
 module.exports = class Patient {
     constructor() { }
@@ -19,13 +14,13 @@ module.exports = class Patient {
             "users.lang," +
             "users.active," +
             "users.role," +
-            "users.type," +
             "users.address," +
             "users.street_number," +
             "users.zip," +
             "users.city," +
             "users.country," +
             "users.password," +
+            "users.avatar," +
             "users.date_created," +
             "users.date_updated," +
             "users.birthday," +
@@ -35,7 +30,7 @@ module.exports = class Patient {
             "patients.close_monitoring " +
             "FROM patients " +
             "LEFT JOIN users ON users.id = patients.user_id " +
-            "WHERE 1=1 ";
+            "WHERE 1=1  ";
         let params = [];
         let filterClause = '';
         if (filters.id) {
@@ -43,21 +38,26 @@ module.exports = class Patient {
             params.push(filters.id);
         }
         if (filters.firstname) {
-            sql += " or users.firstname like ?"
+            sql +=  ((params.length)?' OR ': 'AND ')+" users.firstname like ?"
             params.push(filters.firstname + '%');
         }
         if (filters.lastname) {
-            sql += " or users.lastname like ?"
+            sql += ((params.length)?' OR ': 'AND ')+" users.lastname like ?"
             params.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sql += " or users.email like ?"
+            sql += ((params.length)?' OR ': 'AND ')+" users.email like ?"
             params.push(filters.email + '%');
+        }
+        if (filters.phone) {
+            sql += ((params.length)?' OR ': 'AND ')+" users.phone like ?"
+            params.push(filters.phone + '%');
         }
         if (filters.limit) {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
         sql += " order by patients.date_created desc " + filterClause;
+        console.log(sql,filters)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -70,36 +70,33 @@ module.exports = class Patient {
     }
     async count(filters) {
         let sql = "SELECT count(*) as total FROM patients left join users on users.id = patients.user_id where 1=1  ";
+        
         let params = [];
-        if (filters.user_id) {
-            sql += " and users.id = ?"
-            params.push(filters.user_id);
-        }
-        if (filters.close_monitoring) {
-            sql += " and patients.close_monitoring = ?"
-            params.push(filters.close_monitoring);
+        if (filters.id) {
+            sql += " and patients.id = ?"
+            params.push(filters.id);
         }
         if (filters.firstname) {
-            sql += " and users.firstname like ?%"
-            params.push(filters.firstname);
+            sql +=  ((params.length)?' OR ': 'AND ')+" users.firstname like ?"
+            params.push(filters.firstname + '%');
         }
         if (filters.lastname) {
-            sql += " and users.lastname = ?%"
-            params.push(filters.lastname);
+            sql += ((params.length)?' OR ': 'AND ')+" users.lastname like ?"
+            params.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sql += " and users.email = ?%"
-            params.push(filters.email);
+            sql += ((params.length)?' OR ': 'AND ')+" users.email like ?"
+            params.push(filters.email + '%');
         }
-        if (filters.type) {
-            sql += " and users.type = ?"
-            params.push(filters.type);
+        if (filters.phone) {
+            sql += ((params.length)?' OR ': 'AND ')+" users.phone like ?"
+            params.push(filters.phone + '%');
         }
         if (filters.role) {
             sql += " and users.role = ?"
             params.push(filters.role);
         }
-        console.log(sql)
+        console.log(sql,filters)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -121,7 +118,6 @@ module.exports = class Patient {
             "users.lang," +
             "users.active," +
             "users.role," +
-            "users.type," +
             "users.address," +
             "users.street_number," +
             "users.zip," +
@@ -131,6 +127,7 @@ module.exports = class Patient {
             "users.date_created," +
             "users.date_updated," +
             "users.birthday," +
+            "users.avatar," +
             "patients.emergency_contact_relationship," +
             "patients.emergency_contact_name," +
             "patients.emergency_contact_phone," +
@@ -158,10 +155,6 @@ module.exports = class Patient {
         if (filters.email) {
             sql += " and email = ?"
             params.push(filters.email);
-        }
-        if (filters.type) {
-            sql += " and type = ?"
-            params.push(filters.type);
         }
         if (filters.role) {
             sql += " and role = ?"
@@ -248,7 +241,6 @@ module.exports = class Patient {
             "users.lang," +
             "users.active," +
             "users.role," +
-            "users.type," +
             "users.address," +
             "users.street_number," +
             "users.zip," +
@@ -258,6 +250,7 @@ module.exports = class Patient {
             "users.date_created," +
             "users.date_updated," +
             "users.birthday," +
+            "users.avatar," +
             "patients.emergency_contact_relationship," +
             "patients.emergency_contact_name," +
             "patients.emergency_contact_phone," +

@@ -1,33 +1,22 @@
 const conn = require("../utils/conn");
-const jwt = require("jsonwebtoken")
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_APIKEY);
 const db = conn.conn();
-module.exports = class User {
+module.exports = class Laboratory {
     constructor() { }
     async findAll(filters) {
-        let sql = "SELECT * FROM users where 1=1 ";
+        let sql = "SELECT *,id as laboratory_id FROM laboratories where 1=1 ";
         let params = [];
         let filterClause = '';
         if (filters.id) {
             sql += " and id = ?"
             params.push(filters.id);
         }
-        if (filters.firstname) {
-            sql += " and firstname like ?%"
-            params.push(filters.firstname);
-        }
-        if (filters.lastname) {
-            sql += " and lastname = ?%"
-            params.push(filters.lastname);
+        if (filters.name) {
+            sql += " and name like ?"
+            params.push(filters.name+'%');
         }
         if (filters.email) {
-            sql += " and email = ?%"
-            params.push(filters.email);
-        }
-        if (filters.role) {
-            sql += " and role = ?"
-            params.push(filters.role);
+            sql += " and email = ?"
+            params.push(filters.email+'%');
         }
         if(filters.limit) {
             filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
@@ -44,27 +33,19 @@ module.exports = class User {
         }
     }
     async count(filters) {
-        let sql = "SELECT count(*) total FROM users where 1=1 ";
+        let sql = "SELECT count(*) total FROM laboratories where 1=1 ";
         let params = [];
         if (filters.id) {
             sql += " and id = ?"
             params.push(filters.id);
         }
-        if (filters.firstname) {
-            sql += " and firstname like ?%"
-            params.push(filters.firstname);
-        }
-        if (filters.lastname) {
-            sql += " and lastname = ?%"
-            params.push(filters.lastname);
+        if (filters.name) {
+            sql += " and name like ?"
+            params.push(filters.name+'%');
         }
         if (filters.email) {
-            sql += " and email = ?%"
-            params.push(filters.email);
-        }
-        if (filters.role) {
-            sql += " and role = ?"
-            params.push(filters.role);
+            sql += " and email = ?"
+            params.push(filters.email+'%');
         }
         sql += " order by date_created desc limit 30"
         try {
@@ -78,27 +59,19 @@ module.exports = class User {
         }
     }
     async find(filters) {
-        let sql = "SELECT * FROM users where 1=1 ";
+        let sql = "SELECT *,id as laboratory_id FROM laboratories where 1=1 ";
         let params = [];
         if (filters.id) {
             sql += " and id = ?"
             params.push(filters.id);
         }
-        if (filters.firstname) {
-            sql += " and firstname = ?"
-            params.push(filters.firstname);
-        }
-        if (filters.lastname) {
-            sql += " and lastname = ?"
-            params.push(filters.lastname);
+        if (filters.name) {
+            sql += " and name = ?"
+            params.push(filters.name);
         }
         if (filters.email) {
             sql += " and email = ?"
             params.push(filters.email);
-        }
-        if (filters.role) {
-            sql += " and role = ?"
-            params.push(filters.role);
         }
         sql += " order by date_created desc limit 1"
         try {
@@ -112,7 +85,7 @@ module.exports = class User {
         }
     }
     async add(params) {
-        let sql = "INSERT INTO users SET ? ";
+        let sql = "INSERT INTO laboratories SET ? ";
         try {
             const add = await db.query(sql, params);
             return {
@@ -125,7 +98,7 @@ module.exports = class User {
         }
     }
     async update(o) {
-        let sql = "UPDATE users  ";
+        let sql = "UPDATE laboratories  ";
         
         const params = [];
         if (o.id) {
@@ -134,13 +107,9 @@ module.exports = class User {
         } else {
             throw {error: 'No pk provided'}
         }
-        if (o.firstname) {
-            sql += ",  firstname = ?"
-            params.push(o.firstname);
-        }
-        if (o.lastname) {
-            sql += ",   lastname = ?"
-            params.push(o.lastname);
+        if (o.name) {
+            sql += ",  name = ?"
+            params.push(o.name);
         }
         if (o.email) {
             sql += " ,  email = ?"
@@ -149,18 +118,6 @@ module.exports = class User {
         if (o.phone) {
             sql += ",   phone = ?"
             params.push(o.phone);
-        }
-        if (o.lang) {
-            sql += ",   lang = ?"
-            params.push(o.lang);
-        }
-        if (o.sex) {
-            sql += ",   sex = ?"
-            params.push(o.sex);
-        }
-        if (o.birthday) {
-            sql += ",   birthday = ?"
-            params.push(o.birthday);
         }
         if (o.address) {
             sql += ",   address = ?"
@@ -182,13 +139,9 @@ module.exports = class User {
             sql += ",   country = ?"
             params.push(o.country);
         }
-        if (o.avatar) {
-            sql += ",   avatar = ?"
-            params.push(o.avatar);
-        }
         sql += ",   date_updated = ?"
         params.push(new Date());
-        sql += " where id="+o.id;
+        sql += " where id="+o.id
         try {
             const updated = await db.query(sql, params);
             return {
@@ -199,55 +152,10 @@ module.exports = class User {
             return err;
         }
     }
-
-    async updatePassword(params) {
-        let sql = "UPDATE users set password = ? WHERE email = ? ";
-        try {
-            const updatePassword = await db.query(sql, params);
-            return updatePassword;
-        }
-        catch (err) {
-            return err;
-        }
-    }
-    async requestPassword(email) {
-        const user = await this.find({ email: email });
-        if (user && user.id) {
-            const o = {
-                id: user.id,
-                firstname: user.firstname,
-                lastname: user.lastname,
-                email: user.email,
-                type: user.type,
-                date_created: user.date_created
-            }
-            try {
-                const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "60m" });
-                const msg = {
-                    to: email,
-                    from: process.env.SENDER_EMAIL,
-                    subject: 'Reset Password',
-                    template_id: 'd-7c19f89a19fe4279afa5570c0f316ce4',
-                    dynamicTemplateData: {
-                        Weblink: process.env.APP_URL + '/reset-password?hash=' + token
-                    },
-                };
-                try {
-                    return await sgMail.send(msg);
-                } catch (error) {
-                    return error;
-                }
-            } catch (error) {
-                return { error: error };
-            }
-        } else {
-            return { error: 'user not found' };
-        }
-    }
     async delete(o) {
         if(o && o.ids) {
 
-            let sql = "delete from users where id in (?) ";
+            let sql = "delete from laboratories where id in (?) ";
             try {
                 
                 const del = await db.query(sql, o.ids);
@@ -264,4 +172,5 @@ module.exports = class User {
             throw {error: 'No ids provided'}
         }
     }
+
 }

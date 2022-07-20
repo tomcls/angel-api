@@ -1,23 +1,23 @@
 const express = require('express');
 const async = require('async');
-const Drug = require("../../src/models/drugs");
+const Treatment = require("../../src/models/treatments");
 const router = express.Router();
 router.use(express.json())
 router.post('/',  function(req, res, next) {
   const payload = req.body;
   try {
-    const u = new Drug();
+    const u = new Treatment();
     
     async.parallel([
       function(callback) {
-        u.findAll(payload).then(function(r){
+        u.getDrugs(payload).then(function(r){
           callback(null, r);
         }).catch(function(error){
           callback(error);
         });
       },
       function(callback) {
-        u.count(payload).then(function(r){
+        u.countDrugs(payload).then(function(r){
           callback(null, r);
         }).catch(function(error){
           callback(error);

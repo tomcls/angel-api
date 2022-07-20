@@ -1,33 +1,24 @@
 const express = require('express');
 const async = require('async');
-const Drug = require("../../src/models/drugs");
+const Dashboard = require("../../src/models/dashboard");
 const router = express.Router();
 router.use(express.json())
 router.post('/',  function(req, res, next) {
   const payload = req.body;
   try {
-    const u = new Drug();
+    const u = new Dashboard();
     
     async.parallel([
       function(callback) {
-        u.findAll(payload).then(function(r){
-          callback(null, r);
-        }).catch(function(error){
-          callback(error);
-        });
-      },
-      function(callback) {
-        u.count(payload).then(function(r){
+        u.moods(payload).then(function(r){
           callback(null, r);
         }).catch(function(error){
           callback(error);
         });
       }
     ],  function(err, results) {
-      const drugs = results[0];
       return res.json({
-        drugs : drugs,
-        total: results[1]
+        moods : results[0]
       });
     });
   } catch (error) {

@@ -1,12 +1,12 @@
 const express = require('express');
 const async = require('async');
-const Drug = require("../../src/models/drugs");
+const Treatment = require("../../src/models/treatments");
 const router = express.Router();
 router.use(express.json())
 router.post('/',  function(req, res, next) {
   const payload = req.body;
   try {
-    const u = new Drug();
+    const u = new Treatment();
     
     async.parallel([
       function(callback) {
@@ -24,9 +24,9 @@ router.post('/',  function(req, res, next) {
         });
       }
     ],  function(err, results) {
-      const drugs = results[0];
+      const treatments = results[0];
       return res.json({
-        drugs : drugs,
+        treatments : treatments,
         total: results[1]
       });
     });

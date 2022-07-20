@@ -22,7 +22,8 @@ router.post('/', async function (req, res, next) {
           lastname: user.lastname,
           email: user.email,
           type: user.type,
-          date_created: user.date_created
+          date_created: user.date_created,
+          avatar: user.avatar
         }
         const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "3600m" })
         return  res.json({user:user, accessToken: token});

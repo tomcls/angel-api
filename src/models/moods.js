@@ -1,44 +1,35 @@
 const conn = require("../utils/conn");
 const db = conn.conn();
-module.exports = class Drug {
+module.exports = class Mood {
     constructor() { }
     async findAll(filters) {
-        let sql = "SELECT drugs.id as drug_id, drug_descriptions.id as drug_description_id, " +
-            "drugs.laboratory_id, " +
-            "drugs.name, " +
-            "drugs.code, " +
-            "drugs.date_created, " +
-            "drugs.date_updated, " +
-            "drug_descriptions.description " +
-            "FROM drugs " +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id "
+        let sql = "SELECT moods.id as mood_id, mood_descriptions.id as mood_description_id, " +
+            "moods.date_created, " +
+            "moods.date_updated, " +
+            "mood_descriptions.name, " +
+            "mood_descriptions.description, " +
+            "mood_descriptions.lang_id " +
+            "FROM moods " +
+            "LEFT JOIN mood_descriptions on moods.id = mood_descriptions.mood_id "
             "WHERE 1=1 ";
         let params = [];
         let filterClause = '';
-        if (filters.id) {
-            sql += " and drugs.id = ?"
-            params.push(filters.id);
-        }
-        if (filters.laboratory_id) {
-            sql += " and drugs.laboratory_id = ?"
-            params.push(filters.laboratory_id);
-        }
-        if (filters.code) {
-            sql += " and drugs.code like ?"
-            params.push(filters.code+'%');
+        if (filters.mood_id) {
+            sql += " and moods.id = ?"
+            params.push(filters.mood_id);
         }
         if (filters.name) {
-            sql += " and drugs.name like ?"
+            sql += " and mood_descriptions.name like ?"
             params.push(filters.name+'%');
         }
         if (filters.lang_id) {
-            sql += " and drug_descriptions.lang_id = ?"
+            sql += " and mood_descriptions.lang_id = ?"
             params.push(filters.lang_id);
         }
         if (filters.limit) {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
-        sql += " order by drugs.id desc " + filterClause;
+        sql += " order by moods.id desc " + filterClause;
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -50,27 +41,19 @@ module.exports = class Drug {
         }
     }
     async count(filters) {
-        let sql = "SELECT count(*) as total FROM drugs LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id where 1=1  ";
+        let sql = "SELECT count(*) as total FROM moods LEFT JOIN mood_descriptions on moods.id = mood_descriptions.mood_id where 1=1  ";
        
         let params = [];
         if (filters.id) {
-            sql += " and drugs.id = ?"
+            sql += " and moods.id = ?"
             params.push(filters.id);
         }
-        if (filters.laboratory_id) {
-            sql += " and drugs.laboratory_id = ?"
-            params.push(filters.laboratory_id);
-        }
-        if (filters.code) {
-            sql += " and drugs.code like ?"
-            params.push(filters.code+'%');
-        }
         if (filters.name) {
-            sql += " and drugs.name like ?"
+            sql += " and mood_descriptions.name like ?"
             params.push(filters.name+'%');
         }
         if (filters.lang_id) {
-            sql += " and drug_descriptions.lang_id = ?"
+            sql += " and mood_descriptions.lang_id = ?"
             params.push(filters.lang_id);
         }
         try {
@@ -84,35 +67,30 @@ module.exports = class Drug {
         }
     }
     async find(filters) {
-        let sql = "SELECT drugs.id as drug_id, drug_descriptions.id as drug_description_id, " +
-            "drugs.laboratory_id," +
-            "drugs.name," +
-            "drugs.code," +
-            "drugs.date_created," +
-            "drugs.date_updated, "  +
-            "drug_descriptions.description " +
-            "FROM drugs "  +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " + 
+        let sql = "SELECT moods.id as mood_id, mood_descriptions.id as mood_description_id, " +
+            "moods.date_created," +
+            "moods.date_updated, "  +
+            "mood_descriptions.name, " +
+            "mood_descriptions.description, " +
+            "mood_descriptions.lang_id " +
+            "FROM moods "  +
+            "LEFT JOIN mood_descriptions on moods.id = mood_descriptions.mood_id " + 
             "WHERE 1 = 1 ";
         let params = [];
-        if (filters.id) {
-            sql += " and drugs.id = ?"
-            params.push(filters.id);
-        }
-        if (filters.laboratory_id) {
-            sql += " and drugs.laboratory_id = ?"
-            params.push(filters.laboratory_id);
-        }
-        if (filters.code) {
-            sql += " and drugs.code code = ?"
-            params.push(filters.code);
+        if (filters.mood_id) {
+            sql += " and moods.id = ?"
+            params.push(filters.mood_id);
         }
         if (filters.name) {
-            sql += " and drugs.name = ?"
+            sql += " and mood_descriptions.name = ?"
             params.push(filters.name);
         }
-        sql += " order by drugs.date_created desc limit 1"
-        console.log(sql)
+        if (filters.lang_id) {
+            sql += " and mood_descriptions.lang_id = ?"
+            params.push(filters.lang_id);
+        }
+        sql += " order by moods.date_created desc limit 1"
+        console.log(sql,params,filters)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -124,7 +102,8 @@ module.exports = class Drug {
         }
     }
     async add(o) {
-        let sql = "INSERT INTO drugs SET ? ";
+        let sql = "INSERT INTO moods ()  VALUES()";
+
         try {
             const add = await db.query(sql, o);
             return {
@@ -137,7 +116,7 @@ module.exports = class Drug {
         }
     }
     async update(o) {
-        let sql = "UPDATE drugs  ";
+        let sql = "UPDATE moods  ";
 
         const params = [];
         if (o.id) {
@@ -145,18 +124,6 @@ module.exports = class Drug {
             params.push(o.id);
         } else {
             throw { error: 'No pk provided' }
-        }
-        if (o.code) {
-            sql += ",  code = ?"
-            params.push(o.code);
-        }
-        if (o.name) {
-            sql += ",  name = ?"
-            params.push(o.name);
-        }
-        if (o.laboratory_id) {
-            sql += ",   laboratory_id = ?"
-            params.push(o.laboratory_id);
         }
         sql += ",   date_updated = ?"
         params.push(new Date());
@@ -173,33 +140,29 @@ module.exports = class Drug {
     }
     async search(filters) {
 
-        let sql = "SELECT drugs.id as drug_id," +
-            "drugs.id as id," +
-            "drugs.name," +
-            "drugs.code," +
-            "drugs.date_created," +
-            "drugs.date_updated " +
-            "FROM drugs " +
+        let sql = "SELECT moods.id as mood_id," +
+            "moods.id as id," +
+            "mood_descriptions.name," +
+            "mood_descriptions.description, " +
+            "moods.date_created," +
+            "moods.date_updated " +
+            "FROM moods " +
+            "LEFT JOIN mood_descriptions on moods.id = mood_descriptions.mood_id " + 
             "WHERE  ";
         let params = [];
         let filterClause = '';
-        if (filters.drug_id) {
-            sql += "  drug_id.id = ?"
-            params.push(filters.id);
+        if (filters.mood_id) {
+            sql += " and moods.id = ?"
+            params.push(filters.mood_id);
         }
         if (filters.name) {
-            sql += ((params.length)?' OR ': '')+"  drugs.name like ?"
+            sql += ((params.length)?' OR ': '')+"  mood_descriptions.name like ?"
             params.push(filters.name + '%');
-        }
-        if (filters.code) {
-            sql += ((params.length)?' OR ': '')+"  drugs.code like ?"
-            params.push(filters.code + '%');
         }
         if (filters.limit) {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
-        sql += " order by drugs.date_created desc " + filterClause;
-        console.log(sql)
+        sql += " order by moods.date_created desc " + filterClause;
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -213,7 +176,7 @@ module.exports = class Drug {
     async delete(o) {
         if(o && o.ids) {
 
-            let sql = "delete from drugs where id in (?) ";
+            let sql = "delete from moods where id in (?) ";
             try {
                 
                 const del = await db.query(sql, o.ids);

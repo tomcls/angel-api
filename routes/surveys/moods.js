@@ -1,33 +1,48 @@
 const express = require('express');
 const async = require('async');
-const Drug = require("../../src/models/drugs");
+const Survey = require("../../src/models/surveys");
 const router = express.Router();
 router.use(express.json())
 router.post('/',  function(req, res, next) {
   const payload = req.body;
   try {
-    const u = new Drug();
+    const u = new Survey();
     
     async.parallel([
       function(callback) {
-        u.findAll(payload).then(function(r){
+        u.moods(payload).then(function(r){
           callback(null, r);
         }).catch(function(error){
           callback(error);
         });
       },
       function(callback) {
-        u.count(payload).then(function(r){
+        u.groupMoods(payload).then(function(r){
+          callback(null, r);
+        }).catch(function(error){
+          callback(error);
+        });
+      },
+      function(callback) {
+        u.groupDates(payload).then(function(r){
+          callback(null, r);
+        }).catch(function(error){
+          callback(error);
+        });
+      },
+      function(callback) {
+        u.groupPatients(payload).then(function(r){
           callback(null, r);
         }).catch(function(error){
           callback(error);
         });
       }
     ],  function(err, results) {
-      const drugs = results[0];
       return res.json({
-        drugs : drugs,
-        total: results[1]
+        surveys : results[0],
+        moods: results[1],
+        dates: results[2],
+        patients: results[3]
       });
     });
   } catch (error) {

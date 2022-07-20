@@ -1,9 +1,10 @@
 const conn = require("../utils/conn");
 const db = conn.conn();
-module.exports = class Doctor {
+module.exports = class Scientist {
     constructor() { }
     async findAll(filters) {
-        let sql = "SELECT doctors.id as doctor_id, doctors.id as id,"+
+        let sql = "SELECT scientists.id as scientist_id,"+
+        "scientists.id as id,"+
     "users.id as user_id,"+
     "users.firstname,"+
     "users.lastname,"+
@@ -23,17 +24,17 @@ module.exports = class Doctor {
     "users.date_updated,"+
     "users.birthday,"+
     "users.avatar," +
-    "doctors.hospital_id,"+
-    "doctors.daysin, "+
-    "hospitals.name "+
-    "FROM doctors "+
-    "LEFT JOIN users ON users.id = doctors.user_id "+
-    "LEFT JOIN hospitals ON hospitals.id = doctors.hospital_id "+
-    "WHERE 1=1 ";
+    "scientists.laboratory_id,"+
+    "laboratories.name, "+
+    "scientists.daysin "+
+    "FROM scientists "+
+    "LEFT JOIN users ON users.id = scientists.user_id "+
+    "LEFT JOIN laboratories ON laboratories.id = scientists.laboratory_id "+
+    "WHERE 1 = 1 ";
         let params = [];
         let filterClause = '';
         if (filters.id) {
-            sql += " and doctors.id = ?"
+            sql += " and scientists.id = ?"
             params.push(filters.id);
         }
         if (filters.user_id) {
@@ -53,13 +54,14 @@ module.exports = class Doctor {
             params.push(filters.email);
         }
         if (filters.role) {
-            sql += " and users.role like ?"
+            sql += " and users.role like ?%"
             params.push(filters.role);
         }
         if(filters.limit) {
             filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
         }
-        sql += " order by doctors.date_created desc "+filterClause;
+        sql += " order by scientists.date_created desc "+filterClause;
+        console.log(sql);
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -71,7 +73,7 @@ module.exports = class Doctor {
         }
     }
     async count(filters) {
-        let sql = "SELECT count(*) as total FROM doctors left join users on users.id = doctors.user_id where 1=1  ";
+        let sql = "SELECT count(*) as total FROM scientists left join users on users.id = scientists.user_id where 1=1  ";
         let params = [];
         if (filters.user_id) {
             sql += " and users.id = ?"
@@ -104,7 +106,7 @@ module.exports = class Doctor {
         }
     }
     async find(filters) {
-        let sql = "SELECT doctors.id as doctor_id,"+
+        let sql = "SELECT scientists.id as scientist_id,"+
         "users.id as user_id,"+
         "users.firstname,"+
         "users.lastname,"+
@@ -114,26 +116,26 @@ module.exports = class Doctor {
         "users.lang,"+
         "users.active,"+
         "users.role,"+
+        "users.password,"+
         "users.address,"+
         "users.street_number,"+
         "users.zip,"+
         "users.city,"+
         "users.country,"+
-        "users.password,"+
         "users.date_created,"+
         "users.date_updated,"+
         "users.birthday,"+
         "users.avatar," +
-        "doctors.hospital_id,"+
-        "doctors.daysin, "+
-        "hospitals.name "+
+        "scientists.laboratory_id, "+
+        "laboratories.name, "+
+        "scientists.daysin "+
         "FROM users "+
-        "LEFT JOIN doctors ON users.id = doctors.user_id "+
-        "LEFT JOIN hospitals ON hospitals.id = doctors.hospital_id "+
+        "LEFT JOIN scientists ON users.id = scientists.user_id "+
+        "LEFT JOIN laboratories ON laboratories.id = scientists.laboratory_id "+
         "WHERE 1 = 1 ";
         let params = [];
         if (filters.id) {
-            sql += " and doctors.id = ?"
+            sql += " and scientists.id = ?"
             params.push(filters.id);
         }
         if (filters.user_id) {
@@ -157,7 +159,6 @@ module.exports = class Doctor {
             params.push(filters.role);
         }
         sql += " order by users.date_created desc limit 1"
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -169,7 +170,7 @@ module.exports = class Doctor {
         }
     }
     async add(o) {
-        let sql = "INSERT INTO doctors SET ? ";
+        let sql = "INSERT INTO scientists SET ? ";
         try {
             const add = await db.query(sql, o);
             return {
@@ -182,7 +183,7 @@ module.exports = class Doctor {
         }
     }
     async update(o) {
-        let sql = "UPDATE doctors  ";
+        let sql = "UPDATE scientists  ";
         
         const params = [];
         if (o.id) {
@@ -195,9 +196,9 @@ module.exports = class Doctor {
             sql += ",  user_id = ?"
             params.push(o.user_id);
         }
-        if (o.hospital_id) {
-            sql += ",   hospital_id = ?"
-            params.push(o.hospital_id);
+        if (o.laboratory_id) {
+            sql += ",   laboratory_id = ?"
+            params.push(o.laboratory_id);
         }
         if (o.daysin) {
             sql += ",   daysin = ?"
@@ -206,7 +207,6 @@ module.exports = class Doctor {
         sql += ",   date_updated = ?"
         params.push(new Date());
         sql += " where id="+o.id
-        console.log(sql)
         try {
             const updated = await db.query(sql, params);
             return {
@@ -220,8 +220,8 @@ module.exports = class Doctor {
 
     async getPatients(filters) {
         let sql = "SELECT patients.id as patient_id,"+
-        "users.id as id,"+
         "users.id as user_id,"+
+        "users.id as id,"+
         "users.firstname,"+
         "users.lastname,"+
         "users.phone,"+
@@ -244,20 +244,21 @@ module.exports = class Doctor {
         "patients.emergency_contact_name," +
         "patients.emergency_contact_phone," +
         "patients.close_monitoring " +
-        "FROM doctor_patients "+
-        "LEFT JOIN patients ON doctor_patients.patient_id = patients.id "+
+        "FROM scientist_patients "+
+        "LEFT JOIN patients ON scientist_patients.patient_id = patients.id "+
         "LEFT JOIN users on patients.user_id = users.id  " +
         "WHERE 1 = 1 ";
         let params = [];
-        if (filters.doctor_id) {
-            sql += " and doctor_patients.doctor_id = ?"
-            params.push(filters.doctor_id);
+        if (filters.scientist_id) {
+            sql += " and scientist_patients.scientist_id = ?"
+            params.push(filters.scientist_id);
         }
         if (filters.user_id) {
             sql += " and users.id = ?"
             params.push(filters.user_id);
         }
         sql += " order by patients.id desc";
+        console.log(sql);
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -271,20 +272,20 @@ module.exports = class Doctor {
 
     async countPatients(filters) {
         let sql = "SELECT count(*) as total "+
-        "FROM doctor_patients "+
-        "LEFT JOIN patients ON doctor_patients.patient_id = patients.id "+
+        "FROM scientist_patients "+
+        "LEFT JOIN patients ON scientist_patients.patient_id = patients.id "+
         "LEFT JOIN users on patients.user_id = users.id  " +
         "WHERE 1 = 1 ";
         let params = [];
-        if (filters.doctor_id) {
-            sql += " and doctor_patients.doctor_id = ? "
-            params.push(filters.doctor_id);
+        if (filters.scientist_id) {
+            sql += " and scientist_patients.scientist_id = ?"
+            params.push(filters.scientist_id);
         }
         if (filters.user_id) {
-            sql += " and users.id = ? "
+            sql += " and users.id = ?"
             params.push(filters.user_id);
         }
-        sql += " order by users.date_created desc limit 1 "
+        sql += " order by users.date_created desc limit 1"
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -296,7 +297,7 @@ module.exports = class Doctor {
         }
     }
     async addPatient(o) {
-        let sql = "INSERT INTO doctor_patients SET ? ";
+        let sql = "INSERT INTO scientist_patients SET ? ";
         try {
             const add = await db.query(sql, o);
             return {
@@ -308,4 +309,5 @@ module.exports = class Doctor {
             return err;
         }
     }
+
 }

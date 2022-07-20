@@ -1,16 +1,15 @@
 const express = require('express');
-const Doctor = require("../../src/models/doctors");
+const Drug = require("../../src/models/drugs");
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function(req, res, next) {
   const payload = req.body;
   try {
-    const u = new Doctor();
-    const doctor = await u.add(payload);
-    return res.json(doctor);
+    const u = new Drug();
+    const drugs = await u.delete(payload);
+    res.json(drugs);
   } catch (error) {
-    console.log('error',error)
-    return res.json(error);
+    res.json(error);
   }
 });
 module.exports = router;

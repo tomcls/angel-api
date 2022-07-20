@@ -4,3 +4,4 @@
 /srv/.dockerignore
 .env.prod
 .env
+/public/uploads

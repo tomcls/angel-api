@@ -1,6 +1,4 @@
 const conn = require("../utils/conn");
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_APIKEY);
 const db = conn.conn();
 module.exports = class Nurse {
     constructor() { }
@@ -16,7 +14,6 @@ module.exports = class Nurse {
     "users.lang,"+
     "users.active,"+
     "users.role,"+
-    "users.type,"+
     "users.address,"+
     "users.street_number,"+
     "users.zip,"+
@@ -26,10 +23,13 @@ module.exports = class Nurse {
     "users.date_created,"+
     "users.date_updated,"+
     "users.birthday,"+
+    "users.avatar," +
     "nurses.hospital_id,"+
+    "hospitals.name, "+
     "nurses.daysin "+
     "FROM nurses "+
     "LEFT JOIN users ON users.id = nurses.user_id "+
+    "LEFT JOIN hospitals ON hospitals.id = nurses.hospital_id "+
     "WHERE 1=1 ";
         let params = [];
         let filterClause = '';
@@ -53,10 +53,6 @@ module.exports = class Nurse {
             sql += " and users.email like ?%"
             params.push(filters.email);
         }
-        if (filters.type) {
-            sql += " and users.type like ?%"
-            params.push(filters.type);
-        }
         if (filters.role) {
             sql += " and users.role like ?%"
             params.push(filters.role);
@@ -65,7 +61,6 @@ module.exports = class Nurse {
             filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
         }
         sql += " order by nurses.date_created desc "+filterClause;
-        console.log(sql);
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -95,10 +90,6 @@ module.exports = class Nurse {
             sql += " and users.email like ?%"
             params.push(filters.email);
         }
-        if (filters.type) {
-            sql += " and users.type like ?%"
-            params.push(filters.type);
-        }
         if (filters.role) {
             sql += " and users.role like ?%"
             params.push(filters.role);
@@ -124,7 +115,6 @@ module.exports = class Nurse {
         "users.lang,"+
         "users.active,"+
         "users.role,"+
-        "users.type,"+
         "users.password,"+
         "users.address,"+
         "users.street_number,"+
@@ -134,10 +124,13 @@ module.exports = class Nurse {
         "users.date_created,"+
         "users.date_updated,"+
         "users.birthday,"+
+        "users.avatar," +
         "nurses.hospital_id, "+
+        "hospitals.name, "+
         "nurses.daysin "+
         "FROM users "+
         "LEFT JOIN nurses ON users.id = nurses.user_id "+
+        "LEFT JOIN hospitals ON hospitals.id = nurses.hospital_id "+
         "WHERE 1 = 1 ";
         let params = [];
         if (filters.id) {
@@ -159,10 +152,6 @@ module.exports = class Nurse {
         if (filters.email) {
             sql += " and email = ?"
             params.push(filters.email);
-        }
-        if (filters.type) {
-            sql += " and type = ?"
-            params.push(filters.type);
         }
         if (filters.role) {
             sql += " and role = ?"
@@ -240,7 +229,6 @@ module.exports = class Nurse {
         "users.lang,"+
         "users.active,"+
         "users.role,"+
-        "users.type,"+
         "users.password,"+
         "users.address,"+
         "users.street_number,"+
@@ -250,6 +238,7 @@ module.exports = class Nurse {
         "users.date_created,"+
         "users.date_updated,"+
         "users.birthday,"+
+        "users.avatar," +
         "patients.emergency_contact_relationship," +
         "patients.emergency_contact_name," +
         "patients.emergency_contact_phone," +
