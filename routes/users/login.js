@@ -2,6 +2,10 @@ const express = require('express');
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken")
 const User = require("../../src/models/users");
+const Doctor = require('../../src/models/doctors');
+const Patient = require('../../src/models/patients');
+const Nurse = require('../../src/models/nurses');
+const Scientist = require('../../src/models/scientists');
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function (req, res, next) {
@@ -24,7 +28,28 @@ router.post('/', async function (req, res, next) {
           date_created: user.date_created,
           avatar: user.avatar
         }
-        const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "3600m" })
+        const p = new Patient();
+        const patient = await p.find({user_id:user.id});
+        if(patient && patient.user_id) {
+          user.patient_id = patient.patient_id;
+        }
+        const d = new Doctor();
+        const doctor = await d.find({user_id:user.id});
+        
+        if(doctor && doctor.user_id) {
+          user.doctor_id = doctor.doctor_id;
+        }
+        const n = new Nurse();
+        const nurse = await n.find({user_id:user.id});
+        if(nurse && nurse.user_id) {
+          user.nurse_id = nurse.nurse_id;
+        }
+        const s = new Scientist();
+        const scientist = await s.find({user_id:user.id});
+        if(scientist && scientist.user_id) {
+          user.scientist_id = scientist.scientist_id;
+        }
+        const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "3600m" });
         return  res.json({user:user, accessToken: token});
       } else {
         return  res.json({ error: 'password not correct' });

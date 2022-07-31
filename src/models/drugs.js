@@ -5,13 +5,13 @@ module.exports = class Drug {
     async findAll(filters) {
         let sql = "SELECT drugs.id as drug_id, drug_descriptions.id as drug_description_id, " +
             "drugs.laboratory_id, " +
-            "drugs.name, " +
-            "drugs.code, " +
+            "drugs.name drug_name, " +
+            "drugs.code drug_code, " +
             "drugs.date_created, " +
             "drugs.date_updated, " +
             "drug_descriptions.description " +
             "FROM drugs " +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id "
+            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " +
             "WHERE 1=1 ";
         let params = [];
         let filterClause = '';
@@ -23,17 +23,21 @@ module.exports = class Drug {
             sql += " and drugs.laboratory_id = ?"
             params.push(filters.laboratory_id);
         }
-        if (filters.code) {
-            sql += " and drugs.code like ?"
-            params.push(filters.code+'%');
-        }
-        if (filters.name) {
-            sql += " and drugs.name like ?"
-            params.push(filters.name+'%');
-        }
         if (filters.lang_id) {
             sql += " and drug_descriptions.lang_id = ?"
             params.push(filters.lang_id);
+        }
+        let sqlSearch = '';
+        if (filters.name) {
+            sqlSearch +=  " drugs.name like ?"
+            params.push(filters.name + '%');
+        }
+        if (filters.code) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" drugs.code like ?"
+            params.push(filters.code + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
         }
         if (filters.limit) {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
@@ -61,18 +65,23 @@ module.exports = class Drug {
             sql += " and drugs.laboratory_id = ?"
             params.push(filters.laboratory_id);
         }
-        if (filters.code) {
-            sql += " and drugs.code like ?"
-            params.push(filters.code+'%');
-        }
-        if (filters.name) {
-            sql += " and drugs.name like ?"
-            params.push(filters.name+'%');
-        }
         if (filters.lang_id) {
             sql += " and drug_descriptions.lang_id = ?"
             params.push(filters.lang_id);
         }
+        let sqlSearch = '';
+        if (filters.name) {
+            sqlSearch +=  " drugs.name like ?"
+            params.push(filters.name + '%');
+        }
+        if (filters.code) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" drugs.code like ?"
+            params.push(filters.code + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
+        }
+        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {

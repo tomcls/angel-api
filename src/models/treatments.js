@@ -10,7 +10,7 @@ module.exports = class Treatment {
             "treatments.date_updated, " +
             "treatment_descriptions.description " +
             "FROM treatments " +
-            "LEFT JOIN treatment_descriptions on treatments.id = treatment_descriptions.treatment_id "
+            "LEFT JOIN treatment_descriptions on treatments.id = treatment_descriptions.treatment_id " +
             "WHERE 1=1 ";
         let params = [];
         let filterClause = '';
@@ -18,22 +18,27 @@ module.exports = class Treatment {
             sql += " and treatments.id = ?"
             params.push(filters.id);
         }
-        if (filters.code) {
-            sql += " and treatments.code like ?"
-            params.push(filters.code+'%');
-        }
-        if (filters.name) {
-            sql += " and treatments.name like ?"
-            params.push(filters.name+'%');
-        }
         if (filters.lang_id) {
             sql += " and treatment_descriptions.lang_id = ?"
             params.push(filters.lang_id);
+        }
+        let sqlSearch = '';
+        if (filters.name) {
+            sqlSearch +=  " treatments.name like ?"
+            params.push(filters.name + '%');
+        }
+        if (filters.code) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" treatments.code like ?"
+            params.push(filters.code + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
         }
         if (filters.limit) {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
         sql += " order by treatments.id desc " + filterClause;
+        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -52,17 +57,21 @@ module.exports = class Treatment {
             sql += " and treatments.id = ?"
             params.push(filters.id);
         }
-        if (filters.code) {
-            sql += " and treatments.code like ?"
-            params.push(filters.code+'%');
-        }
-        if (filters.name) {
-            sql += " and treatments.name like ?"
-            params.push(filters.name+'%');
-        }
         if (filters.lang_id) {
             sql += " and treatment_descriptions.lang_id = ?"
             params.push(filters.lang_id);
+        }
+        let sqlSearch = '';
+        if (filters.name) {
+            sqlSearch +=  " treatments.name like ?"
+            params.push(filters.name + '%');
+        }
+        if (filters.code) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" treatments.code like ?"
+            params.push(filters.code + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
         }
         try {
             let rows = await db.query(sql, params);

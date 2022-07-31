@@ -32,20 +32,24 @@ router.post('/', async function(req, res, next) {
       return res.json({'error': 'user_exists'});
     }
     const user = await u.add(o);
+    let child = null;
     switch (payload.type) {
       case 'nurse':
         const n = new Nurse();
-         await n.add({user_id:user.inserted_id});
+        child = await n.add({user_id:user.inserted_id});
+        user.nurse_id = child.inserted_id;
         break;
       case 'doctor':
         const d = new Doctor();
-        await d.add({user_id:user.inserted_id});
+        child = await d.add({user_id:user.inserted_id});
+        user.doctor_id = child.inserted_id;
         break;
       case 'lab':
         const s = new Scientist();
-        await s.add({user_id:user.inserted_id});
+        child = await s.add({user_id:user.inserted_id});
+        user.scientist_id = child.inserted_id;
         break;
-    } 
+    }
     return res.json(user);
   } catch (error) {
     console.log('error',error)
