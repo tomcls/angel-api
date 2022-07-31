@@ -7,7 +7,6 @@ router.post('/', async function(req, res, next) {
   try {
     const u = new Scientist();
     const scientist = await u.update(payload);
-    console.log('scientist',scientist)
     return res.json(scientist);
   } catch (error) {
     console.log('error',error)

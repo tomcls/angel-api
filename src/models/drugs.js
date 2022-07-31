@@ -112,7 +112,6 @@ module.exports = class Drug {
             params.push(filters.name);
         }
         sql += " order by drugs.date_created desc limit 1"
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -199,7 +198,6 @@ module.exports = class Drug {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
         sql += " order by drugs.date_created desc " + filterClause;
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -215,9 +213,7 @@ module.exports = class Drug {
 
             let sql = "delete from drugs where id in (?) ";
             try {
-                
                 const del = await db.query(sql, o.ids);
-                console.log(sql,del,o);
                 return {
                     saved: del.affectedRows,
                     inserted_id: del.insertId

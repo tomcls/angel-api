@@ -60,7 +60,6 @@ module.exports = class Scientist {
             filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
         }
         sql += " order by scientists.date_created desc "+filterClause;
-        console.log(sql);
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -256,7 +255,6 @@ module.exports = class Scientist {
             params.push(filters.user_id);
         }
         sql += " order by patients.id desc";
-        console.log(sql);
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {

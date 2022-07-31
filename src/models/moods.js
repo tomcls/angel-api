@@ -90,7 +90,6 @@ module.exports = class Mood {
             params.push(filters.lang_id);
         }
         sql += " order by moods.date_created desc limit 1"
-        console.log(sql,params,filters)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -180,7 +179,6 @@ module.exports = class Mood {
             try {
                 
                 const del = await db.query(sql, o.ids);
-                console.log(sql,del,o);
                 return {
                     saved: del.affectedRows,
                     inserted_id: del.insertId

@@ -19,7 +19,6 @@ function validateToken(req, res, next) {
 }
 const hashPwd = async function () {
     hashedPassword = await bcrypt.hash("3e9af42de397cfc9387a06972c28c23a1ac", 10)
-    console.log('hashedPassword', hashedPassword, 'process.env.API_SECRET,', "3e9af42de397cfc9387a06972c28c23a1ac7e9a60fb6dc1f05295bc6057baf500672d4a13db5d04ea84bbc4c5679164a7723f3d49f516bb73dc3df6e3b768c8e",)
 }
 function generateAccessToken(user) {
     return jwt.sign(user, "3e9af42de397cfc9387a06972c28c23a1ac7e9a60fb6dc1f05295bc6057baf500672d4a13db5d04ea84bbc4c5679164a7723f3d49f516bb73dc3df6e3b768c8e", { expiresIn: "15m" })
@@ -38,7 +37,6 @@ hashPwd().then(async () => {
     if (await bcrypt.compare("3e9af42de397cfc9387a06972c28c23a1ac", hashedPassword)) {
         const accessToken = generateAccessToken({ name: 'tom', email: 'tomclassius@gmail.com' })
         const refreshToken = generateRefreshToken({ name: 'tom', email: 'tomclassius@gmail.com' })
-        console.log({ accessToken: accessToken, refreshToken: refreshToken })
         
     } else {
         console.log("mert")

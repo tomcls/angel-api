@@ -98,7 +98,6 @@ module.exports = class Treatment {
             params.push(filters.name);
         }
         sql += " order by treatments.date_created desc limit 1"
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -177,7 +176,6 @@ module.exports = class Treatment {
             params.push(filters.treatment_id);
         }
         sql += " order by treatments.id desc";
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -284,7 +282,6 @@ module.exports = class Treatment {
             params.push(filters.user_id);
         }
         sql += " order by treatment_patients.id desc";
-        console.log(sql,params)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -363,7 +360,6 @@ module.exports = class Treatment {
             params.push(filters.user_id);
         }
         sql += " order by treatment_patients.id desc";
-        console.log(sql,params)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -409,9 +405,7 @@ module.exports = class Treatment {
 
             let sql = "delete from treatments where id in (?) ";
             try {
-                
                 const del = await db.query(sql, o.ids);
-                console.log(sql,del,o);
                 return {
                     saved: del.affectedRows,
                     inserted_id: del.insertId

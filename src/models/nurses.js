@@ -282,7 +282,6 @@ module.exports = class Nurse {
             sql += ' AND (' + sqlSearch + ') ';
         }
         sql += " order by patients.id desc";
-        console.log(sql);
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {

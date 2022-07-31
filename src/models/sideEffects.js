@@ -177,9 +177,7 @@ module.exports = class sideEffect {
 
             let sql = "delete from side_effects where id in (?) ";
             try {
-                
                 const del = await db.query(sql, o.ids);
-                console.log(sql,del,o);
                 return {
                     saved: del.affectedRows,
                     inserted_id: del.insertId

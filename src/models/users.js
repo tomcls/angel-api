@@ -105,7 +105,6 @@ module.exports = class User {
             params.push(filters.role);
         }
         sql += " order by date_created desc limit 1"
-        console.log("zzzzzzzzzzzz",sql,params)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -259,12 +258,9 @@ module.exports = class User {
     }
     async delete(o) {
         if(o && o.ids) {
-
             let sql = "delete from users where id in (?) ";
             try {
-                
                 const del = await db.query(sql, o.ids);
-                console.log(sql,del,o);
                 return {
                     saved: del.affectedRows,
                     inserted_id: del.insertId
@@ -330,7 +326,6 @@ module.exports = class User {
             filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
         }
         sql += " order by date_created desc "+filterClause;
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {

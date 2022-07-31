@@ -205,7 +205,6 @@ module.exports = class Doctor {
         sql += ",   date_updated = ?"
         params.push(new Date());
         sql += " where id="+o.id
-        console.log(sql)
         try {
             const updated = await db.query(sql, params);
             return {

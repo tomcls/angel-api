@@ -14,11 +14,8 @@ router.post('/', async function(req, res, next) {
         active:1
     }
     const user = await u.find(payload);
-    console.log(user)
     if(user && user.active) {
-      console.log("user actif")
         const requestEmail = await u.requestPassword(o.email);
-        console.log("user actif",requestEmail)
         if(requestEmail && requestEmail.length && (requestEmail[0].statusCode ==202 || requestEmail[0].statusCode==200 )) {
             res.json({result: 'success',msg: requestEmail});
         } else {

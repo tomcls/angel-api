@@ -121,7 +121,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.all('*', validateToken);
-console.log(__dirname + '/public');
 app.use('/public/uploads',express.static(__dirname + '/public/uploads'));
 app.use('/users/list', userListRouter);
 app.use('/users/coordinators', userCoordinatorsRouter);
@@ -240,9 +239,7 @@ function validateToken(req, res, next) {
         req.path === '/users/add' ) return next();
     //the request header contains the token "Bearer <token>", split the string and use the second value in the split array.
     if (token == null) return res.status(400).json({error:"Authorization not present"});
-    //console.log("token = ",token)
     jwt.verify(token, process.env.API_SECRET, (err, user) => {
-      //  console.log(err, user)
         if (err) {
            return res.status(403).json({error:"Authorization not valid"})
         }
