@@ -25,8 +25,7 @@ module.exports = class Scientist {
     "users.birthday,"+
     "users.avatar," +
     "scientists.laboratory_id,"+
-    "laboratories.name, "+
-    "scientists.daysin "+
+    "laboratories.name "+
     "FROM scientists "+
     "LEFT JOIN users ON users.id = scientists.user_id "+
     "LEFT JOIN laboratories ON laboratories.id = scientists.laboratory_id "+
@@ -127,8 +126,7 @@ module.exports = class Scientist {
         "users.birthday,"+
         "users.avatar," +
         "scientists.laboratory_id, "+
-        "laboratories.name, "+
-        "scientists.daysin "+
+        "laboratories.name "+
         "FROM users "+
         "LEFT JOIN scientists ON users.id = scientists.user_id "+
         "LEFT JOIN laboratories ON laboratories.id = scientists.laboratory_id "+

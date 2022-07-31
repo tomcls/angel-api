@@ -1,7 +1,5 @@
 const express = require('express');
 const jwt = require("jsonwebtoken")
-const CryptoJS = require("crypto-js");
-const User = require("../../src/models/users");
 const router = express.Router();
 router.use(express.json())
 router.get('/', async function(req, res, next) {

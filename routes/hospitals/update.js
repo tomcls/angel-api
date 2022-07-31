@@ -1,6 +1,5 @@
 const express = require('express');
 const Hospital = require("../../src/models/hospitals");
-const CryptoJS = require("crypto-js");
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function(req, res, next) {

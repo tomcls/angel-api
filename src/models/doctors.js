@@ -25,7 +25,7 @@ module.exports = class Doctor {
     "users.avatar," +
     "doctors.hospital_id,"+
     "doctors.daysin, "+
-    "hospitals.name "+
+    "hospitals.name hospital_name "+
     "FROM doctors "+
     "LEFT JOIN users ON users.id = doctors.user_id "+
     "LEFT JOIN hospitals ON hospitals.id = doctors.hospital_id "+
@@ -126,7 +126,7 @@ module.exports = class Doctor {
         "users.avatar," +
         "doctors.hospital_id,"+
         "doctors.daysin, "+
-        "hospitals.name "+
+        "hospitals.name hospital_name "+
         "FROM users "+
         "LEFT JOIN doctors ON users.id = doctors.user_id "+
         "LEFT JOIN hospitals ON hospitals.id = doctors.hospital_id "+
@@ -157,7 +157,6 @@ module.exports = class Doctor {
             params.push(filters.role);
         }
         sql += " order by users.date_created desc limit 1"
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -257,6 +256,27 @@ module.exports = class Doctor {
             sql += " and users.id = ?"
             params.push(filters.user_id);
         }
+        let sqlSearch = '';
+        if (filters.firstname) {
+            sqlSearch +=  " users.firstname like ?"
+            params.push(filters.firstname + '%');
+        }
+        if (filters.lastname) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" users.lastname like ?"
+            params.push(filters.lastname + '%');
+        }
+        if (filters.email) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" users.email like ?"
+            params.push(filters.email + '%');
+        }
+        if (filters.phone) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" users.phone like ?"
+            params.push(filters.phone + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
+        }
+
         sql += " order by patients.id desc";
         try {
             let rows = await db.query(sql, params);
@@ -284,6 +304,28 @@ module.exports = class Doctor {
             sql += " and users.id = ? "
             params.push(filters.user_id);
         }
+
+        let sqlSearch = '';
+        if (filters.firstname) {
+            sqlSearch +=  " users.firstname like ?"
+            params.push(filters.firstname + '%');
+        }
+        if (filters.lastname) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" users.lastname like ?"
+            params.push(filters.lastname + '%');
+        }
+        if (filters.email) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" users.email like ?"
+            params.push(filters.email + '%');
+        }
+        if (filters.phone) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" users.phone like ?"
+            params.push(filters.phone + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
+        }
+
         sql += " order by users.date_created desc limit 1 "
         try {
             let rows = await db.query(sql, params);
@@ -306,6 +348,120 @@ module.exports = class Doctor {
         }
         catch (err) {
             return err;
+        }
+    }
+     // get nurses of a certain patient
+     async getDoctors(filters) {
+        let sql = "SELECT doctors.id AS doctor_id,"+
+        "users.id as user_id,"+
+        "users.id as id,"+
+        "users.firstname,"+
+        "users.lastname,"+
+        "users.phone,"+
+        "users.email,"+
+        "users.sex,"+
+        "users.lang,"+
+        "users.active,"+
+        "users.role,"+
+        "users.password,"+
+        "users.address,"+
+        "users.street_number,"+
+        "users.zip,"+
+        "users.city,"+
+        "users.country,"+
+        "users.date_created,"+
+        "users.date_updated,"+
+        "users.birthday,"+
+        "users.avatar " + 
+        "FROM doctor_patients "+
+        "LEFT JOIN doctors ON doctor_patients.doctor_id = doctors.id  " +
+        "LEFT JOIN patients ON doctor_patients.patient_id = patients.id "+
+        "LEFT JOIN users ON doctors.user_id = users.id " + 
+        "WHERE 1 = 1   ";
+        let params = [];
+        let filterClause = '';
+        if (filters.patient_id) {
+            sql += " and patients.user_id =  ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.user_id) {
+            sql += " and users.id = ?"
+            params.push(filters.user_id);
+        }
+        if (filters.firstname) {
+            sql +=  ((params.length)?' OR ': 'AND ')+" users.firstname like ?"
+            params.push(filters.firstname + '%');
+        }
+        if (filters.lastname) {
+            sql += ((params.length)?' OR ': 'AND ')+" users.lastname like ?"
+            params.push(filters.lastname + '%');
+        }
+        if (filters.email) {
+            sql += ((params.length)?' OR ': 'AND ')+" users.email like ?"
+            params.push(filters.email + '%');
+        }
+        if (filters.phone) {
+            sql += ((params.length)?' OR ': 'AND ')+" users.phone like ?"
+            params.push(filters.phone + '%');
+        }
+        if (filters.limit) {
+            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
+        }
+        sql += " order by doctors.date_created desc " + filterClause;
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+    async countDoctors(filters) {
+        let sql = "SELECT count(*) total " +
+        "FROM doctor_patients "+
+        "LEFT JOIN doctors ON doctor_patients.doctor_id = doctors.id  " +
+        "LEFT JOIN patients ON doctor_patients.patient_id = patients.id "+
+        "LEFT JOIN users ON doctors.user_id = users.id " + 
+        "WHERE 1 = 1   ";
+        let params = [];
+        let filterClause = '';
+        if (filters.patient_id) {
+            sql += " and doctor_patients.patient_id = ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.user_id) {
+            sql += " and users.id = ?"
+            params.push(filters.user_id);
+        }
+        if (filters.firstname) {
+            sql +=  ((params.length)?' OR ': 'AND ')+" users.firstname like ?"
+            params.push(filters.firstname + '%');
+        }
+        if (filters.lastname) {
+            sql += ((params.length)?' OR ': 'AND ')+" users.lastname like ?"
+            params.push(filters.lastname + '%');
+        }
+        if (filters.email) {
+            sql += ((params.length)?' OR ': 'AND ')+" users.email like ?"
+            params.push(filters.email + '%');
+        }
+        if (filters.phone) {
+            sql += ((params.length)?' OR ': 'AND ')+" users.phone like ?"
+            params.push(filters.phone + '%');
+        }
+        if (filters.limit) {
+            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
+        }
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows[0].total;
+            }
+            return null;
+        } catch (error) {
+            return error
         }
     }
 }

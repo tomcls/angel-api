@@ -9,6 +9,7 @@ const logger = require('morgan');
 const jwt = require("jsonwebtoken")
 
 const userListRouter = require('./routes/users/list');
+const userCoordinatorsRouter = require('./routes/users/coordinators');
 const userAddRouter = require('./routes/users/add');
 const userUpdateRouter = require('./routes/users/update');
 const userGetRouter = require('./routes/users/get');
@@ -31,6 +32,7 @@ const doctorUpdateRouter = require('./routes/doctors/update');
 const doctorGetRouter = require('./routes/doctors/get');
 const doctorGetPatientsRouter = require('./routes/doctors/patients');
 const doctorAddPatientRouter = require('./routes/doctors/addPatient');
+const nurseGetDoctorsRouter = require('./routes/doctors/doctors');
 // nurses
 const nurseListRouter = require('./routes/nurses/list');
 const nurseAddRouter = require('./routes/nurses/add');
@@ -38,6 +40,7 @@ const nurseUpdateRouter = require('./routes/nurses/update');
 const nurseGetRouter = require('./routes/nurses/get');
 const nurseGetPatientsRouter = require('./routes/nurses/patients');
 const nurseAddPatientRouter = require('./routes/nurses/addPatient');
+const nurseGetNursesRouter = require('./routes/nurses/nurses');
 // nurses
 const scientistListRouter = require('./routes/scientists/list');
 const scientistAddRouter = require('./routes/scientists/add');
@@ -78,6 +81,7 @@ const treatmentGetPatientsRouter = require('./routes/treatments/patients');
 const treatmentAddDrugRouter = require('./routes/treatments/addDrug');
 const treatmentAddPatientRouter = require('./routes/treatments/addPatient');
 const treatmentDeleteRouter = require('./routes/treatments/delete');
+const treatmentUserTreatmentRouter = require('./routes/treatments/userTreatments');
 //  treatment descriptions
 const treatmentDescriptionAddRouter = require('./routes/treatment_descriptions/add');
 const treatmentDescriptionUpdateRouter = require('./routes/treatment_descriptions/update');
@@ -120,6 +124,7 @@ app.all('*', validateToken);
 console.log(__dirname + '/public');
 app.use('/public/uploads',express.static(__dirname + '/public/uploads'));
 app.use('/users/list', userListRouter);
+app.use('/users/coordinators', userCoordinatorsRouter);
 app.use('/users/add', userAddRouter);
 app.use('/users/get', userGetRouter);
 app.use('/users/update', userUpdateRouter);
@@ -142,6 +147,7 @@ app.use('/doctors/get', doctorGetRouter);
 app.use('/doctors/update', doctorUpdateRouter);
 app.use('/doctors/patients', doctorGetPatientsRouter);
 app.use('/doctors/add-patient', doctorAddPatientRouter);
+app.use('/doctors/doctors', nurseGetDoctorsRouter);
 // nurses
 app.use('/nurses/list', nurseListRouter);
 app.use('/nurses/add', nurseAddRouter);
@@ -149,6 +155,7 @@ app.use('/nurses/get', nurseGetRouter);
 app.use('/nurses/update', nurseUpdateRouter);
 app.use('/nurses/patients', nurseGetPatientsRouter);
 app.use('/nurses/add-patient', nurseAddPatientRouter);
+app.use('/nurses/nurses', nurseGetNursesRouter);
 // scientists
 app.use('/scientists/list', scientistListRouter);
 app.use('/scientists/add', scientistAddRouter);
@@ -190,6 +197,7 @@ app.use('/treatments/patients', treatmentGetPatientsRouter);
 app.use('/treatments/add-drug', treatmentAddDrugRouter);
 app.use('/treatments/add-patient', treatmentAddPatientRouter);
 app.use('/treatments/delete', treatmentDeleteRouter);
+app.use('/treatments/user-treatments', treatmentUserTreatmentRouter);
 // treatment descriptions
 app.use('/treatment-descriptions/add', treatmentDescriptionAddRouter);
 app.use('/treatment-descriptions/update', treatmentDescriptionUpdateRouter);

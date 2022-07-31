@@ -158,9 +158,9 @@ module.exports = class Treatment {
         let sql = "SELECT treatments.id as treatment_id,"+
         "drugs.id as drug_id,"+
         "drugs.id as id,"+
-        "drugs.name,"+
+        "drugs.name drug_name,"+
         "drugs.date_created,"+
-        "drugs.code,"+
+        "drugs.code drug_code,"+
         "treatments.name," +
         "treatments.code " +
         "FROM treatment_drugs "+
@@ -177,6 +177,7 @@ module.exports = class Treatment {
             params.push(filters.treatment_id);
         }
         sql += " order by treatments.id desc";
+        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -278,7 +279,12 @@ module.exports = class Treatment {
             sql += " and treatment_patients.patient_id = ?"
             params.push(filters.patient_id);
         }
+        if (filters.user_id) {
+            sql += " and users.id = ?"
+            params.push(filters.user_id);
+        }
         sql += " order by treatment_patients.id desc";
+        console.log(sql,params)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -305,6 +311,10 @@ module.exports = class Treatment {
             sql += " and treatment_patients.patient_id = ?"
             params.push(filters.patient_id);
         }
+        if (filters.user_id) {
+            sql += " and users.id = ?"
+            params.push(filters.user_id);
+        }
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -316,6 +326,84 @@ module.exports = class Treatment {
         }
     }
 
+    async addPatient(o) {
+        let sql = "INSERT INTO treatment_patients SET ? ";
+        try {
+            const add = await db.query(sql, o);
+            return {
+                saved: add.affectedRows,
+                inserted_id: add.insertId
+            };
+        }
+        catch (err) {
+            return err;
+        }
+    }
+    async getUserTreaments(filters) {
+        let sql = "SELECT treatments.id as treatment_id, " +
+        "treatments.name, " +
+        "treatments.code, " +
+        "treatments.date_created, " +
+        "treatments.date_updated " +
+        "FROM treatment_patients "+
+        "LEFT JOIN patients ON treatment_patients.patient_id = patients.id "+
+        "LEFT JOIN treatments on treatments.id = treatment_patients.treatment_id  " +
+        "WHERE 1 = 1 ";
+        let params = [];
+        if (filters.treatment_id) {
+            sql += " and treatment_patients.treatment_id = ?"
+            params.push(filters.drug_id);
+        }
+        if (filters.patient_id) {
+            sql += " and treatment_patients.patient_id = ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.user_id) {
+            sql += " and patients.user_id = ?"
+            params.push(filters.user_id);
+        }
+        sql += " order by treatment_patients.id desc";
+        console.log(sql,params)
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+
+    async countUserTreaments(filters) {
+        let sql = "SELECT count(*) as total " +
+        "FROM treatment_patients "+
+        "LEFT JOIN patients ON treatment_patients.patient_id = patients.id "+
+        "LEFT JOIN treatments on treatments.id = treatment_patients.treatment_id  " +
+        "WHERE 1 = 1 ";
+        let params = [];
+        if (filters.treatment_id) {
+            sql += " and treatment_patients.treatment_id = ?"
+            params.push(filters.drug_id);
+        }
+        if (filters.patient_id) {
+            sql += " and treatment_patients.patient_id = ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.user_id) {
+            sql += " and patients.user_id = ?"
+            params.push(filters.user_id);
+        }
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows[0].total;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
     async delete(o) {
         if(o && o.ids) {
 
