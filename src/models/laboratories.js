@@ -3,25 +3,49 @@ const db = conn.conn();
 module.exports = class Laboratory {
     constructor() { }
     async findAll(filters) {
-        let sql = "SELECT *,id as laboratory_id FROM laboratories where 1=1 ";
+        let sql = "SELECT id,"+
+        "id as laboratory_id,"+
+        " name laboratory_name,"+
+        " phone,"+
+        " email,"+
+        " address,"+
+        " city,"+
+        " zip,"+
+        " country,"+
+        " street_number,"+
+        " date_created,"+
+        " date_updated  FROM laboratories where 1=1 ";
         let params = [];
         let filterClause = '';
         if (filters.id) {
             sql += " and id = ?"
             params.push(filters.id);
         }
+        if (filters.drug_id) {
+            sql += " and id = ?"
+            params.push(filters.drug_id);
+        }
+        let sqlSearch = '';
         if (filters.name) {
-            sql += " and name like ?"
-            params.push(filters.name+'%');
+            sqlSearch +=  " laboratories.name like ?"
+            params.push(filters.name + '%');
         }
         if (filters.email) {
-            sql += " and email = ?"
-            params.push(filters.email+'%');
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" laboratories.email like ?"
+            params.push(filters.email + '%');
+        }
+        if (filters.phone) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" laboratories.phone like ?"
+            params.push(filters.phone + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
         }
         if(filters.limit) {
             filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
         }
         sql += " order by date_created desc "+filterClause;
+        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -39,13 +63,25 @@ module.exports = class Laboratory {
             sql += " and id = ?"
             params.push(filters.id);
         }
+        if (filters.drug_id) {
+            sql += " and id = ?"
+            params.push(filters.drug_id);
+        }
+        let sqlSearch = '';
         if (filters.name) {
-            sql += " and name like ?"
-            params.push(filters.name+'%');
+            sqlSearch +=  " laboratories.name like ?"
+            params.push(filters.name + '%');
         }
         if (filters.email) {
-            sql += " and email = ?"
-            params.push(filters.email+'%');
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" laboratories.email like ?"
+            params.push(filters.email + '%');
+        }
+        if (filters.phone) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" laboratories.phone like ?"
+            params.push(filters.phone + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
         }
         sql += " order by date_created desc limit 30"
         try {
@@ -59,7 +95,18 @@ module.exports = class Laboratory {
         }
     }
     async find(filters) {
-        let sql = "SELECT *,id as laboratory_id FROM laboratories where 1=1 ";
+        let sql = "SELECT id,"+
+        " id as laboratory_id,"+
+        " name laboratory_name,"+
+        " email,"+
+        " phone,"+
+        " address,"+
+        " city,"+
+        " zip,"+
+        " country,"+
+        " street_number,"+
+        " date_created,"+
+        "date_updated  FROM laboratories where 1=1 ";
         let params = [];
         if (filters.id) {
             sql += " and id = ?"

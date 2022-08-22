@@ -10,13 +10,21 @@ module.exports = class Hospital {
             sql += " and id = ?"
             params.push(filters.id);
         }
+        let sqlSearch = '';
         if (filters.name) {
-            sql += " and name like ?"
-            params.push(filters.name+'%');
+            sqlSearch +=  " hospitals.name like ?"
+            params.push(filters.name + '%');
         }
         if (filters.email) {
-            sql += " and email = ?"
-            params.push(filters.email+'%');
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" hospitals.email like ?"
+            params.push(filters.email + '%');
+        }
+        if (filters.phone) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" hospitals.phone like ?"
+            params.push(filters.phone + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
         }
         if(filters.limit) {
             filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
@@ -39,13 +47,21 @@ module.exports = class Hospital {
             sql += " and id = ?"
             params.push(filters.id);
         }
+        let sqlSearch = '';
         if (filters.name) {
-            sql += " and name like ?"
-            params.push(filters.name+'%');
+            sqlSearch +=  " hospitals.name like ?"
+            params.push(filters.name + '%');
         }
         if (filters.email) {
-            sql += " and email = ?"
-            params.push(filters.email+'%');
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" hospitals.email like ?"
+            params.push(filters.email + '%');
+        }
+        if (filters.phone) {
+            sqlSearch += ((sqlSearch)?' OR ': ' ')+" hospitals.phone like ?"
+            params.push(filters.phone + '%');
+        }
+        if(sqlSearch !=='') {
+            sql += ' AND (' + sqlSearch + ') ';
         }
         sql += " order by date_created desc limit 30"
         try {

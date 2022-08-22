@@ -9,9 +9,11 @@ module.exports = class Drug {
             "drugs.code drug_code, " +
             "drugs.date_created, " +
             "drugs.date_updated, " +
-            "drug_descriptions.description " +
-            "FROM drugs " +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " +
+            "drug_descriptions.description, " +
+            "laboratories.name laboratory_name " + 
+            "FROM drugs "  +
+            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " + 
+            "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " + 
             "WHERE 1=1 ";
         let params = [];
         let filterClause = '';
@@ -99,9 +101,11 @@ module.exports = class Drug {
             "drugs.code," +
             "drugs.date_created," +
             "drugs.date_updated, "  +
-            "drug_descriptions.description " +
+            "drug_descriptions.description, " +
+            "laboratories.name laboratory_name " + 
             "FROM drugs "  +
             "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " + 
+            "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " + 
             "WHERE 1 = 1 ";
         let params = [];
         if (filters.id) {
