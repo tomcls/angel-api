@@ -349,6 +349,9 @@ module.exports = class Treatment {
         let sql = "SELECT treatments.id as treatment_id, " +
         "treatments.name, " +
         "treatments.code, " +
+        "treatment_patients.posology, " +
+        "treatment_patients.start_date, " +
+        "treatment_patients.end_date, " +
         "treatments.date_created, " +
         "treatments.date_updated " +
         "FROM treatment_patients "+
