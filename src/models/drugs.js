@@ -239,4 +239,169 @@ module.exports = class Drug {
             throw {error: 'No ids provided'}
         }
     }
+    async getPatients(filters) {
+        let sql = "SELECT patients.id as patient_id,"+
+        "users.id as user_id,"+
+        "users.id as id,"+
+        "users.firstname,"+
+        "users.lastname,"+
+        "users.phone,"+
+        "users.email,"+
+        "users.sex,"+
+        "users.lang,"+
+        "users.active,"+
+        "users.role,"+
+        "users.password,"+
+        "users.address,"+
+        "users.street_number,"+
+        "users.zip,"+
+        "users.city,"+
+        "users.country,"+
+        "users.date_created,"+
+        "users.date_updated,"+
+        "users.birthday,"+
+        "users.avatar,"+
+        "patients.emergency_contact_relationship," +
+        "patients.emergency_contact_name," +
+        "patients.emergency_contact_phone," +
+        "patients.close_monitoring " +
+        "FROM drug_patients "+
+        "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
+        "LEFT JOIN users on patients.user_id = users.id  " +
+        "WHERE 1 = 1 ";
+        let params = [];
+        if (filters.drug_id) {
+            sql += " and drug_patients.drug_id = ?"
+            params.push(filters.drug_id);
+        }
+        if (filters.patient_id) {
+            sql += " and drug_patients.patient_id = ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.user_id) {
+            sql += " and users.id = ?"
+            params.push(filters.user_id);
+        }
+        sql += " order by drug_patients.id desc";
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+
+    async countPatients(filters) {
+        let sql = "SELECT count(*) as total " +
+        "FROM drug_patients "+
+        "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
+        "LEFT JOIN users on patients.user_id = users.id  " +
+        "WHERE 1 = 1 ";
+        let params = [];
+        if (filters.treatment_id) {
+            sql += " and drug_patients.treatment_id = ?"
+            params.push(filters.drug_id);
+        }
+        if (filters.patient_id) {
+            sql += " and drug_patients.patient_id = ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.user_id) {
+            sql += " and users.id = ?"
+            params.push(filters.user_id);
+        }
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows[0].total;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+
+    async addPatient(o) {
+        let sql = "INSERT INTO drug_patients SET ? ";
+        try {
+            const add = await db.query(sql, o);
+            return {
+                saved: add.affectedRows,
+                inserted_id: add.insertId
+            };
+        }
+        catch (err) {
+            return err;
+        }
+    }
+    async getUserDrugs(filters) {
+        let sql = "SELECT drugs.id as drug_id, " +
+        "drugs.name, " +
+        "drugs.code, " +
+        "drug_patients.posology, " +
+        "drug_patients.start_date, " +
+        "drug_patients.end_date, " +
+        "drugs.date_created, " +
+        "drugs.date_updated " +
+        "FROM drug_patients "+
+        "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
+        "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
+        "WHERE 1 = 1 ";
+        let params = [];
+        if (filters.drug_id) {
+            sql += " and drug_patients.drug_id = ?"
+            params.push(filters.drug_id);
+        }
+        if (filters.patient_id) {
+            sql += " and drug_patients.patient_id = ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.user_id) {
+            sql += " and patients.user_id = ?"
+            params.push(filters.user_id);
+        }
+        sql += " order by drug_patients.id desc";
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+
+    async countUserDrugs(filters) {
+        let sql = "SELECT count(*) as total " +
+        "FROM drug_patients "+
+        "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
+        "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
+        "WHERE 1 = 1 ";
+        let params = [];
+        if (filters.drug_id) {
+            sql += " and drug_patients.drug_id = ?"
+            params.push(filters.drug_id);
+        }
+        if (filters.patient_id) {
+            sql += " and drug_patients.patient_id = ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.user_id) {
+            sql += " and patients.user_id = ?"
+            params.push(filters.user_id);
+        }
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows[0].total;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
 }

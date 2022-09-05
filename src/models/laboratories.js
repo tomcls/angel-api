@@ -6,6 +6,7 @@ module.exports = class Laboratory {
         let sql = "SELECT id,"+
         "id as laboratory_id,"+
         " name laboratory_name,"+
+        " name, "+
         " phone,"+
         " email,"+
         " address,"+
