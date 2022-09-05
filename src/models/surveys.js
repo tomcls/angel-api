@@ -229,8 +229,8 @@ module.exports = class Survey {
             sql += " and side_effect_descriptions.lang_id = ?"
             params.push(filters.lang_id);
         }
-        sql += " order by survey_effects.date_created, survey_effects.patient_id desc ";
-        console.log(sql);
+        sql += " order by survey_effects.patient_id desc, date desc ";
+        
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -263,10 +263,6 @@ module.exports = class Survey {
             sql += " and side_effect_descriptions.lang_id = ?"
             params.push(filters.lang_id);
         }
-        if (filters.limit) {
-            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
-        }
-        sql += " order by side_effects.id desc " + filterClause;
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
