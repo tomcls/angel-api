@@ -364,6 +364,7 @@ module.exports = class Drug {
             params.push(filters.user_id);
         }
         sql += " order by drug_patients.id desc";
+        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {

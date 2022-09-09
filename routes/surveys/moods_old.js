@@ -7,7 +7,7 @@ router.post('/',  function(req, res, next) {
   const payload = req.body;
   try {
     const u = new Survey();
-    console.log("hey")
+    
     async.parallel([
       function(callback) {
         u.moods(payload).then(function(r){
@@ -17,7 +17,21 @@ router.post('/',  function(req, res, next) {
         });
       },
       function(callback) {
-        u.countMoods(payload).then(function(r){
+        u.groupMoods(payload).then(function(r){
+          callback(null, r);
+        }).catch(function(error){
+          callback(error);
+        });
+      },
+      function(callback) {
+        u.groupDates(payload).then(function(r){
+          callback(null, r);
+        }).catch(function(error){
+          callback(error);
+        });
+      },
+      function(callback) {
+        u.groupPatients(payload).then(function(r){
           callback(null, r);
         }).catch(function(error){
           callback(error);
@@ -26,7 +40,9 @@ router.post('/',  function(req, res, next) {
     ],  function(err, results) {
       return res.json({
         surveys : results[0],
-        count: results[1]
+        moods: results[1],
+        dates: results[2],
+        patients: results[3]
       });
     });
   } catch (error) {
