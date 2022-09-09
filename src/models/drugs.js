@@ -338,9 +338,13 @@ module.exports = class Drug {
         }
     }
     async getUserDrugs(filters) {
-        let sql = "SELECT drugs.id as drug_id, " +
+        let sql = "SELECT drugs.id as drug_id, drug_patients.id id, " +
+        "users.avatar, " +
+        "users.firstname, " +
+        "users.lastname, " +
         "drugs.name, " +
         "drugs.code, " +
+        "drug_patients.patient_id, "+
         "drug_patients.posology, " +
         "drug_patients.start_date, " +
         "drug_patients.end_date, " +
@@ -348,6 +352,7 @@ module.exports = class Drug {
         "drugs.date_updated " +
         "FROM drug_patients "+
         "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
+        "LEFT JOIN users ON users.id = patients.user_id "+
         "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
         "WHERE 1 = 1 ";
         let params = [];
