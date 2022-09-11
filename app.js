@@ -41,6 +41,9 @@ const nurseGetRouter = require('./routes/nurses/get');
 const nurseGetPatientsRouter = require('./routes/nurses/patients');
 const nurseAddPatientRouter = require('./routes/nurses/addPatient');
 const nurseGetNursesRouter = require('./routes/nurses/nurses');
+const nurseAddTransfersRouter = require('./routes/nurses/addTransfers');
+const nurseTransfersRouter = require('./routes/nurses/transfers');
+const nurseRecoverTransfersRouter = require('./routes/nurses/recoverTransfer');
 // nurses
 const scientistListRouter = require('./routes/scientists/list');
 const scientistAddRouter = require('./routes/scientists/add');
@@ -159,6 +162,9 @@ app.use('/nurses/update', nurseUpdateRouter);
 app.use('/nurses/patients', nurseGetPatientsRouter);
 app.use('/nurses/add-patient', nurseAddPatientRouter);
 app.use('/nurses/nurses', nurseGetNursesRouter);
+app.use('/nurses/transfers', nurseTransfersRouter);
+app.use('/nurses/add-transfers', nurseAddTransfersRouter);
+app.use('/nurses/recover-transfer', nurseRecoverTransfersRouter);
 // scientists
 app.use('/scientists/list', scientistListRouter);
 app.use('/scientists/add', scientistAddRouter);
@@ -233,6 +239,7 @@ app.use('/surveys/group-effects', surveyGroupEffectsRouter);
 app.use('/surveys/group-moods', surveyGroupMoodsRouter);
 // dashboard
 app.use('/dashboard/moods', dashboardMoodsRouter);
+
 
 app.set('port', process.env.PORT || 3000);
 

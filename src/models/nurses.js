@@ -41,28 +41,31 @@ module.exports = class Nurse {
             sql += " and users.id = ?"
             params.push(filters.user_id);
         }
+        let paramsSearch = [];
+        let sqlSearch = "";
         if (filters.firstname) {
-            sql += " and users.firstname like ?%"
-            params.push(filters.firstname);
+            sqlSearch += "  users.firstname like ?"
+            paramsSearch.push(filters.firstname + '%');
         }
         if (filters.lastname) {
-            sql += " and users.lastname like ?%"
-            params.push(filters.lastname);
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.lastname like ?"
+            paramsSearch.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sql += " and users.email like ?%"
-            params.push(filters.email);
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email = ?"
+            paramsSearch.push(filters.email);
         }
-        if (filters.role) {
-            sql += " and users.role like ?%"
-            params.push(filters.role);
+        if (paramsSearch.length) {
+            sql = sql + " AND (" + sqlSearch + ")";
         }
+        const combined = [...params, ...paramsSearch];
         if(filters.limit) {
             filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
         }
         sql += " order by nurses.date_created desc "+filterClause;
+        console.log(sql)
         try {
-            let rows = await db.query(sql, params);
+            let rows = await db.query(sql, combined);
             if (rows && rows.length > 0) {
                 return rows;
             }
@@ -78,24 +81,26 @@ module.exports = class Nurse {
             sql += " and users.id = ?"
             params.push(filters.user_id);
         }
+        let paramsSearch = [];
+        let sqlSearch = "";
         if (filters.firstname) {
-            sql += " and users.firstname like ?%"
-            params.push(filters.firstname);
+            sqlSearch += "  users.firstname like ?"
+            paramsSearch.push(filters.firstname + '%');
         }
         if (filters.lastname) {
-            sql += " and users.lastname like ?%"
-            params.push(filters.lastname);
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.lastname like ?"
+            paramsSearch.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sql += " and users.email like ?%"
-            params.push(filters.email);
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email = ?"
+            paramsSearch.push(filters.email);
         }
-        if (filters.role) {
-            sql += " and users.role like ?%"
-            params.push(filters.role);
+        if (paramsSearch.length) {
+            sql = sql + " AND (" + sqlSearch + ")";
         }
+        const combined = [...params, ...paramsSearch];
         try {
-            let rows = await db.query(sql, params);
+            let rows = await db.query(sql, combined);
             if (rows && rows.length > 0) {
                 return rows[0].total;
             }
