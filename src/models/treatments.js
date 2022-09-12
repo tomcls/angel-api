@@ -84,29 +84,29 @@ module.exports = class Treatment {
         }
     }
     async find(filters) {
-        let sql = "SELECT treatments.id as treatment_id, treatment_descriptions.id as treatment_description_id, " +
-            "treatments.name," +
-            "treatments.code," +
-            "treatments.date_created," +
-            "treatments.date_updated, "  +
-            "treatment_descriptions.description " +
-            "FROM treatments "  +
-            "LEFT JOIN treatment_descriptions on treatments.id = treatment_descriptions.treatment_id " + 
+        let sql = "SELECT drugs.id as drug_id, drug_descriptions.id as drug_description_id, " +
+            "drugs.name," +
+            "drugs.code," +
+            "drugs.date_created," +
+            "drugs.date_updated, "  +
+            "drug_descriptions.description " +
+            "FROM drugs "  +
+            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " + 
             "WHERE 1 = 1 ";
         let params = [];
         if (filters.id) {
-            sql += " and treatments.id = ?"
+            sql += " and drugs.id = ?"
             params.push(filters.id);
         }
         if (filters.code) {
-            sql += " and treatments.code code = ?"
+            sql += " and drugs.code code = ?"
             params.push(filters.code);
         }
         if (filters.name) {
-            sql += " and treatments.name = ?"
+            sql += " and drugs.name = ?"
             params.push(filters.name);
         }
-        sql += " order by treatments.date_created desc limit 1"
+        sql += " order by drugs.date_created desc limit 1"
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
