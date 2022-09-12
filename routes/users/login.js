@@ -49,7 +49,7 @@ router.post('/', async function (req, res, next) {
         if(scientist && scientist.user_id) {
           user.scientist_id = scientist.scientist_id;
         }
-        const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "3600m" });
+        const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20000m" });
         return  res.json({user:user, accessToken: token});
       } else {
         return  res.json({ error: 'password not correct' });
