@@ -301,8 +301,8 @@ module.exports = class Survey {
     async countGroupMoods(filters) {
         let sql = " SELECT count(*) as total from (SELECT survey_moods.patient_id "+
             " FROM survey_moods"+
-            " LEFT JOIN moods ON survey_moods.side_effect_id = moods.id"+
-            " LEFT JOIN side_effect_descriptions ON side_effect_descriptions.side_effect_id = moods.id"+
+            " LEFT JOIN moods ON survey_moods.mood_id = moods.id"+
+            " LEFT JOIN mood_descriptions ON mood_descriptions.mood_id = moods.id"+
             " LEFT JOIN patients ON survey_moods.patient_id = patients.id"+
             " LEFT JOIN users ON patients.user_id = users.id"+
             " WHERE ";
@@ -322,7 +322,7 @@ module.exports = class Survey {
             params.push(filters.to_date);
         }
         if (filters.lang_id) {
-            sql += ((params.length) ? ' AND ' : '') + "  side_effect_descriptions.lang_id = ?"
+            sql += ((params.length) ? ' AND ' : '') + "  mood_descriptions.lang_id = ?"
             params.push(filters.lang_id);
         }
         let paramsSearch = [];
@@ -622,6 +622,60 @@ module.exports = class Survey {
             let rows = await db.query(sql, combined);
             if (rows && rows.length > 0) {
                 return rows[0].total;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+    async concatEffects (filters) {
+        let sql = "SELECT avatar, firstname, lastname, patient_id,GROUP_CONCAT(name) total_effects, GROUP_CONCAT( effect_cnt) effect_cnt FROM ( SELECT        survey_effects.patient_id, "+
+        " side_effects.id,  "+
+        " users.avatar,  "+
+        " users.firstname,  "+
+        " users.lastname,  "+
+        "side_effect_descriptions.name,  "+
+        "COUNT(side_effects.id) AS effect_cnt "+
+        " FROM survey_effects  "+
+        " LEFT JOIN side_effects on survey_effects.side_effect_id = side_effects.id  "+
+        " LEFT JOIN patients ON patients.id = survey_effects.patient_id "+
+        " LEFT JOIN users ON users.id = patients.user_id "+
+        "LEFT JOIN side_effect_descriptions on side_effect_descriptions.side_effect_id = side_effects.id "+
+        "WHERE side_effect_descriptions.lang_id = 'en' "+
+        "GROUP BY survey_effects.patient_id, side_effects.id ORDER BY effect_cnt ) as sub "+
+        " GROUP BY patient_id";
+        console.log(sql);
+        try {
+            let rows = await db.query(sql);
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+    async concatMoods (filters) {
+        let sql = "SELECT avatar, firstname, lastname, patient_id,GROUP_CONCAT(name) total_moods, GROUP_CONCAT( mood_cnt) mood_cnt FROM ( SELECT        survey_moods.patient_id, "+
+        " moods.id,  "+
+        " users.avatar,  "+
+        " users.firstname,  "+
+        " users.lastname,  "+
+        "mood_descriptions.name,  "+
+        "COUNT(moods.id) AS mood_cnt "+
+        " FROM survey_moods  "+
+        " LEFT JOIN moods on survey_moods.mood_id = moods.id  "+
+        " LEFT JOIN patients ON patients.id = survey_moods.patient_id "+
+        " LEFT JOIN users ON users.id = patients.user_id "+
+        "LEFT JOIN mood_descriptions on mood_descriptions.mood_id = moods.id "+
+        "WHERE mood_descriptions.lang_id = 'en' "+
+        "GROUP BY survey_moods.patient_id, moods.id ORDER BY mood_cnt ) as sub "+
+        " GROUP BY patient_id";
+        console.log(sql);
+        try {
+            let rows = await db.query(sql);
+            if (rows && rows.length > 0) {
+                return rows;
             }
             return null;
         } catch (error) {

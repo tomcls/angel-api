@@ -113,6 +113,8 @@ const moodDescriptionUpdateRouter = require('./routes/mood_descriptions/update')
 const surveyMoodsRouter = require('./routes/surveys/moods');
 const surveyEffectsRouter = require('./routes/surveys/effects');
 const surveyGroupEffectsRouter = require('./routes/surveys/groupEffects');
+const surveyConcatEffectsRouter = require('./routes/surveys/concatEffects');
+const surveyConcatMoodsRouter = require('./routes/surveys/concatMoods');
 const surveyGroupMoodsRouter = require('./routes/surveys/groupMoods');
 //  dashboard 
 const dashboardMoodsRouter = require('./routes/dashboard/moods');
@@ -237,6 +239,8 @@ app.use('/surveys/moods', surveyMoodsRouter);
 app.use('/surveys/effects', surveyEffectsRouter);
 app.use('/surveys/group-effects', surveyGroupEffectsRouter);
 app.use('/surveys/group-moods', surveyGroupMoodsRouter);
+app.use('/surveys/concat-effects', surveyConcatEffectsRouter);
+app.use('/surveys/concat-moods', surveyConcatMoodsRouter);
 // dashboard
 app.use('/dashboard/moods', dashboardMoodsRouter);
 
