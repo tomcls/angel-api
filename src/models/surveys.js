@@ -656,24 +656,64 @@ module.exports = class Survey {
         }
     }
     async concatMoods (filters) {
-        let sql = "SELECT avatar, firstname, lastname, patient_id,GROUP_CONCAT(name) total_moods, GROUP_CONCAT( mood_cnt) mood_cnt FROM ( SELECT        survey_moods.patient_id, "+
+        let sql = "SELECT date_created,avatar, firstname, lastname, patient_id,GROUP_CONCAT(name) total_moods, GROUP_CONCAT( mood_cnt) mood_cnt, GROUP_CONCAT(score) score FROM ( SELECT        survey_moods.patient_id, "+
         " moods.id,  "+
         " users.avatar,  "+
         " users.firstname,  "+
         " users.lastname,  "+
-        "mood_descriptions.name,  "+
-        "COUNT(moods.id) AS mood_cnt "+
+        " mood_descriptions.name,  "+
+        " survey_moods.score, "+
+        " survey_moods.date_created, "+
+        " COUNT(moods.id) AS mood_cnt "+
         " FROM survey_moods  "+
         " LEFT JOIN moods on survey_moods.mood_id = moods.id  "+
         " LEFT JOIN patients ON patients.id = survey_moods.patient_id "+
         " LEFT JOIN users ON users.id = patients.user_id "+
         "LEFT JOIN mood_descriptions on mood_descriptions.mood_id = moods.id "+
-        "WHERE mood_descriptions.lang_id = 'en' "+
-        "GROUP BY survey_moods.patient_id, moods.id ORDER BY mood_cnt ) as sub "+
+        "WHERE  ";
+       
+        let params = [];
+        if (filters.patient_id) {
+            sql += "  survey_effects.patient_id = ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.date_created) {
+            sql += ((params.length) ? ' AND ' : '') + "  DATE_FORMAT(survey_moods.date_created, '%Y-%m-%d') = ?"
+            params.push(filters.date_created);
+        }
+        if (filters.lang_id) {
+            sql += ((params.length) ? ' AND ' : '') + "  mood_descriptions.lang_id = ?"
+            params.push(filters.lang_id);
+        }
+        let paramsSearch = [];
+        let sqlSearch = "";
+        if (filters.firstname) {
+            sqlSearch += "  users.firstname like ?"
+            paramsSearch.push(filters.firstname + '%');
+        }
+        if (filters.lastname) {
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.lastname like ?"
+            paramsSearch.push(filters.lastname + '%');
+        }
+        if (filters.score) {
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  survey_moods.score = ?"
+            paramsSearch.push(filters.score);
+        }
+        if (filters.name) {
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  moods_descriptions.name like ?"
+            paramsSearch.push(filters.name + '%');
+        }
+        if (paramsSearch.length) {
+            sql = sql + " AND (" + sqlSearch + ")";
+        }
+        
+        sql += " GROUP BY survey_moods.patient_id, moods.id ) as sub "+
         " GROUP BY patient_id";
+        const combined = [...params, ...paramsSearch]
+
         console.log(sql);
         try {
-            let rows = await db.query(sql);
+            let rows = await db.query(sql,combined);
             if (rows && rows.length > 0) {
                 return rows;
             }
