@@ -9,6 +9,7 @@ module.exports = class Drug {
             "drugs.code drug_code, " +
             "drugs.date_created, " +
             "drugs.date_updated, " +
+            "drugs.image," +
             "drug_descriptions.description, " +
             "laboratories.name laboratory_name " + 
             "FROM drugs "  +
@@ -99,6 +100,7 @@ module.exports = class Drug {
             "drugs.laboratory_id," +
             "drugs.name," +
             "drugs.code," +
+            "drugs.image," +
             "drugs.date_created," +
             "drugs.date_updated, "  +
             "drug_descriptions.description, " +
@@ -166,6 +168,10 @@ module.exports = class Drug {
             sql += ",  name = ?"
             params.push(o.name);
         }
+        if (o.image) {
+            sql += ",  image = ?"
+            params.push(o.image);
+        }
         if (o.laboratory_id) {
             sql += ",   laboratory_id = ?"
             params.push(o.laboratory_id);
@@ -188,6 +194,7 @@ module.exports = class Drug {
         let sql = "SELECT drugs.id as drug_id," +
             "drugs.id as id," +
             "drugs.name," +
+            "drugs.image," +
             "drugs.code," +
             "drugs.date_created," +
             "drugs.date_updated " +
@@ -343,6 +350,7 @@ module.exports = class Drug {
         "users.firstname, " +
         "users.lastname, " +
         "drugs.name, " +
+        "drugs.image," +
         "drugs.code, " +
         "drug_patients.patient_id, "+
         "drug_patients.posology, " +
