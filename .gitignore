@@ -5,3 +5,4 @@
 .env.prod
 .env
 /public/uploads
+/public/drugs
