@@ -20,11 +20,16 @@ module.exports = class DrugDescription {
         let sql = "UPDATE drug_descriptions  ";
 
         const params = [];
+        
         if (o.drug_id) {
-            sql += " SET drug_id = ?";
+            sql += " SET  drug_id = ?";
             params.push(o.drug_id);
-        } else {
-            throw { error: 'No drug id provided' }
+        } 
+
+        if (o.notice) {
+            sql += ",  notice = ?"
+            sql += ((params.length)?' SET ': ',')+"  notice = ?"
+            params.push(o.notice);
         }
         if (o.lang_id) {
             sql += ",  lang_id = ?"
@@ -37,6 +42,7 @@ module.exports = class DrugDescription {
         sql += ",   date_updated = ?"
         params.push(new Date());
         sql += " where id=" + o.id
+        console.log(o,sql)
         try {
             const updated = await db.query(sql, params);
             return {

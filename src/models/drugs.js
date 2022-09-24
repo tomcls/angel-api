@@ -10,6 +10,7 @@ module.exports = class Drug {
             "drugs.date_created, " +
             "drugs.date_updated, " +
             "drugs.image," +
+            "drug_descriptions.notice, " +
             "drug_descriptions.description, " +
             "laboratories.name laboratory_name " + 
             "FROM drugs "  +
@@ -103,6 +104,7 @@ module.exports = class Drug {
             "drugs.image," +
             "drugs.date_created," +
             "drugs.date_updated, "  +
+            "drug_descriptions.notice, " +
             "drug_descriptions.description, " +
             "laboratories.name laboratory_name " + 
             "FROM drugs "  +
