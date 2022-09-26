@@ -511,6 +511,7 @@ module.exports = class Survey {
             " FROM survey_effects  " +
             " LEFT JOIN side_effects on survey_effects.side_effect_id = side_effects.id  " +
             " LEFT JOIN patients ON patients.id = survey_effects.patient_id " +
+            " LEFT JOIN nurse_patients ON patients.id = nurse_patients.patient_id " +
             " LEFT JOIN users ON users.id = patients.user_id " +
             "LEFT JOIN side_effect_descriptions on side_effect_descriptions.side_effect_id = side_effects.id " +
             "WHERE ";
@@ -526,6 +527,10 @@ module.exports = class Survey {
         if (filters.lang_id) {
             sql += ((params.length) ? ' AND ' : '') + "  side_effect_descriptions.lang_id = ?"
             params.push(filters.lang_id);
+        }
+        if (filters.nurse_id) {
+            sql += ((params.length) ? ' AND ' : '') + "  nurse_patients.nurse_id = ?"
+            params.push(filters.nurse_id);
         }
         let paramsSearch = [];
         let sqlSearch = "";
@@ -639,6 +644,7 @@ module.exports = class Survey {
             " FROM survey_moods  " +
             " LEFT JOIN moods on survey_moods.mood_id = moods.id  " +
             " LEFT JOIN patients ON patients.id = survey_moods.patient_id " +
+            " LEFT JOIN nurse_patients ON patients.id = nurse_patients.patient_id " +
             " LEFT JOIN users ON users.id = patients.user_id " +
             "LEFT JOIN mood_descriptions on mood_descriptions.mood_id = moods.id " +
             "WHERE  ";
@@ -655,6 +661,10 @@ module.exports = class Survey {
         if (filters.lang_id) {
             sql += ((params.length) ? ' AND ' : '') + "  mood_descriptions.lang_id = ?"
             params.push(filters.lang_id);
+        }
+        if (filters.nurse_id) {
+            sql += ((params.length) ? ' AND ' : '') + "  nurse_patients.nurse_id = ?"
+            params.push(filters.nurse_id);
         }
         let paramsSearch = [];
         let sqlSearch = "";
@@ -677,11 +687,11 @@ module.exports = class Survey {
         if (paramsSearch.length) {
             sql = sql + " AND (" + sqlSearch + ")";
         }
-
         sql += " GROUP BY survey_moods.patient_id, moods.id ) as sub " +
             " GROUP BY patient_id";
         const combined = [...params, ...paramsSearch]
 
+        console.log(sql)
         try {
             let rows = await db.query(sql, combined);
             if (rows && rows.length > 0) {

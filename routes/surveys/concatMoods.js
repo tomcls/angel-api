@@ -7,7 +7,6 @@ router.post('/',  function(req, res, next) {
   const payload = req.body;
   try {
     const u = new Survey();
-    console.log("&aaaa")
     async.parallel([
       function(callback) {
         u.concatMoods(payload).then(function(r){
