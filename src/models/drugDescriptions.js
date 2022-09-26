@@ -27,8 +27,7 @@ module.exports = class DrugDescription {
         } 
 
         if (o.notice) {
-            sql += ",  notice = ?"
-            sql += ((params.length)?' SET ': ',')+"  notice = ?"
+            sql += ((params.length)?', ': ' SET ')+"  notice = ?"
             params.push(o.notice);
         }
         if (o.lang_id) {
