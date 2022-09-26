@@ -104,11 +104,11 @@ module.exports = class Survey {
             params.push(filters.patient_id);
         }
         if (filters.from_date) {
-            sql += ((params.length) ? ' AND ' : '') + "  side_effects.date_created >= ?"
+            sql += ((params.length) ? ' AND ' : '') + "  survey_effects.date_created >= ?"
             params.push(filters.from_date);
         }
         if (filters.to_date) {
-            sql += ((params.length) ? ' AND ' : '') + "  side_effects.date_created <= ?"
+            sql += ((params.length) ? ' AND ' : '') + "  survey_effects.date_created <= ?"
             params.push(filters.to_date);
         }
         if (filters.lang_id) {
@@ -126,7 +126,7 @@ module.exports = class Survey {
             paramsSearch.push(filters.lastname + '%');
         }
         if (filters.score) {
-            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  side_effects.score = ?"
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  survey_effects.score = ?"
             paramsSearch.push(filters.score);
         }
         if (filters.name) {
@@ -538,7 +538,7 @@ module.exports = class Survey {
             paramsSearch.push(filters.lastname + '%');
         }
         if (filters.score) {
-            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  side_effects.score = ?"
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  survey_effects.score = ?"
             paramsSearch.push(filters.score);
         }
         if (filters.name) {
