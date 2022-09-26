@@ -7,7 +7,7 @@ router.post('/',  function(req, res, next) {
   const payload = req.body;
   try {
     const u = new Survey();
-    
+    console.log("&aaaa")
     async.parallel([
       function(callback) {
         u.concatMoods(payload).then(function(r){
@@ -17,7 +17,7 @@ router.post('/',  function(req, res, next) {
         });
       },
       function(callback) {
-        u.countGroupMoods(payload).then(function(r){
+        u.countGroupEffects(payload).then(function(r){
           callback(null, r);
         }).catch(function(error){
           callback(error);
@@ -26,7 +26,8 @@ router.post('/',  function(req, res, next) {
     ],  function(err, results) {
       return res.json({
         surveys : results[0],
-        count: results[1]
+        count: results[0]?results[0].length:0,
+        effects: results[1]?results[1]:null,
       });
     });
   } catch (error) {

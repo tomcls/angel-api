@@ -3,12 +3,17 @@ const async = require('async');
 const Survey = require("../../src/models/surveys");
 const router = express.Router();
 router.use(express.json())
-router.post('/',  function(req, res, next) {
+router.post('/', async function(req, res, next) {
   const payload = req.body;
   try {
     const u = new Survey();
-    
-    async.parallel([
+    let r = await u.concatEffects(payload)
+    return res.json({
+      surveys : r,
+      count: r.length
+    });
+   
+  /*  async.parallel([
       function(callback) {
         u.concatEffects(payload).then(function(r){
           callback(null, r);
@@ -24,11 +29,8 @@ router.post('/',  function(req, res, next) {
         });
       }
     ],  function(err, results) {
-      return res.json({
-        surveys : results[0],
-        count: results[1]
-      });
-    });
+      
+    });*/
   } catch (error) {
     return res.json(error);
   }
