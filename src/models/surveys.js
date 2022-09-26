@@ -671,7 +671,7 @@ module.exports = class Survey {
             paramsSearch.push(filters.score);
         }
         if (filters.name) {
-            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  moods_descriptions.name like ?"
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  mood_descriptions.name like ?"
             paramsSearch.push(filters.name + '%');
         }
         if (paramsSearch.length) {
