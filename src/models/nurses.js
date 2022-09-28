@@ -286,7 +286,7 @@ module.exports = class Nurse {
         if(sqlSearch !=='') {
             sql += ' AND (' + sqlSearch + ') ';
         }
-        sql += " order by patients.id desc";
+        sql += " order by close_monitoring desc, nurse_patients.date_created   desc";
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -382,9 +382,11 @@ module.exports = class Nurse {
         "users.date_created,"+
         "users.date_updated,"+
         "users.birthday,"+
+        "hospitals.name hospital_name, " +
         "users.avatar " + 
         "FROM nurse_patients "+
         "LEFT JOIN nurses ON nurse_patients.nurse_id = nurses.id  " +
+        "LEFT JOIN hospitals ON hospitals.id = nurses.hospital_id  " +
         "LEFT JOIN patients ON nurse_patients.patient_id = patients.id "+
         "LEFT JOIN users ON nurses.user_id = users.id " + 
         "WHERE 1 = 1   ";

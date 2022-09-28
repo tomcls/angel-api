@@ -512,6 +512,7 @@ module.exports = class Survey {
             " LEFT JOIN side_effects on survey_effects.side_effect_id = side_effects.id  " +
             " LEFT JOIN patients ON patients.id = survey_effects.patient_id " +
             " LEFT JOIN nurse_patients ON patients.id = nurse_patients.patient_id " +
+            " LEFT JOIN doctor_patients ON patients.id = doctor_patients.patient_id " +
             " LEFT JOIN users ON users.id = patients.user_id " +
             "LEFT JOIN side_effect_descriptions on side_effect_descriptions.side_effect_id = side_effects.id " +
             "WHERE ";
@@ -527,6 +528,10 @@ module.exports = class Survey {
         if (filters.lang_id) {
             sql += ((params.length) ? ' AND ' : '') + "  side_effect_descriptions.lang_id = ?"
             params.push(filters.lang_id);
+        }
+        if (filters.doctor_id) {
+            sql += ((params.length) ? ' AND ' : '') + "  doctor_patients.doctor_id = ?"
+            params.push(filters.doctor_id);
         }
         if (filters.nurse_id) {
             sql += ((params.length) ? ' AND ' : '') + "  nurse_patients.nurse_id = ?"
@@ -645,6 +650,7 @@ module.exports = class Survey {
             " LEFT JOIN moods on survey_moods.mood_id = moods.id  " +
             " LEFT JOIN patients ON patients.id = survey_moods.patient_id " +
             " LEFT JOIN nurse_patients ON patients.id = nurse_patients.patient_id " +
+            " LEFT JOIN doctor_patients ON patients.id = doctor_patients.patient_id " +
             " LEFT JOIN users ON users.id = patients.user_id " +
             "LEFT JOIN mood_descriptions on mood_descriptions.mood_id = moods.id " +
             "WHERE  ";
@@ -665,6 +671,10 @@ module.exports = class Survey {
         if (filters.nurse_id) {
             sql += ((params.length) ? ' AND ' : '') + "  nurse_patients.nurse_id = ?"
             params.push(filters.nurse_id);
+        }
+        if (filters.doctor_id) {
+            sql += ((params.length) ? ' AND ' : '') + "  doctor_patients.doctor_id = ?"
+            params.push(filters.doctor_id);
         }
         let paramsSearch = [];
         let sqlSearch = "";

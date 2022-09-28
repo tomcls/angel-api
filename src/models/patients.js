@@ -56,7 +56,8 @@ module.exports = class Patient {
         if (filters.limit) {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
-        sql += " order by patients.date_created desc " + filterClause;
+        sql += " order by close_monitoring desc, patients.date_created desc " + filterClause;
+        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {

@@ -238,12 +238,15 @@ module.exports = class Doctor {
         "users.date_updated,"+
         "users.birthday,"+
         "users.avatar," +
+        "hospitals.name hospital_name, " +
         "patients.emergency_contact_relationship," +
         "patients.emergency_contact_name," +
         "patients.emergency_contact_phone," +
         "patients.close_monitoring " +
         "FROM doctor_patients "+
         "LEFT JOIN patients ON doctor_patients.patient_id = patients.id "+
+        "LEFT JOIN doctors ON doctor_patients.doctor_id = doctors.id  " +
+        "LEFT JOIN hospitals ON hospitals.id = doctors.hospital_id  " +
         "LEFT JOIN users on patients.user_id = users.id  " +
         "WHERE 1 = 1 ";
         let params = [];
@@ -370,11 +373,13 @@ module.exports = class Doctor {
         "users.country,"+
         "users.date_created,"+
         "users.date_updated,"+
+        "hospitals.name hospital_name, " +
         "users.birthday,"+
         "users.avatar " + 
         "FROM doctor_patients "+
         "LEFT JOIN doctors ON doctor_patients.doctor_id = doctors.id  " +
         "LEFT JOIN patients ON doctor_patients.patient_id = patients.id "+
+        "LEFT JOIN hospitals ON hospitals.id = doctors.hospital_id  " +
         "LEFT JOIN users ON doctors.user_id = users.id " + 
         "WHERE 1 = 1   ";
         let params = [];

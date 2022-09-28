@@ -362,6 +362,8 @@ module.exports = class Drug {
         "drugs.date_updated " +
         "FROM drug_patients "+
         "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
+        "LEFT JOIN nurse_patients ON nurse_patients.patient_id = patients.id "+
+        "LEFT JOIN doctor_patients ON doctor_patients.patient_id = patients.id "+
         "LEFT JOIN users ON users.id = patients.user_id "+
         "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
         "WHERE 1 = 1 ";
@@ -373,6 +375,14 @@ module.exports = class Drug {
         if (filters.patient_id) {
             sql += " and drug_patients.patient_id = ?"
             params.push(filters.patient_id);
+        }
+        if (filters.nurse_id) {
+            sql += " and nurse_patients.nurse_id = ?"
+            params.push(filters.nurse_id);
+        }
+        if (filters.doctor_id) {
+            sql += " and doctor_patients.doctor_id = ?"
+            params.push(filters.doctor_id);
         }
         if (filters.user_id) {
             sql += " and patients.user_id = ?"
@@ -395,6 +405,8 @@ module.exports = class Drug {
         let sql = "SELECT count(*) as total " +
         "FROM drug_patients "+
         "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
+        "LEFT JOIN nurse_patients ON nurse_patients.patient_id = patients.id "+
+        "LEFT JOIN doctor_patients ON doctor_patients.patient_id = patients.id "+
         "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
         "WHERE 1 = 1 ";
         let params = [];
@@ -409,6 +421,10 @@ module.exports = class Drug {
         if (filters.user_id) {
             sql += " and patients.user_id = ?"
             params.push(filters.user_id);
+        }
+        if (filters.nurse_id) {
+            sql += " and nurse_patients.nurse_id = ?"
+            params.push(filters.nurse_id);
         }
         try {
             let rows = await db.query(sql, params);
