@@ -1,4 +1,5 @@
 const conn = require("../utils/conn");
+const Posology = require("./posologies");
 const db = conn.conn();
 module.exports = class Drug {
     constructor() { }
@@ -334,9 +335,27 @@ module.exports = class Drug {
     }
 
     async addPatient(o) {
+        let posology = new Posology();
+        let p = {
+            days: o.days,
+            hours: o.hours,
+            repetition: o.repetition,
+            type: o.type,
+            note: o.note
+        }
+        console.log(p)
+        let addPos = await posology.add(p);
         let sql = "INSERT INTO drug_patients SET ? ";
         try {
-            const add = await db.query(sql, o);
+            console.log(addPos)
+            let t = {
+                drug_id: o.drug_id,
+                patient_id: o.patient_id,
+                posology_id: addPos.inserted_id,
+                start_date: o.start_date,
+                end_date: o.end_date
+            }
+            const add = await db.query(sql, t);
             return {
                 saved: add.affectedRows,
                 inserted_id: add.insertId
@@ -355,17 +374,23 @@ module.exports = class Drug {
         "drugs.image," +
         "drugs.code, " +
         "drug_patients.patient_id, "+
-        "drug_patients.posology, " +
+        "drug_patients.posology_id, " +
         "drug_patients.start_date, " +
         "drug_patients.end_date, " +
         "drugs.date_created, " +
-        "drugs.date_updated " +
+        "drugs.date_updated, " +
+        "posologies.days, " +
+        "posologies.hours, " +
+        "posologies.repetition, " +
+        "posologies.note, " +
+        "posologies.type " +
         "FROM drug_patients "+
         "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
         "LEFT JOIN nurse_patients ON nurse_patients.patient_id = patients.id "+
         "LEFT JOIN doctor_patients ON doctor_patients.patient_id = patients.id "+
         "LEFT JOIN users ON users.id = patients.user_id "+
         "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
+        "LEFT JOIN posologies on posologies.id = drug_patients.posology_id  " +
         "WHERE 1 = 1 ";
         let params = [];
         if (filters.drug_id) {
