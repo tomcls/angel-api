@@ -139,6 +139,10 @@ module.exports = class Patient {
             sql += " and patients.id = ?"
             params.push(filters.id);
         }
+        if (filters.patient_id) {
+            sql += " and patients.id = ?"
+            params.push(filters.patient_id);
+        }
         if (filters.user_id) {
             sql += " and users.id = ?"
             params.push(filters.user_id);
