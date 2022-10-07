@@ -13,10 +13,10 @@ module.exports = class Drug {
             "drugs.image," +
             "drug_descriptions.notice, " +
             "drug_descriptions.description, " +
-            "laboratories.name laboratory_name " + 
-            "FROM drugs "  +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " + 
-            "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " + 
+            "laboratories.name laboratory_name " +
+            "FROM drugs " +
+            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " +
+            "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " +
             "WHERE 1=1 ";
         let params = [];
         let filterClause = '';
@@ -34,14 +34,14 @@ module.exports = class Drug {
         }
         let sqlSearch = '';
         if (filters.name) {
-            sqlSearch +=  " drugs.name like ?"
+            sqlSearch += " drugs.name like ?"
             params.push(filters.name + '%');
         }
         if (filters.code) {
-            sqlSearch += ((sqlSearch)?' OR ': ' ')+" drugs.code like ?"
+            sqlSearch += ((sqlSearch) ? ' OR ' : ' ') + " drugs.code like ?"
             params.push(filters.code + '%');
         }
-        if(sqlSearch !=='') {
+        if (sqlSearch !== '') {
             sql += ' AND (' + sqlSearch + ') ';
         }
         if (filters.limit) {
@@ -60,7 +60,7 @@ module.exports = class Drug {
     }
     async count(filters) {
         let sql = "SELECT count(*) as total FROM drugs LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id where 1=1  ";
-       
+
         let params = [];
         if (filters.id) {
             sql += " and drugs.id = ?"
@@ -76,14 +76,14 @@ module.exports = class Drug {
         }
         let sqlSearch = '';
         if (filters.name) {
-            sqlSearch +=  " drugs.name like ?"
+            sqlSearch += " drugs.name like ?"
             params.push(filters.name + '%');
         }
         if (filters.code) {
-            sqlSearch += ((sqlSearch)?' OR ': ' ')+" drugs.code like ?"
+            sqlSearch += ((sqlSearch) ? ' OR ' : ' ') + " drugs.code like ?"
             params.push(filters.code + '%');
         }
-        if(sqlSearch !=='') {
+        if (sqlSearch !== '') {
             sql += ' AND (' + sqlSearch + ') ';
         }
         console.log(sql)
@@ -104,13 +104,13 @@ module.exports = class Drug {
             "drugs.code," +
             "drugs.image," +
             "drugs.date_created," +
-            "drugs.date_updated, "  +
+            "drugs.date_updated, " +
             "drug_descriptions.notice, " +
             "drug_descriptions.description, " +
-            "laboratories.name laboratory_name " + 
-            "FROM drugs "  +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " + 
-            "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " + 
+            "laboratories.name laboratory_name " +
+            "FROM drugs " +
+            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " +
+            "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " +
             "WHERE 1 = 1 ";
         let params = [];
         if (filters.id) {
@@ -214,11 +214,11 @@ module.exports = class Drug {
             params.push(filters.id);
         }
         if (filters.name) {
-            sql += ((params.length)?' OR ': '')+"  drugs.name like ?"
+            sql += ((params.length) ? ' OR ' : '') + "  drugs.name like ?"
             params.push(filters.name + '%');
         }
         if (filters.code) {
-            sql += ((params.length)?' OR ': '')+"  drugs.code like ?"
+            sql += ((params.length) ? ' OR ' : '') + "  drugs.code like ?"
             params.push(filters.code + '%');
         }
         if (filters.limit) {
@@ -236,7 +236,7 @@ module.exports = class Drug {
         }
     }
     async delete(o) {
-        if(o && o.ids) {
+        if (o && o.ids) {
 
             let sql = "delete from drugs where id in (?) ";
             try {
@@ -250,39 +250,39 @@ module.exports = class Drug {
                 return err;
             }
         } else {
-            throw {error: 'No ids provided'}
+            throw { error: 'No ids provided' }
         }
     }
     async getPatients(filters) {
-        let sql = "SELECT patients.id as patient_id,"+
-        "users.id as user_id,"+
-        "users.id as id,"+
-        "users.firstname,"+
-        "users.lastname,"+
-        "users.phone,"+
-        "users.email,"+
-        "users.sex,"+
-        "users.lang,"+
-        "users.active,"+
-        "users.role,"+
-        "users.password,"+
-        "users.address,"+
-        "users.street_number,"+
-        "users.zip,"+
-        "users.city,"+
-        "users.country,"+
-        "users.date_created,"+
-        "users.date_updated,"+
-        "users.birthday,"+
-        "users.avatar,"+
-        "patients.emergency_contact_relationship," +
-        "patients.emergency_contact_name," +
-        "patients.emergency_contact_phone," +
-        "patients.close_monitoring " +
-        "FROM drug_patients "+
-        "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
-        "LEFT JOIN users on patients.user_id = users.id  " +
-        "WHERE 1 = 1 ";
+        let sql = "SELECT patients.id as patient_id," +
+            "users.id as user_id," +
+            "users.id as id," +
+            "users.firstname," +
+            "users.lastname," +
+            "users.phone," +
+            "users.email," +
+            "users.sex," +
+            "users.lang," +
+            "users.active," +
+            "users.role," +
+            "users.password," +
+            "users.address," +
+            "users.street_number," +
+            "users.zip," +
+            "users.city," +
+            "users.country," +
+            "users.date_created," +
+            "users.date_updated," +
+            "users.birthday," +
+            "users.avatar," +
+            "patients.emergency_contact_relationship," +
+            "patients.emergency_contact_name," +
+            "patients.emergency_contact_phone," +
+            "patients.close_monitoring " +
+            "FROM drug_patients " +
+            "LEFT JOIN patients ON drug_patients.patient_id = patients.id " +
+            "LEFT JOIN users on patients.user_id = users.id  " +
+            "WHERE 1 = 1 ";
         let params = [];
         if (filters.drug_id) {
             sql += " and drug_patients.drug_id = ?"
@@ -310,10 +310,10 @@ module.exports = class Drug {
 
     async countPatients(filters) {
         let sql = "SELECT count(*) as total " +
-        "FROM drug_patients "+
-        "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
-        "LEFT JOIN users on patients.user_id = users.id  " +
-        "WHERE 1 = 1 ";
+            "FROM drug_patients " +
+            "LEFT JOIN patients ON drug_patients.patient_id = patients.id " +
+            "LEFT JOIN users on patients.user_id = users.id  " +
+            "WHERE 1 = 1 ";
         let params = [];
         if (filters.treatment_id) {
             sql += " and drug_patients.treatment_id = ?"
@@ -369,33 +369,100 @@ module.exports = class Drug {
             return err;
         }
     }
+    async updatePatient(o) {
+        let sql = "UPDATE drug_patients  ";
+
+        let params = [];
+        if (o.id) {
+            sql += " SET id = ?";
+            params.push(o.id);
+        } else {
+            throw { error: 'No pk provided' }
+        }
+        if (o.drug_id) {
+            sql += ",  drug_id = ?"
+            params.push(o.drug_id);
+        }
+        if (o.patient_id) {
+            sql += ",  patient_id = ?"
+            params.push(o.patient_id);
+        }
+        if (o.start_date) {
+            sql += ",  start_date = ?"
+            params.push(o.start_date);
+        }
+        if (o.end_date) {
+            sql += ",  end_date = ?"
+            params.push(o.end_date);
+        }
+        sql += " where id=" + o.id
+        try {
+            const updated = await db.query(sql, params);
+            sql = "UPDATE posologies  ";
+            params = [];
+            if (o.posology_id) {
+                sql += " SET id = ?";
+                params.push(o.posology_id);
+            } else {
+                throw { error: 'No pk provided' }
+            }
+            if (o.days) {
+                sql += ",  days = ?"
+                params.push(o.days);
+            }
+            if (o.hours) {
+                sql += ",  hours = ?"
+                params.push(o.hours);
+            }
+            if (o.repetition) {
+                sql += ",  repetition = ?"
+                params.push(o.repetition);
+            }
+            if (o.type) {
+                sql += ",  type = ?"
+                params.push(o.type);
+            }
+            if (o.note) {
+                sql += ",  note = ?"
+                params.push(o.note);
+            }
+            sql += " where id=" + o.posology_id
+            await db.query(sql, params);
+            return {
+                saved: updated
+            };
+        }
+        catch (err) {
+            return err;
+        }
+    }
     async getUserDrugs(filters) {
         let sql = "SELECT drugs.id as drug_id, drug_patients.id id, " +
-        "users.avatar, " +
-        "users.firstname, " +
-        "users.lastname, " +
-        "drugs.name, " +
-        "drugs.image," +
-        "drugs.code, " +
-        "drug_patients.patient_id, "+
-        "drug_patients.posology_id, " +
-        "drug_patients.start_date, " +
-        "drug_patients.end_date, " +
-        "drugs.date_created, " +
-        "drugs.date_updated, " +
-        "posologies.days, " +
-        "posologies.hours, " +
-        "posologies.repetition, " +
-        "posologies.note, " +
-        "posologies.type " +
-        "FROM drug_patients "+
-        "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
-        "LEFT JOIN nurse_patients ON nurse_patients.patient_id = patients.id "+
-        "LEFT JOIN doctor_patients ON doctor_patients.patient_id = patients.id "+
-        "LEFT JOIN users ON users.id = patients.user_id "+
-        "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
-        "LEFT JOIN posologies on posologies.id = drug_patients.posology_id  " +
-        "WHERE 1 = 1 ";
+            "users.avatar, " +
+            "users.firstname, " +
+            "users.lastname, " +
+            "drugs.name, " +
+            "drugs.image," +
+            "drugs.code, " +
+            "drug_patients.patient_id, " +
+            "drug_patients.posology_id, " +
+            "drug_patients.start_date, " +
+            "drug_patients.end_date, " +
+            "drugs.date_created, " +
+            "drugs.date_updated, " +
+            "posologies.days, " +
+            "posologies.hours, " +
+            "posologies.repetition, " +
+            "posologies.note, " +
+            "posologies.type " +
+            "FROM drug_patients " +
+            "LEFT JOIN patients ON drug_patients.patient_id = patients.id " +
+            "LEFT JOIN nurse_patients ON nurse_patients.patient_id = patients.id " +
+            "LEFT JOIN doctor_patients ON doctor_patients.patient_id = patients.id " +
+            "LEFT JOIN users ON users.id = patients.user_id " +
+            "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
+            "LEFT JOIN posologies on posologies.id = drug_patients.posology_id  " +
+            "WHERE 1 = 1 ";
         let params = [];
         if (filters.drug_id) {
             sql += " and drug_patients.drug_id = ?"
@@ -417,8 +484,7 @@ module.exports = class Drug {
             sql += " and patients.user_id = ?"
             params.push(filters.user_id);
         }
-        sql += " order by drug_patients.id desc";
-        console.log(sql)
+        sql += " order by drug_patients.date_created desc, drug_patients.id desc";
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -432,12 +498,12 @@ module.exports = class Drug {
 
     async countUserDrugs(filters) {
         let sql = "SELECT count(*) as total " +
-        "FROM drug_patients "+
-        "LEFT JOIN patients ON drug_patients.patient_id = patients.id "+
-        "LEFT JOIN nurse_patients ON nurse_patients.patient_id = patients.id "+
-        "LEFT JOIN doctor_patients ON doctor_patients.patient_id = patients.id "+
-        "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
-        "WHERE 1 = 1 ";
+            "FROM drug_patients " +
+            "LEFT JOIN patients ON drug_patients.patient_id = patients.id " +
+            "LEFT JOIN nurse_patients ON nurse_patients.patient_id = patients.id " +
+            "LEFT JOIN doctor_patients ON doctor_patients.patient_id = patients.id " +
+            "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
+            "WHERE 1 = 1 ";
         let params = [];
         if (filters.drug_id) {
             sql += " and drug_patients.drug_id = ?"
