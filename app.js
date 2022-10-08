@@ -60,10 +60,13 @@ const drugSearchRouter = require('./routes/drugs/search');
 const drugDeleteRouter = require('./routes/drugs/delete');
 const drugUpdatePatientRouter = require('./routes/drugs/updatePatient');
 const drugAddPatientRouter = require('./routes/drugs/addPatient');
+const drugAddEffectRouter = require('./routes/drugs/addEffect');
+const drugDeleteEffectRouter = require('./routes/drugs/deleteEffect');
 const drugGetPatientsRouter = require('./routes/drugs/patients');
 const drugUploadRouter = require('./routes/drugs/upload');
 const drugNoticeRouter = require('./routes/drugs/notice');
 const drugsUserDrugsRouter = require('./routes/drugs/userDrugs');
+const drugsGetEffectsRouter = require('./routes/drugs/getEffects');
 //  drug descriptions
 const drugDescriptionAddRouter = require('./routes/drug_descriptions/add');
 const drugDescriptionUpdateRouter = require('./routes/drug_descriptions/update');
@@ -192,6 +195,9 @@ app.use('/drugs/notice', drugNoticeRouter);
 app.use('/drugs/search', drugSearchRouter);
 app.use('/drugs/delete', drugDeleteRouter);
 app.use('/drugs/add-patient', drugAddPatientRouter);
+app.use('/drugs/add-effect', drugAddEffectRouter);
+app.use('/drugs/delete-effect', drugDeleteEffectRouter);
+app.use('/drugs/get-effects', drugsGetEffectsRouter);
 app.use('/drugs/update-patient', drugUpdatePatientRouter);
 app.use('/drugs/patients', drugGetPatientsRouter);
 app.use('/drugs/user-drugs', drugsUserDrugsRouter);
@@ -207,24 +213,20 @@ app.use('/hospitals/add', hospitalAddRouter);
 app.use('/hospitals/get', hospitalGetRouter);
 app.use('/hospitals/update', hospitalUpdateRouter);
 app.use('/hospitals/delete', hospitalDeleteRouter);
-
 // laboratories
 app.use('/laboratories/list', laboratoryListRouter);
 app.use('/laboratories/add', laboratoryAddRouter);
 app.use('/laboratories/get', laboratoryGetRouter);
 app.use('/laboratories/update', laboratoryUpdateRouter);
 app.use('/laboratories/delete', laboratoryDeleteRouter);
-
 // treatments
 app.use('/treatments/list', treatmentListRouter);
 app.use('/treatments/add', treatmentAddRouter);
 app.use('/treatments/get', treatmentGetRouter);
 app.use('/treatments/update', treatmentUpdateRouter);
 app.use('/treatments/drugs', treatmentGetDrugsRouter);
-
 app.use('/treatments/add-drug', treatmentAddDrugRouter);
 app.use('/treatments/delete', treatmentDeleteRouter);
-
 // treatment descriptions
 app.use('/treatment-descriptions/add', treatmentDescriptionAddRouter);
 app.use('/treatment-descriptions/update', treatmentDescriptionUpdateRouter);
@@ -257,8 +259,6 @@ app.use('/surveys/concat-effects', surveyConcatEffectsRouter);
 app.use('/surveys/concat-moods', surveyConcatMoodsRouter);
 // dashboard
 app.use('/dashboard/moods', dashboardMoodsRouter);
-
-
 app.set('port', process.env.PORT || 3000);
 
 const server = app.listen(app.get('port'), function () {

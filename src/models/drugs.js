@@ -7,6 +7,7 @@ module.exports = class Drug {
         let sql = "SELECT drugs.id as drug_id, drug_descriptions.id as drug_description_id, " +
             "drugs.laboratory_id, " +
             "drugs.name drug_name, " +
+            "drugs.molecule_name," +
             "drugs.code drug_code, " +
             "drugs.date_created, " +
             "drugs.date_updated, " +
@@ -101,6 +102,7 @@ module.exports = class Drug {
         let sql = "SELECT drugs.id as drug_id, drug_descriptions.id as drug_description_id, " +
             "drugs.laboratory_id," +
             "drugs.name," +
+            "drugs.molecule_name," +
             "drugs.code," +
             "drugs.image," +
             "drugs.date_created," +
@@ -443,6 +445,7 @@ module.exports = class Drug {
             "users.lastname, " +
             "drugs.name, " +
             "drugs.image," +
+            "drugs.molecule_name," +
             "drugs.code, " +
             "drug_patients.patient_id, " +
             "drug_patients.posology_id, " +
@@ -525,6 +528,76 @@ module.exports = class Drug {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
                 return rows[0].total;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+    async addEffect(o) {
+        let sql = "INSERT INTO drug_effects SET ? ";
+        try {
+            const add = await db.query(sql, o);
+            return {
+                saved: add.affectedRows,
+                inserted_id: add.insertId
+            };
+        }
+        catch (err) {
+            return err;
+        }
+    }
+    async deleteEffect(o) {
+        if (o && o.ids) {
+
+            let sql = "delete from drug_effects where id in (?) ";
+            try {
+                const del = await db.query(sql, o.ids);
+                return {
+                    saved: del.affectedRows,
+                    inserted_id: del.insertId
+                };
+            }
+            catch (err) {
+                return err;
+            }
+        } else {
+            throw { error: 'No ids provided' }
+        }
+    }
+    async getEffects (filters) {
+        let sql = " select drug_effects.id,"+
+        " drug_effects.side_effect_id, "+
+        " drug_effects.drug_id, "+
+        " side_effect_descriptions.name " +
+        " FROM drug_effects " +
+        " LEFT JOIN side_effects on side_effects.id = drug_effects.side_effect_id " + 
+        " LEFT JOIN side_effect_descriptions on side_effects.id = side_effect_descriptions.side_effect_id " + 
+        "WHERE  ";
+        let params = [];
+        let filterClause = '';
+        if (filters.side_effect_id) {
+            sql += "  side_effects.id = ?"
+            params.push(filters.side_effect_id);
+        }
+        if (filters.name) {
+            sql += ((params.length)?' OR ': '')+"  side_effect_descriptions.name like ?"
+            params.push(filters.name + '%');
+        }
+        if (filters.drug_id) {
+            sql += ((params.length)?" AND":"") + "  drug_effects.drug_id = ?"
+            params.push(filters.drug_id );
+        }
+        if (filters.lang_id) {
+            sql += " AND side_effect_descriptions.lang_id = ?"
+            params.push(filters.lang_id );
+        }
+        sql += " order by side_effect_descriptions.name asc " + filterClause;
+        console.log(sql)
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows;
             }
             return null;
         } catch (error) {
