@@ -123,6 +123,10 @@ module.exports = class Drug {
             sql += " and drugs.id = ?"
             params.push(filters.drug_id);
         }
+        if (filters.lang_id) {
+            sql += " and drug_descriptions.lang_id = ?"
+            params.push(filters.lang_id);
+        }
         if (filters.laboratory_id) {
             sql += " and drugs.laboratory_id = ?"
             params.push(filters.laboratory_id);
@@ -176,6 +180,10 @@ module.exports = class Drug {
         if (o.name) {
             sql += ",  name = ?"
             params.push(o.name);
+        }
+        if (o.molecule_name) {
+            sql += ",  molecule_name = ?"
+            params.push(o.molecule_name);
         }
         if (o.image) {
             sql += ",  image = ?"
