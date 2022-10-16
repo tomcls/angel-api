@@ -44,6 +44,7 @@ const nurseGetNursesRouter = require('./routes/nurses/nurses');
 const nurseAddTransfersRouter = require('./routes/nurses/addTransfers');
 const nurseTransfersRouter = require('./routes/nurses/transfers');
 const nurseRecoverTransfersRouter = require('./routes/nurses/recoverTransfer');
+const nurseCountTransfersRouter = require('./routes/nurses/countTransfers');
 // nurses
 const scientistListRouter = require('./routes/scientists/list');
 const scientistAddRouter = require('./routes/scientists/add');
@@ -175,6 +176,7 @@ app.use('/nurses/update', nurseUpdateRouter);
 app.use('/nurses/patients', nurseGetPatientsRouter);
 app.use('/nurses/add-patient', nurseAddPatientRouter);
 app.use('/nurses/nurses', nurseGetNursesRouter);
+app.use('/nurses/count-transfers', nurseCountTransfersRouter);
 app.use('/nurses/transfers', nurseTransfersRouter);
 app.use('/nurses/add-transfers', nurseAddTransfersRouter);
 app.use('/nurses/recover-transfer', nurseRecoverTransfersRouter);

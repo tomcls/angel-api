@@ -17,13 +17,14 @@ module.exports = class Transfer {
             sql += " and ( nurse_from = "+filters.nurse_id+" OR nurse_to = "+filters.nurse_id+" ) "
         }
         sql += " order by patient_transfers.date_created desc ";
+        
         try {
             let rows = await db.query(sql);
-            console.log('TOTAzfzefze',rows)
             if (rows && rows.length > 0) {
-                return rows;
+                return rows[0].total;
+            } else {
+                return 0;
             }
-            return null;
         } catch (error) {
             return error
         }
