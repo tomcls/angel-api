@@ -45,13 +45,20 @@ const nurseAddTransfersRouter = require('./routes/nurses/addTransfers');
 const nurseTransfersRouter = require('./routes/nurses/transfers');
 const nurseRecoverTransfersRouter = require('./routes/nurses/recoverTransfer');
 const nurseCountTransfersRouter = require('./routes/nurses/countTransfers');
-// nurses
+// scientist
 const scientistListRouter = require('./routes/scientists/list');
 const scientistAddRouter = require('./routes/scientists/add');
 const scientistUpdateRouter = require('./routes/scientists/update');
 const scientistGetRouter = require('./routes/scientists/get');
 const scientistGetPatientsRouter = require('./routes/scientists/patients');
 const scientistAddPatientRouter = require('./routes/scientists/addPatient');
+// notifications
+const notificationListRouter = require('./routes/notifications/list');
+const notificationAddRouter = require('./routes/notifications/add');
+const notificationUpdateRouter = require('./routes/notifications/update');
+const notificationGetRouter = require('./routes/notifications/get');
+const notificationDeleteRouter = require('./routes/notifications/delete');
+const notificationCountRouter = require('./routes/notifications/count');
 // drugs
 const drugListRouter = require('./routes/drugs/list');
 const drugAddRouter = require('./routes/drugs/add');
@@ -187,6 +194,13 @@ app.use('/scientists/get', scientistGetRouter);
 app.use('/scientists/update', scientistUpdateRouter);
 app.use('/scientists/patients', scientistGetPatientsRouter);
 app.use('/scientists/add-patient', scientistAddPatientRouter);
+// notifications
+app.use('/notifications/list', notificationListRouter);
+app.use('/notifications/add', notificationAddRouter);
+app.use('/notifications/get', notificationGetRouter);
+app.use('/notifications/update', notificationUpdateRouter);
+app.use('/notifications/delete', notificationDeleteRouter);
+app.use('/notifications/count', notificationCountRouter);
 // drugs
 app.use('/drugs/list', drugListRouter);
 app.use('/drugs/add', drugAddRouter);
