@@ -26,11 +26,11 @@ module.exports = class Drug {
             params.push(filters.id);
         }
         if (filters.laboratory_id) {
-            sql += " and drugs.laboratory_id = ?"
+            sql += " and drugs.laboratory_id = ? "
             params.push(filters.laboratory_id);
         }
         if (filters.lang_id) {
-            sql += " and drug_descriptions.lang_id = ?"
+            sql += " and drug_descriptions.lang_id = ? "
             params.push(filters.lang_id);
         }
         let sqlSearch = '';
@@ -111,7 +111,7 @@ module.exports = class Drug {
             "drug_descriptions.description, " +
             "laboratories.name laboratory_name " +
             "FROM drugs " +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " +
+            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id +"' " +
             "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " +
             "WHERE 1 = 1 ";
         let params = [];
@@ -122,10 +122,6 @@ module.exports = class Drug {
         if (filters.drug_id) {
             sql += " and drugs.id = ?"
             params.push(filters.drug_id);
-        }
-        if (filters.lang_id) {
-            sql += " and drug_descriptions.lang_id = ?"
-            params.push(filters.lang_id);
         }
         if (filters.laboratory_id) {
             sql += " and drugs.laboratory_id = ?"
@@ -139,7 +135,7 @@ module.exports = class Drug {
             sql += " and drugs.name = ?"
             params.push(filters.name);
         }
-        sql += " order by drugs.date_created desc limit 1"
+        sql += " order by drugs.date_created desc limit 1";
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
