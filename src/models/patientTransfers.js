@@ -3,6 +3,31 @@ const db = conn.conn();
 const async = require('async');
 module.exports = class Transfer {
     constructor() { }
+    async count(filters) {
+        let sql = "SELECT count(*) total " +
+            "FROM patient_transfers  " +
+            " LEFT JOIN nurses nf ON nf.id = patient_transfers.nurse_from " +
+            " LEFT JOIN nurses nt ON nt.id = patient_transfers.nurse_to " +
+            " LEFT JOIN patients np ON np.id = patient_transfers.patient_id " +
+            " LEFT JOIN users uf ON uf.id = nf.user_id " +
+            " LEFT JOIN users ut ON ut.id = nt.user_id " +
+            " LEFT JOIN users up ON up.id = np.user_id " +
+            " WHERE 1 = 1 ";
+        if (filters.nurse_id) {
+            sql += " and ( nurse_from = "+filters.nurse_id+" OR nurse_to = "+filters.nurse_id+" ) "
+        }
+        sql += " order by patient_transfers.date_created desc ";
+        try {
+            let rows = await db.query(sql);
+            console.log('TOTAzfzefze',rows)
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
     async findAll(filters) {
         let sql = "SELECT patient_transfers.id, patient_id," +
             " nurse_from," +
