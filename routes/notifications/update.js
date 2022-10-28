@@ -5,7 +5,7 @@ router.use(express.json())
 router.post('/', async function(req, res, next) {
   const payload = req.body;
   try {
-    const u = new Scientist();
+    const u = new Notification();
     const notification = await u.update(payload);
     return res.json(notification);
   } catch (error) {

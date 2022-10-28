@@ -98,6 +98,7 @@ module.exports = class Notification {
             sql += " and ( user_from.email like ? OR user_to.email  like ?)"
             params.push(filters.email+'%');
         }
+        
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -194,12 +195,14 @@ module.exports = class Notification {
         }
         
         sql += " where id=" + o.id
+        console.log(sql);
         try {
             const updated = await db.query(sql, params);
             return {
                 saved: updated
             };
         }
+        
         catch (err) {
             return err;
         }
