@@ -1,17 +1,15 @@
 const express = require('express');
-const DrugDescription = require('../../src/models/drugDescriptions');
+const drugDescriptions = require("../../src/models/drugDescriptions");
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function(req, res, next) {
   const payload = req.body;
   try {
-    const u = new DrugDescription();
-    u.update(payload, function(ids) {
-      return res.json(ids);
-    });
-    
+    const u = new drugDescriptions();
+    const drug = await u.find(payload);
+    res.json(drug);
   } catch (error) {
-    return res.json(error);
+    res.json(error);
   }
 });
 module.exports = router;

@@ -16,7 +16,7 @@ module.exports = class Drug {
             "drug_descriptions.description, " +
             "laboratories.name laboratory_name " +
             "FROM drugs " +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id " +
+            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id +"' " +
             "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " +
             "WHERE 1=1 ";
         let params = [];
@@ -28,10 +28,6 @@ module.exports = class Drug {
         if (filters.laboratory_id) {
             sql += " and drugs.laboratory_id = ? "
             params.push(filters.laboratory_id);
-        }
-        if (filters.lang_id) {
-            sql += " and drug_descriptions.lang_id = ? "
-            params.push(filters.lang_id);
         }
         let sqlSearch = '';
         if (filters.name) {
@@ -244,13 +240,10 @@ module.exports = class Drug {
     async delete(o) {
         if (o && o.ids) {
 
-            let sql = "delete from drugs where id in (?) ";
+            let sql = "delete from drugs where id in ("+o.ids+") ";
             try {
-                const del = await db.query(sql, o.ids);
-                return {
-                    saved: del.affectedRows,
-                    inserted_id: del.insertId
-                };
+                const del = await db.query(sql);
+                return del;
             }
             catch (err) {
                 return err;

@@ -78,6 +78,7 @@ const drugsGetEffectsRouter = require('./routes/drugs/getEffects');
 //  drug descriptions
 const drugDescriptionAddRouter = require('./routes/drug_descriptions/add');
 const drugDescriptionUpdateRouter = require('./routes/drug_descriptions/update');
+const drugDescriptionGetRouter = require('./routes/drug_descriptions/get');
 // posologies
 const posologyGetRouter = require('./routes/posologies/get');
 const posologyAddRouter = require('./routes/posologies/add');
@@ -222,6 +223,7 @@ app.use('/posologies/get', posologyGetRouter);
 app.use('/posologies/add', posologyAddRouter);
 // drug descriptions
 app.use('/drug-descriptions/add', drugDescriptionAddRouter);
+app.use('/drug-descriptions/get', drugDescriptionGetRouter);
 app.use('/drug-descriptions/update', drugDescriptionUpdateRouter);
 // hospitals
 app.use('/hospitals/list', hospitalListRouter);
