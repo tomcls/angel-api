@@ -56,8 +56,7 @@ module.exports = class Drug {
         }
     }
     async count(filters) {
-        let sql = "SELECT count(*) as total FROM drugs LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id"+
-        "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id +"' "
+        let sql = "SELECT count(*) as total FROM drugs LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id +"' "
          +" where 1=1  ";
 
         let params = [];
