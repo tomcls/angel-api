@@ -54,7 +54,7 @@ module.exports = class Patient {
             params.push(filters.phone + '%');
         }
         if (filters.limit) {
-            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
+            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + filters.limit;
         }
         sql += " order by close_monitoring desc, patients.date_created desc " + filterClause;
         console.log(sql)
