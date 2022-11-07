@@ -60,7 +60,7 @@ module.exports = class Nurse {
         }
         const combined = [...params, ...paramsSearch];
         if(filters.limit) {
-            filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
+            filterClause = " limit "+((filters.page)*filters.limit)+ ', ' + filters.limit;
         }
         sql += " order by nurses.date_created desc "+filterClause;
         console.log(sql)
