@@ -42,7 +42,7 @@ module.exports = class Drug {
             sql += ' AND (' + sqlSearch + ') ';
         }
         if (filters.limit) {
-            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
+            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + filters.limit;
         }
         sql += " order by drugs.id desc " + filterClause;
         try {
