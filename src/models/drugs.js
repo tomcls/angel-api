@@ -56,7 +56,9 @@ module.exports = class Drug {
         }
     }
     async count(filters) {
-        let sql = "SELECT count(*) as total FROM drugs LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id where 1=1  ";
+        let sql = "SELECT count(*) as total FROM drugs LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id"+
+        "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id +"' "
+         +" where 1=1  ";
 
         let params = [];
         if (filters.id) {
@@ -66,10 +68,6 @@ module.exports = class Drug {
         if (filters.laboratory_id) {
             sql += " and drugs.laboratory_id = ?"
             params.push(filters.laboratory_id);
-        }
-        if (filters.lang_id) {
-            sql += " and drug_descriptions.lang_id = ?"
-            params.push(filters.lang_id);
         }
         let sqlSearch = '';
         if (filters.name) {
