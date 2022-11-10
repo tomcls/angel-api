@@ -239,7 +239,7 @@ module.exports = class Treatment {
     async delete(o) {
         if(o && o.ids) {
 
-            let sql = "delete from treatments where id in ("+o.ids+") ";
+            let sql = "delete from drug_patients where id in ("+o.ids+") ";
             try {
                 const del = await db.query(sql);
                 return {
