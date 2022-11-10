@@ -61,7 +61,8 @@ const notificationGetRouter = require('./routes/notifications/get');
 const notificationDeleteRouter = require('./routes/notifications/delete');
 const notificationCountRouter = require('./routes/notifications/count');
 // drugs
-const drugListRouter = require('./routes/drugs/list');
+const drugListRouter = require('./routes/drugs/list');// 
+const drugDuplicateRouter = require('./routes/drugs/duplicate');
 const drugAddRouter = require('./routes/drugs/add');
 const drugUpdateRouter = require('./routes/drugs/update');
 const drugGetRouter = require('./routes/drugs/get');
@@ -207,6 +208,7 @@ app.use('/notifications/count', notificationCountRouter);
 // drugs
 app.use('/drugs/list', drugListRouter);
 app.use('/drugs/add', drugAddRouter);
+app.use('/drugs/duplicate', drugDuplicateRouter);
 app.use('/drugs/get', drugGetRouter);
 app.use('/drugs/update', drugUpdateRouter);
 app.use('/drugs/upload', drugUploadRouter);

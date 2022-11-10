@@ -18,6 +18,7 @@ module.exports = class DrugDescription {
             sql += " and drug_descriptions.drug_id = ?"
             params.push(filters.id);
         }
+        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {

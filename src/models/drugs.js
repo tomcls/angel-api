@@ -1,5 +1,7 @@
 const conn = require("../utils/conn");
 const Posology = require("./posologies");
+const async = require('async');
+const DrugDescription = require("./drugDescriptions");
 const db = conn.conn();
 module.exports = class Drug {
     constructor() { }
@@ -16,7 +18,7 @@ module.exports = class Drug {
             "drug_descriptions.description, " +
             "laboratories.name laboratory_name " +
             "FROM drugs " +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id +"' " +
+            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id + "' " +
             "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " +
             "WHERE 1=1 ";
         let params = [];
@@ -56,8 +58,8 @@ module.exports = class Drug {
         }
     }
     async count(filters) {
-        let sql = "SELECT count(*) as total FROM drugs LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id +"' "
-         +" where 1=1  ";
+        let sql = "SELECT count(*) as total FROM drugs LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id + "' "
+            + " where 1=1  ";
 
         let params = [];
         if (filters.id) {
@@ -104,7 +106,7 @@ module.exports = class Drug {
             "drug_descriptions.description, " +
             "laboratories.name laboratory_name " +
             "FROM drugs " +
-            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id +"' " +
+            "LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id AND drug_descriptions.lang_id ='" + filters.lang_id + "' " +
             "LEFT JOIN laboratories on drugs.laboratory_id = laboratories.id " +
             "WHERE 1 = 1 ";
         let params = [];
@@ -234,10 +236,45 @@ module.exports = class Drug {
             return error
         }
     }
+    async duplicate(o) {
+        if (o && o.ids && o.ids.length > 0) {
+            // Using async/await
+            try {
+                await async.each(o.ids, async (id) => {
+                    const drug = await this.find({id:id} ) ;
+                    const newDrug = {
+                        laboratory_id : drug.laboratory_id,
+                        name: drug.name + " copy",
+                        molecule_name: drug.molecule_name,
+                        code: drug.code,
+                        image: drug.image
+                    }
+                    const addedDrug = await this.add(newDrug);
+                    const modelDescription = new DrugDescription();
+                    const descriptions = await modelDescription.find({id:drug.drug_id} ) ;
+                    const newDesciptions = [];
+                    await async.each(descriptions, async (d) => {
+                        const newDescription = {
+                            lang_id : d.lang_id,
+                            description: d.description,
+                            drug_id: addedDrug.inserted_id
+                        }
+                        newDesciptions.push(newDescription) ;                
+                    });
+                    modelDescription.add(newDesciptions, function(a) {
+                        //console.log('newDescriptions',a);       
+                    }) ;
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+    }
     async delete(o) {
         if (o && o.ids) {
 
-            let sql = "delete from drugs where id in ("+o.ids+") ";
+            let sql = "delete from drugs where id in (" + o.ids + ") ";
             try {
                 const del = await db.query(sql);
                 return del;
@@ -559,15 +596,15 @@ module.exports = class Drug {
             throw { error: 'No ids provided' }
         }
     }
-    async getEffects (filters) {
-        let sql = " select drug_effects.id,"+
-        " drug_effects.side_effect_id, "+
-        " drug_effects.drug_id, "+
-        " side_effect_descriptions.name " +
-        " FROM drug_effects " +
-        " LEFT JOIN side_effects on side_effects.id = drug_effects.side_effect_id " + 
-        " LEFT JOIN side_effect_descriptions on side_effects.id = side_effect_descriptions.side_effect_id " + 
-        "WHERE  ";
+    async getEffects(filters) {
+        let sql = " select drug_effects.id," +
+            " drug_effects.side_effect_id, " +
+            " drug_effects.drug_id, " +
+            " side_effect_descriptions.name " +
+            " FROM drug_effects " +
+            " LEFT JOIN side_effects on side_effects.id = drug_effects.side_effect_id " +
+            " LEFT JOIN side_effect_descriptions on side_effects.id = side_effect_descriptions.side_effect_id " +
+            "WHERE  ";
         let params = [];
         let filterClause = '';
         if (filters.side_effect_id) {
@@ -575,16 +612,16 @@ module.exports = class Drug {
             params.push(filters.side_effect_id);
         }
         if (filters.name) {
-            sql += ((params.length)?' OR ': '')+"  side_effect_descriptions.name like ?"
+            sql += ((params.length) ? ' OR ' : '') + "  side_effect_descriptions.name like ?"
             params.push(filters.name + '%');
         }
         if (filters.drug_id) {
-            sql += ((params.length)?" AND":"") + "  drug_effects.drug_id = ?"
-            params.push(filters.drug_id );
+            sql += ((params.length) ? " AND" : "") + "  drug_effects.drug_id = ?"
+            params.push(filters.drug_id);
         }
         if (filters.lang_id) {
             sql += " AND side_effect_descriptions.lang_id = ?"
-            params.push(filters.lang_id );
+            params.push(filters.lang_id);
         }
         sql += " order by side_effect_descriptions.name asc " + filterClause;
         console.log(sql)
