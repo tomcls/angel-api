@@ -68,6 +68,23 @@ module.exports = class Patient {
             return error
         }
     }
+    async delete(o) {
+        if(o && o.ids) {
+            let sql = "delete from patients where id in (?) ";
+            try {
+                const del = await db.query(sql, o.ids);
+                return {
+                    saved: del.affectedRows,
+                    inserted_id: del.insertId
+                };
+            }
+            catch (err) {
+                return err;
+            }
+        } else {
+            throw {error: 'No ids provided'}
+        }
+    }
     async count(filters) {
         let sql = "SELECT count(*) as total FROM patients left join users on users.id = patients.user_id where 1=1  ";
         

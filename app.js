@@ -25,6 +25,7 @@ const patientAddRouter = require('./routes/patients/add');
 const patientUpdateRouter = require('./routes/patients/update');
 const patientGetRouter = require('./routes/patients/get');
 const patientSearchRouter = require('./routes/patients/search');
+const deletePatientRouter = require('./routes/patients/delete');
 // doctors
 const doctorListRouter = require('./routes/doctors/list');
 const doctorAddRouter = require('./routes/doctors/add');
@@ -168,6 +169,7 @@ app.use('/patients/add', patientAddRouter);
 app.use('/patients/get', patientGetRouter);
 app.use('/patients/update', patientUpdateRouter);
 app.use('/patients/search', patientSearchRouter);
+app.use('/patients/delete', deletePatientRouter);
 // doctors
 app.use('/doctors/list', doctorListRouter);
 app.use('/doctors/add', doctorAddRouter);
