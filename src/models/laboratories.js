@@ -21,10 +21,7 @@ module.exports = class Laboratory {
         if (filters.id) {
             sql += " and id = ?"
             params.push(filters.id);
-        } else if (filters.laboratory_id) {
-            sql += " and id = ?"
-            params.push(filters.laboratory_id);
-        }
+        } 
         if (filters.drug_id) {
             sql += " and id = ?"
             params.push(filters.drug_id);
@@ -115,6 +112,9 @@ module.exports = class Laboratory {
         if (filters.id) {
             sql += " and id = ?"
             params.push(filters.id);
+        } else if (filters.laboratory_id) {
+            sql += " and id = ?"
+            params.push(filters.laboratory_id);
         }
         if (filters.name) {
             sql += " and name = ?"
