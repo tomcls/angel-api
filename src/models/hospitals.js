@@ -80,6 +80,9 @@ module.exports = class Hospital {
         if (filters.id) {
             sql += " and id = ?"
             params.push(filters.id);
+        } else if (filters.hospital_id) {
+            sql += " and id = ?"
+            params.push(filters.hospital_id);
         }
         if (filters.name) {
             sql += " and name = ?"
