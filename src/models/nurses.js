@@ -52,8 +52,12 @@ module.exports = class Nurse {
             paramsSearch.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email = ?"
-            paramsSearch.push(filters.email);
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email like ?"
+            paramsSearch.push(filters.email + '%');
+        }
+        if (filters.hospital_name) {
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospital_name like ?"
+            paramsSearch.push(filters.hospital_name + '%');
         }
         if (paramsSearch.length) {
             sql = sql + " AND (" + sqlSearch + ")";
@@ -92,8 +96,12 @@ module.exports = class Nurse {
             paramsSearch.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email = ?"
-            paramsSearch.push(filters.email);
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email like ?"
+            paramsSearch.push(filters.email + '%');
+        }
+        if (filters.hospital_name) {
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospital_name like ?"
+            paramsSearch.push(filters.hospital_name + '%');
         }
         if (paramsSearch.length) {
             sql = sql + " AND (" + sqlSearch + ")";
