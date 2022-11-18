@@ -53,7 +53,7 @@ module.exports = class Nurse {
         }
         if (filters.email) {
             sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email like ?"
-            paramsSearch.push(filters.email + '%');
+            paramsSearch.push('%'+filters.email + '%');
         }
         if (filters.hospital_name) {
             sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospitals.name like ?"
@@ -97,7 +97,7 @@ module.exports = class Nurse {
         }
         if (filters.email) {
             sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email like ?"
-            paramsSearch.push(filters.email + '%');
+            paramsSearch.push('%'+filters.email + '%');
         }
         if (filters.hospital_name) {
             sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospitals.name like ?"
