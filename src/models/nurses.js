@@ -56,7 +56,7 @@ module.exports = class Nurse {
             paramsSearch.push(filters.email + '%');
         }
         if (filters.hospital_name) {
-            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospital_name like ?"
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospitals.name like ?"
             paramsSearch.push(filters.hospital_name + '%');
         }
         if (paramsSearch.length) {
@@ -100,7 +100,7 @@ module.exports = class Nurse {
             paramsSearch.push(filters.email + '%');
         }
         if (filters.hospital_name) {
-            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospital_name like ?"
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospitals.name like ?"
             paramsSearch.push(filters.hospital_name + '%');
         }
         if (paramsSearch.length) {
