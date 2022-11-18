@@ -46,8 +46,8 @@ module.exports = class Patient {
             params.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sql += ((params.length)?' OR ': 'AND ')+" users.email like ?"
-            params.push(filters.email + '%');
+            sqlSearch += ((params.length) ? ' OR ' : '') + "  users.email like ?"
+            params.push('%'+filters.email + '%');
         }
         if (filters.phone) {
             sql += ((params.length)?' OR ': 'AND ')+" users.phone like ?"
@@ -57,7 +57,7 @@ module.exports = class Patient {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + filters.limit;
         }
         sql += " order by close_monitoring desc, patients.date_created desc " + filterClause;
-        console.log(sql)
+        
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -102,8 +102,8 @@ module.exports = class Patient {
             params.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sql += ((params.length)?' OR ': 'AND ')+" users.email like ?"
-            params.push(filters.email + '%');
+            sqlSearch += ((params.length) ? ' OR ' : '') + "  users.email like ?"
+            params.push('%'+filters.email + '%');
         }
         if (filters.phone) {
             sql += ((params.length)?' OR ': 'AND ')+" users.phone like ?"

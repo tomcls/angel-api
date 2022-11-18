@@ -51,11 +51,12 @@ module.exports = class Doctor {
             paramsSearch.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email = ?"
-            paramsSearch.push(filters.email);
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email like ?"
+            paramsSearch.push('%'+filters.email + '%');
         }
-        if (paramsSearch.length) {
-            sql = sql + " AND (" + sqlSearch + ")";
+        if (filters.hospital_name) {
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospitals.name like ?"
+            paramsSearch.push(filters.hospital_name + '%');
         }
 
         if (filters.role) {
@@ -95,8 +96,12 @@ module.exports = class Doctor {
             paramsSearch.push(filters.lastname + '%');
         }
         if (filters.email) {
-            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email = ?"
-            paramsSearch.push(filters.email);
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  users.email like ?"
+            paramsSearch.push('%'+filters.email + '%');
+        }
+        if (filters.hospital_name) {
+            sqlSearch += ((paramsSearch.length) ? ' OR ' : '') + "  hospitals.name like ?"
+            paramsSearch.push(filters.hospital_name + '%');
         }
         if (paramsSearch.length) {
             sql = sql + " AND (" + sqlSearch + ")";
