@@ -132,6 +132,11 @@ module.exports = class Nurse {
         "users.avatar," +
         "nurses.hospital_id, "+
         "hospitals.name hospital_name, "+
+        "hospitals.address hospital_address, "+
+        "hospitals.street_number hospital_street_number, "+
+        "hospitals.city hospital_city, "+
+        "hospitals.zip hospital_zip, "+
+        "hospitals.country hospital_country, "+
         "nurses.daysin "+
         "FROM users "+
         "LEFT JOIN nurses ON users.id = nurses.user_id "+
