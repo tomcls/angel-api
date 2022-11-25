@@ -18,7 +18,6 @@ module.exports = class DrugDescription {
             sql += " and drug_descriptions.drug_id = ?"
             params.push(filters.id);
         }
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -33,7 +32,6 @@ module.exports = class DrugDescription {
         if (list && list.length > 0) {
             const insertedIds = [];
             async.eachSeries(list, function (o, cb) {
-                console.log(o)
                 let sql = "INSERT INTO drug_descriptions SET ? ";
                 db.query(sql, o).then(function (add) {
                     insertedIds.push({
@@ -52,41 +50,43 @@ module.exports = class DrugDescription {
     async update(list, callback) {
         if (list && list.length > 0) {
             const insertedIds = [];
-            async.eachSeries(list, function (o, cb) {
-                let sql = "UPDATE drug_descriptions  ";
-                const params = [];
-                if (o.drug_id) {
-                    sql += " SET  drug_id = ?";
-                    params.push(o.drug_id);
-                }
-                if (o.notice) {
-                    sql += ((params.length) ? ', ' : ' SET ') + "  notice = ?"
-                    params.push(o.notice);
-                }
-                if (o.lang_id) {
-                    sql += ",  lang_id = ?"
-                    params.push(o.lang_id);
-                }
-                if (o.description) {
-                    sql += ",  description = ?"
-                    params.push(o.description);
-                }
-                sql += ",   date_updated = ?"
-                params.push(new Date());
-                sql += " where id=" + o.id
-                console.log(o, sql)
-                db.query(sql, params).then(function (add) {
-                    insertedIds.push({
-                        drug_id: o.drug_id,
-                        notice: o.notice,
-                        saved: add.affectedRows,
-                        inserted_id: add.insertId
+            try {
+                await async.eachSeries(list, async (o) => {
+                    let sql = "UPDATE drug_descriptions  ";
+                    const params = [];
+                    if (o.drug_id) {
+                        sql += " SET  drug_id = ?";
+                        params.push(o.drug_id);
+                    }
+                    if (o.notice) {
+                        sql += ((params.length) ? ', ' : ' SET ') + "  notice = ?"
+                        params.push(o.notice);
+                    }
+                    if (o.lang_id) {
+                        sql += ",  lang_id = ?"
+                        params.push(o.lang_id);
+                    }
+                    if (o.description) {
+                        sql += ",  description = ?"
+                        params.push(o.description);
+                    }
+                    sql += ",   date_updated = ?"
+                    params.push(new Date());
+                    sql += " where id=" + o.id
+                    db.query(sql, params).then(function (add) {
+                        insertedIds.push({
+                            drug_id: o.drug_id,
+                            notice: o.notice,
+                            saved: add.affectedRows,
+                            inserted_id: add.insertId
+                        });
                     });
-                    cb();
                 });
-            }, function (err) {
-                callback(insertedIds);
-            });
+                return insertedIds
+            }
+            catch (err) {
+                console.log(err);
+            }
         }
         return {
             saved: "nothing updated"

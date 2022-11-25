@@ -19,8 +19,7 @@ router.post('/', upload.single('drug'), async function (req, res, next) {
     try {
         if (payload && payload.file && payload.file.filename) {
             const u = new DrugDescription();
-            console.log({id: req.body.descriptionId,notice: payload.file.filename})
-           let r =  await u.update({ id: req.body.descriptionId,notice: payload.file.filename });
+           let r =  await u.update([{ id: req.body.descriptionId,notice: payload.file.filename }]);
             res.json({ success: 'File well uploaded', filename: payload.file.filename });
         } else {
             res.json({ error: 'Error file not uploaded' });
