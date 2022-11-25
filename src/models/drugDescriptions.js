@@ -93,4 +93,12 @@ module.exports = class DrugDescription {
         };
     }
 
+    async deleteNotice(o) {
+        console.log(o)
+        if(o && o.id) {
+            let sql = "UPDATE drug_descriptions SET notice=null where id="+o.id;
+            console.log(sql)
+            db.query(sql);
+        }
+    }
 }
