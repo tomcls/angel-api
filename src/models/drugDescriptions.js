@@ -1,6 +1,7 @@
 const conn = require("../utils/conn");
 const db = conn.conn();
 const async = require('async');
+const fs = require('fs');
 module.exports = class DrugDescription {
     constructor() { }
     async find(filters) {
@@ -14,8 +15,12 @@ module.exports = class DrugDescription {
             "FROM drug_descriptions " +
             "WHERE 1 = 1 ";
         let params = [];
-        if (filters.id) {
+        if (filters.drug_id) {
             sql += " and drug_descriptions.drug_id = ?"
+            params.push(filters.drug_id);
+        }
+        if (filters.id) {
+            sql += " and drug_descriptions.id = ?"
             params.push(filters.id);
         }
         try {
@@ -92,13 +97,27 @@ module.exports = class DrugDescription {
             saved: "nothing updated"
         };
     }
-
+    /**
+     * @todo remove the file
+     * @param {*} o 
+     */
     async deleteNotice(o) {
         console.log(o)
         if(o && o.id) {
-            let sql = "UPDATE drug_descriptions SET notice=null where id="+o.id;
-            console.log(sql)
-            db.query(sql);
+            try {
+                const d = await this.find({id: o.id});
+                
+                if(d && d.length && d[0].id) {
+                    console.log(d[0] )
+                    var filePath = './public/drugs/documents/'+d[0].notice; 
+                    console.log(filePath)
+                    fs.unlinkSync(filePath);
+                    let sql = "UPDATE drug_descriptions SET notice=null where id="+o.id;
+                    await db.query(sql);
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
 }
