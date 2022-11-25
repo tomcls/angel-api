@@ -26,6 +26,10 @@ module.exports = class Laboratory {
             sql += " and id = ?"
             params.push(filters.drug_id);
         }
+        if (filters.laboratory_id) {
+            sql += " and laboratory_id = ?"
+            params.push(filters.laboratory_id);
+        }
         let sqlSearch = '';
         if (filters.name) {
             sqlSearch +=  " laboratories.name like ?"
@@ -72,6 +76,10 @@ module.exports = class Laboratory {
         if (filters.name) {
             sqlSearch +=  " laboratories.name like ?"
             params.push(filters.name + '%');
+        }
+        if (filters.laboratory_id) {
+            sql += " and laboratory_id = ?"
+            params.push(filters.laboratory_id);
         }
         if (filters.email) {
             sqlSearch += ((sqlSearch)?' OR ': ' ')+" laboratories.email like ?"

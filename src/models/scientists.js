@@ -36,6 +36,10 @@ module.exports = class Scientist {
             sql += " and scientists.id = ?"
             params.push(filters.id);
         }
+        if (filters.laboratory_id) {
+            sql += " and laboratory_id = ?"
+            params.push(filters.laboratory_id);
+        }
         if (filters.user_id) {
             sql += " and users.id = ?"
             params.push(filters.user_id);
@@ -71,7 +75,9 @@ module.exports = class Scientist {
         }
     }
     async count(filters) {
-        let sql = "SELECT count(*) as total FROM scientists left join users on users.id = scientists.user_id where 1=1  ";
+        let sql = "SELECT count(*) as total FROM scientists "+
+        "LEFT JOIN laboratories ON laboratories.id = scientists.laboratory_id "+
+        "LEFT JOIN  users on users.id = scientists.user_id where 1=1  ";
         let params = [];
         if (filters.user_id) {
             sql += " and users.id = ?"
@@ -80,6 +86,10 @@ module.exports = class Scientist {
         if (filters.firstname) {
             sql += " and users.firstname like ?%"
             params.push(filters.firstname);
+        }
+        if (filters.laboratory_id) {
+            sql += " and laboratory_id = ?"
+            params.push(filters.laboratory_id);
         }
         if (filters.lastname) {
             sql += " and users.lastname like ?%"
