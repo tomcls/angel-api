@@ -156,7 +156,7 @@ module.exports = class sideEffect {
         }
         if (filters.name) {
             sql += ((params.length)?' OR ': '')+"  side_effect_descriptions.name like ?"
-            params.push(filters.name + '%');
+            params.push('%'+filters.name + '%');
         }
         if (filters.lang_id) {
             sql += " AND side_effect_descriptions.lang_id = ?"
