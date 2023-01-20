@@ -500,7 +500,7 @@ module.exports = class Survey {
         }
     }
     async concatEffects(filters) {
-        let sql = "SELECT date_created, avatar, firstname, lastname, patient_id,GROUP_CONCAT(name) total_effects, GROUP_CONCAT( effect_cnt) effect_cnt FROM ( SELECT        survey_effects.patient_id, " +
+        let sql = "SELECT date_created, avatar, firstname, lastname, patient_id,patients.close_monitoring,GROUP_CONCAT(name) total_effects, GROUP_CONCAT( effect_cnt) effect_cnt FROM ( SELECT        survey_effects.patient_id, " +
             " side_effects.id,  " +
             " users.avatar,  " +
             " users.firstname,  " +
@@ -637,7 +637,7 @@ module.exports = class Survey {
         }
     }
     async concatMoods(filters) {
-        let sql = "SELECT date_created,avatar, firstname, lastname, patient_id,GROUP_CONCAT(name) total_moods, GROUP_CONCAT( mood_cnt) mood_cnt, GROUP_CONCAT(score) score FROM ( SELECT        survey_moods.patient_id, " +
+        let sql = "SELECT date_created,avatar, firstname, lastname, patient_id,patients.close_monitoring, GROUP_CONCAT(name) total_moods, GROUP_CONCAT( mood_cnt) mood_cnt, GROUP_CONCAT(score) score FROM ( SELECT        survey_moods.patient_id, " +
             " moods.id,  " +
             " users.avatar,  " +
             " users.firstname,  " +
