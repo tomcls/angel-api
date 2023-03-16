@@ -78,6 +78,7 @@ module.exports = class User {
         }
     }
     async find(filters) {
+        
         let sql = "SELECT * FROM users where 1=1 ";
         let params = [];
         if (filters.id) {
@@ -112,6 +113,7 @@ module.exports = class User {
             }
             return null;
         } catch (error) {
+            console.log(error);
             return error
         }
     }

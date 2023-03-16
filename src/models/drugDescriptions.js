@@ -33,10 +33,10 @@ module.exports = class DrugDescription {
             return error
         }
     }
-    add(list, callback) {
+    async add(list) {
         if (list && list.length > 0) {
             const insertedIds = [];
-            async.eachSeries(list, function (o, cb) {
+            await async.eachSeries(list, async (o) => {
                 let sql = "INSERT INTO drug_descriptions SET ? ";
                 db.query(sql, o).then(function (add) {
                     insertedIds.push({
@@ -47,12 +47,11 @@ module.exports = class DrugDescription {
                     });
                     cb();
                 });
-            }, function (err) {
-                callback(insertedIds);
             });
+            return insertedIds;
         }
     }
-    async update(list, callback) {
+    async update(list) {
         if (list && list.length > 0) {
             const insertedIds = [];
             try {
@@ -102,15 +101,12 @@ module.exports = class DrugDescription {
      * @param {*} o 
      */
     async deleteNotice(o) {
-        console.log(o)
         if(o && o.id) {
             try {
                 const d = await this.find({id: o.id});
                 
                 if(d && d.length && d[0].id) {
-                    console.log(d[0] )
                     var filePath = './public/drugs/documents/'+d[0].notice; 
-                    console.log(filePath)
                     fs.unlinkSync(filePath);
                     let sql = "UPDATE drug_descriptions SET notice=null where id="+o.id;
                     await db.query(sql);
