@@ -20,7 +20,7 @@ cd $APP_ROOT
 # Build with dockerfile
 docker rm -f ${serviceName}
 # Build with dockerfile
-docker build --no-cache --file=${APP_ROOT}"/srv/Dockerfile" --output type=docker --build-arg environment=${env} -t  node/angel .
+docker build --file=${APP_ROOT}"/srv/Dockerfile" --output type=docker --build-arg environment=${env} -t  node/angel .
 
 echo ".............................Build done, execute cmd docker run ${serviceName}"
 
