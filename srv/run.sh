@@ -22,12 +22,12 @@ docker rm -f ${serviceName}
 # Build with dockerfile
 docker build --file=${APP_ROOT}"/srv/Dockerfile" \
 --build-arg environment=${env} \
--t  node/express .
+-t  node/angel .
 echo ".............................Build done, execute cmd docker run ${serviceName}"
 docker run  --name ${serviceName}  \
 -v /data/www/${serviceName}/.env.prod:/usr/src/app/ \
 -v /data/www/${serviceName}/public/images:/usr/src/app/public/images \
 -v /data/www/${serviceName}/public/drugs:/usr/src/app/public/drugs \
 -p ${portOut}:${portIn} \
--it -d --restart always node/express
+-it -d --restart always node/angel
     
