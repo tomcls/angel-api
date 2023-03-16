@@ -29,5 +29,5 @@ docker run  --name ${serviceName}  \
 -v /data/www/${serviceName}/public/images:/usr/src/app/public/images \
 -v /data/www/${serviceName}/public/drugs:/usr/src/app/public/drugs \
 -p ${portOut}:${portIn} \
--it -d --restart always node/angel
+-it --restart always node/angel
     
