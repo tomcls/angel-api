@@ -12,7 +12,7 @@ echo "No arguments supplied: ./run.sh {production,dev,tcl,...}"
 fi
 env=$1
 serviceName=angel-api
-APP_ROOT=~/www/${serviceName}
+APP_ROOT=/data/www/${serviceName}
 portOut=3003
 portIn=3000
 	
@@ -25,9 +25,9 @@ docker build --file=${APP_ROOT}"/srv/Dockerfile" \
 -t  node/express .
 echo ".............................Build done, execute cmd docker run ${serviceName}"
 docker run  --name ${serviceName}  \
--v ~/www/${serviceName}/.env.prod:/usr/src/app/ \
--v ~/www/${serviceName}/public/images:/usr/src/app/public/images \
--v ~/www/${serviceName}/public/drugs:/usr/src/app/public/drugs \
+-v /data/www/${serviceName}/.env.prod:/usr/src/app/ \
+-v /data/www/${serviceName}/public/images:/usr/src/app/public/images \
+-v /data/www/${serviceName}/public/drugs:/usr/src/app/public/drugs \
 -p ${portOut}:${portIn} \
 -it -d --restart always node/express
     
