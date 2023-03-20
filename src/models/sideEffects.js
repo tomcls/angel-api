@@ -194,4 +194,18 @@ module.exports = class sideEffect {
             throw {error: 'No ids provided'}
         }
     }
+    async addSurvey(o) {
+        let sql = "INSERT INTO survey_effects (patient_id,side_effect_id,score,date_created)  VALUES("+parseInt(o.patient_id,10)+","+parseInt(o.side_effect_id,10)+","+parseInt(o.score,10)+",'"+o.date_created+"')";
+        
+        try {
+            const add = await db.query(sql);
+            return {
+                saved: add.affectedRows,
+                inserted_id: add.insertId
+            };
+        }
+        catch (err) {
+            return err;
+        }
+    }
 }

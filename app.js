@@ -117,6 +117,7 @@ const sideEffectUpdateRouter = require('./routes/side_effects/update');
 const sideEffectGetRouter = require('./routes/side_effects/get');
 const sideEffectSearchRouter = require('./routes/side_effects/search');
 const sideEffectDeleteRouter = require('./routes/side_effects/delete');
+const sideEffectAddSurveyRouter = require('./routes/side_effects/addSurvey');
 //  sideEffect descriptions
 const sideEffectDescriptionAddRouter = require('./routes/side_effect_descriptions/add');
 const sideEffectDescriptionUpdateRouter = require('./routes/side_effect_descriptions/update');
@@ -127,6 +128,7 @@ const moodUpdateRouter = require('./routes/moods/update');
 const moodGetRouter = require('./routes/moods/get');
 const moodSearchRouter = require('./routes/moods/search');
 const moodDeleteRouter = require('./routes/moods/delete');
+const moodAddSurveyRouter = require('./routes/moods/addSurvey');
 //  mood descriptions
 const moodDescriptionAddRouter = require('./routes/mood_descriptions/add');
 const moodDescriptionUpdateRouter = require('./routes/mood_descriptions/update');
@@ -261,6 +263,7 @@ app.use('/side-effects/get', sideEffectGetRouter);
 app.use('/side-effects/update', sideEffectUpdateRouter);
 app.use('/side-effects/search', sideEffectSearchRouter);
 app.use('/side-effects/delete', sideEffectDeleteRouter);
+app.use('/side-effects/add-survey', sideEffectAddSurveyRouter);
 // side effects descriptions
 app.use('/side-effect-descriptions/add', sideEffectDescriptionAddRouter);
 app.use('/side-effect-descriptions/update', sideEffectDescriptionUpdateRouter);
@@ -271,6 +274,7 @@ app.use('/moods/get', moodGetRouter);
 app.use('/moods/update', moodUpdateRouter);
 app.use('/moods/search', moodSearchRouter);
 app.use('/moods/delete', moodDeleteRouter);
+app.use('/moods/add-survey', moodAddSurveyRouter);
 // side effects descriptions
 app.use('/mood-descriptions/add', moodDescriptionAddRouter);
 app.use('/mood-descriptions/update', moodDescriptionUpdateRouter);
@@ -294,6 +298,8 @@ function validateToken(req, res, next) {
         req.path === '/users/request-password' ||
         req.path === '/users/reset-password'||
         req.path === '/users/check-auth' ||
+        req.path === '/side-effects/add-survey' ||
+        req.path === '/moods/add-survey' ||
         req.path === '/users/add' ) return next();
     //the request header contains the token "Bearer <token>", split the string and use the second value in the split array.
     if (token == null) return res.status(400).json({error:"Authorization not present"});
