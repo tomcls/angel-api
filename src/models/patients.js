@@ -69,16 +69,43 @@ module.exports = class Patient {
     }
     async delete(o) {
         if(o && o.ids) {
-            let sql = "delete from patients where id in ("+o.ids+") ";
-            try {
-                const del = await db.query(sql);
-                return {
-                    saved: del.affectedRows,
-                    inserted_id: del.insertId
-                };
-            }
-            catch (err) {
-                return err;
+            if(o.nurse_id) {
+                let sql = "delete from nurse_patients where patient_id in ("+o.ids+") and nurse_id = "+o.nurse_id;
+                try {
+                    console.log(sql);
+                    const del = await db.query(sql);
+                    return {
+                        saved: del.affectedRows,
+                        inserted_id: del.insertId
+                    };
+                }
+                catch (err) {
+                    return err;
+                }
+            } else if(o.doctor_id){
+                let sql = "delete from doctor_patients where patient_id in ("+o.ids+") and doctor_id = "+o.doctor_id;
+                try {
+                    const del = await db.query(sql);
+                    return {
+                        saved: del.affectedRows,
+                        inserted_id: del.insertId
+                    };
+                }
+                catch (err) {
+                    return err;
+                }
+            } else {
+                let sql = "delete from patients where id in ("+o.ids+") ";
+                try {
+                    const del = await db.query(sql);
+                    return {
+                        saved: del.affectedRows,
+                        inserted_id: del.insertId
+                    };
+                }
+                catch (err) {
+                    return err;
+                }
             }
         } else {
             throw {error: 'No ids provided'}
