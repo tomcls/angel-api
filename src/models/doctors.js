@@ -359,6 +359,17 @@ module.exports = class Doctor {
             return error
         }
     }
+    async unlinkPatient(o) {
+        let sql = "delete from doctor_patients where patient_id =  "+o.patient_id+" and doctor_id ="+o.doctor_id;
+        try {
+            console.log(sql,o)
+            await db.query(sql, o);
+            return true
+        }
+        catch (err) {
+            return err;
+        }
+    }
     async addPatient(o) {
         let sql = "INSERT INTO doctor_patients SET ? ";
         try {
@@ -405,7 +416,7 @@ module.exports = class Doctor {
         let params = [];
         let filterClause = '';
         if (filters.patient_id) {
-            sql += " and patients.user_id =  ?"
+            sql += " and patients.id =  ?"
             params.push(filters.patient_id);
         }
         if (filters.user_id) {

@@ -7,7 +7,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const jwt = require("jsonwebtoken")
-
+const getActivationRouter = require('./routes/activation/get');
+const userActivationRouter = require('./routes/users/activate');
 const userListRouter = require('./routes/users/list');
 const userCoordinatorsRouter = require('./routes/users/coordinators');
 const userAddRouter = require('./routes/users/add');
@@ -33,6 +34,7 @@ const doctorUpdateRouter = require('./routes/doctors/update');
 const doctorGetRouter = require('./routes/doctors/get');
 const doctorGetPatientsRouter = require('./routes/doctors/patients');
 const doctorAddPatientRouter = require('./routes/doctors/addPatient');
+const doctorUnlinkPatientRouter = require('./routes/doctors/unlinkPatient');
 const nurseGetDoctorsRouter = require('./routes/doctors/doctors');
 // nurses
 const nurseListRouter = require('./routes/nurses/list');
@@ -41,6 +43,7 @@ const nurseUpdateRouter = require('./routes/nurses/update');
 const nurseGetRouter = require('./routes/nurses/get');
 const nurseGetPatientsRouter = require('./routes/nurses/patients');
 const nurseAddPatientRouter = require('./routes/nurses/addPatient');
+const unlinkUnlinkPatientRouter = require('./routes/nurses/unlinkPatient');
 const nurseGetNursesRouter = require('./routes/nurses/nurses');
 const nurseAddTransfersRouter = require('./routes/nurses/addTransfers');
 const nurseTransfersRouter = require('./routes/nurses/transfers');
@@ -134,21 +137,25 @@ const moodDescriptionAddRouter = require('./routes/mood_descriptions/add');
 const moodDescriptionUpdateRouter = require('./routes/mood_descriptions/update');
 //  surveys 
 const surveyMoodsRouter = require('./routes/surveys/moods');
+const surveyMoodsDateRouter = require('./routes/surveys/groupMoodsByDate');
 const surveyEffectsRouter = require('./routes/surveys/effects');
+const surveyEffectsDateRouter = require('./routes/surveys/groupSideEffectByDate');
 const surveyGroupEffectsRouter = require('./routes/surveys/groupEffects');
 const surveyConcatEffectsRouter = require('./routes/surveys/concatEffects');
 const surveyConcatMoodsRouter = require('./routes/surveys/concatMoods');
 const surveyGroupMoodsRouter = require('./routes/surveys/groupMoods');
 //  dashboard 
 const dashboardMoodsRouter = require('./routes/dashboard/moods');
-
+// mail 
+const sendActivationCodeRouter = require('./routes/mail/sendActivationCode');
+const prescriptionRouter = require('./routes/mail/prescription');
 const app = express();
 app.use(cors())
 app.use(logger('dev'));
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -167,6 +174,7 @@ app.use('/users/login', loginRouter);
 app.use('/users/check-auth', checkAuth);
 app.use('/users/upload', uploadRouter);
 app.use('/users/delete', deleteRouter);
+app.use('/users/activate', userActivationRouter);
 // patient
 app.use('/patients/list', patientListRouter);
 app.use('/patients/add', patientAddRouter);
@@ -181,6 +189,7 @@ app.use('/doctors/get', doctorGetRouter);
 app.use('/doctors/update', doctorUpdateRouter);
 app.use('/doctors/patients', doctorGetPatientsRouter);
 app.use('/doctors/add-patient', doctorAddPatientRouter);
+app.use('/doctors/unlink-patient', doctorUnlinkPatientRouter);
 app.use('/doctors/doctors', nurseGetDoctorsRouter);
 // nurses
 app.use('/nurses/list', nurseListRouter);
@@ -189,6 +198,7 @@ app.use('/nurses/get', nurseGetRouter);
 app.use('/nurses/update', nurseUpdateRouter);
 app.use('/nurses/patients', nurseGetPatientsRouter);
 app.use('/nurses/add-patient', nurseAddPatientRouter);
+app.use('/nurses/unlink-patient', unlinkUnlinkPatientRouter);
 app.use('/nurses/nurses', nurseGetNursesRouter);
 app.use('/nurses/count-transfers', nurseCountTransfersRouter);
 app.use('/nurses/transfers', nurseTransfersRouter);
@@ -280,11 +290,17 @@ app.use('/mood-descriptions/add', moodDescriptionAddRouter);
 app.use('/mood-descriptions/update', moodDescriptionUpdateRouter);
 // surveys
 app.use('/surveys/moods', surveyMoodsRouter);
+app.use('/surveys/moods/date', surveyMoodsDateRouter);
 app.use('/surveys/effects', surveyEffectsRouter);
+app.use('/surveys/effects/date', surveyEffectsDateRouter);
 app.use('/surveys/group-effects', surveyGroupEffectsRouter);
 app.use('/surveys/group-moods', surveyGroupMoodsRouter);
 app.use('/surveys/concat-effects', surveyConcatEffectsRouter);
 app.use('/surveys/concat-moods', surveyConcatMoodsRouter);
+
+app.use('/mail/send-activation-code', sendActivationCodeRouter);
+app.use('/mail/prescription', prescriptionRouter);
+app.use('/activation/get', getActivationRouter);
 // dashboard
 app.use('/dashboard/moods', dashboardMoodsRouter);
 app.set('port', process.env.PORT || 3000);

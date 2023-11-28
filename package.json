@@ -3,14 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "syncKraken": "export $(cat .env | xargs) && node ./src/run/syncKrakenAccounts.js",
-    "syncBinance": "export $(cat .env | xargs) && node ./src/run/syncBinanceAccounts.js",
-    "syncGate": "export $(cat .env | xargs) && node ./src/run/syncGateAccounts.js",
-    "syncEth": "export $(cat .env | xargs) && node ./src/run/syncEthWallets.js",
-    "alerts": "export $(cat .env | xargs) && node ./src/run/runAlerts.js"
+    "start": "node app.js"
   },
   "dependencies": {
+    "@getbrevo/brevo": "^1.0.1",
     "@sendgrid/mail": "^7.6.2",
     "async": "^3.2.0",
     "axios": "^0.21.1",

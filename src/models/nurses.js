@@ -360,9 +360,21 @@ module.exports = class Nurse {
             return error
         }
     }
+    async unlinkPatient(o) {
+        let sql = "delete from nurse_patients where patient_id =  "+o.patient_id+" and nurse_id ="+o.nurse_id;
+        try {
+            console.log(sql,o)
+            await db.query(sql, o);
+            return true
+        }
+        catch (err) {
+            return err;
+        }
+    }
     async addPatient(o) {
         let sql = "INSERT INTO nurse_patients SET ? ";
         try {
+            console.log(o, sql)
             const add = await db.query(sql, o);
             return {
                 saved: add.affectedRows,

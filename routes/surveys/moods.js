@@ -7,7 +7,6 @@ router.post('/',  function(req, res, next) {
   const payload = req.body;
   try {
     const u = new Survey();
-    console.log("hey")
     async.parallel([
       function(callback) {
         u.moods(payload).then(function(r){

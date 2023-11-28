@@ -1,18 +1,20 @@
 const express = require('express');
+const jwt = require("jsonwebtoken")
 const User = require("../../src/models/users");
 const Nurse = require("../../src/models/nurses");
 const Doctor = require("../../src/models/doctors");
 const Scientist = require("../../src/models/scientists");
 const CryptoJS = require("crypto-js");
+const Patient = require('../../src/models/patients');
 const router = express.Router();
 router.use(express.json())
-router.post('/', async function(req, res, next) {
+router.post('/', async function (req, res, next) {
   const payload = req.body;
   try {
     let o = {
       firstname: payload.firstname,
       lastname: payload.lastname,
-      email: payload.email,
+      email: payload.email.toLowerCase(),
       phone: payload.phone,
       sex: payload.sex,
       address: payload.address,
@@ -22,37 +24,46 @@ router.post('/', async function(req, res, next) {
       country: payload.country,
       lang: payload.lang,
       birthday: payload.birthday,
-      role: payload.role?payload.role:'V',
-      password: payload.password?CryptoJS.MD5(JSON.stringify(payload.password)).toString():CryptoJS.MD5(JSON.stringify('Password must be changed')).toString(),
-      active: payload.active?payload.active:'N'
+      role: payload.role ? payload.role : 'V',
+      password: payload.password ? CryptoJS.MD5(JSON.stringify(payload.password)).toString() : CryptoJS.MD5(JSON.stringify('Password must be changed')).toString(),
+      active: payload.active ? payload.active : 'N'
     }
+    const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20000m" });
     const u = new User();
-    let userExist = await u.find({email: o.email});
-    if(userExist && userExist.id) {
-      return res.json({'error': 'user_exists'});
+    let userExist = await u.find({ email: o.email });
+    if (userExist && userExist.id) {
+      return res.json({ 'error': 'user_exists', user: userExist, accessToken: token });
     }
     const user = await u.add(o);
     let child = null;
     switch (payload.type) {
       case 'nurse':
         const n = new Nurse();
-        child = await n.add({user_id:user.inserted_id});
+        child = await n.add({ user_id: user.inserted_id });
         user.nurse_id = child.inserted_id;
         break;
       case 'doctor':
         const d = new Doctor();
-        child = await d.add({user_id:user.inserted_id});
+        child = await d.add({ user_id: user.inserted_id });
         user.doctor_id = child.inserted_id;
         break;
       case 'lab':
         const s = new Scientist();
-        child = await s.add({user_id:user.inserted_id});
+        child = await s.add({ user_id: user.inserted_id });
         user.scientist_id = child.inserted_id;
         break;
+      case 'patient':
+        const p = new Patient();
+        child = await p.add({ user_id: user.inserted_id });
+        user.patient_id = child.inserted_id;
+        break;
     }
-    return res.json(user);
+   
+    o.inserted_id = user.inserted_id;
+    o.id = user.inserted_id;
+    return res.json({ inserted_id: user.inserted_id, user: o, accessToken: token });
   } catch (error) {
-    console.log('error',error)
+    console.log('error', error)
     return res.json(error);
   }
 });

@@ -38,8 +38,44 @@ module.exports = class Survey {
             return error
         }
     }
-    async groupDates(filters) {
-        let sql = " SELECT DATE_FORMAT(survey_moods.date_created, '%Y-%m-%d')  date " +
+    async groupSideEffectDates(filters) {
+        let sql = " SELECT DATE_FORMAT(survey_effects.date_created, '%Y-%m-%d')  date, HOUR(survey_effects.date_created) hour,survey_effects.date_created " +
+            "FROM survey_effects " +
+            "LEFT JOIN side_effects on survey_effects.side_effect_id = side_effects.id " +
+            "LEFT JOIN side_effect_descriptions on side_effect_descriptions.side_effect_id = side_effects.id " +
+            "LEFT JOIN patients on survey_effects.patient_id = patients.id " +
+            "LEFT JOIN users on patients.user_id = users.id " +
+            "WHERE 1=1 ";
+        let params = [];
+        if (filters.patient_id) {
+            sql += " and survey_effects.patient_id = ?"
+            params.push(filters.patient_id);
+        }
+        if (filters.date_created) {
+            sql += " and survey_effects.date_created >= ?"
+            params.push(filters.date_created);
+        }
+        if (filters.side_effect_id) {
+            sql += " and survey_effects.side_effect_id = ?"
+            params.push(filters.side_effect_id);
+        }
+        if (filters.lang_id) {
+            sql += " and side_effect_descriptions.lang_id = ?"
+            params.push(filters.lang_id);
+        }
+        sql += " GROUP by date limit 30";
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+    async groupMoodsDates(filters) {
+        let sql = " SELECT DATE_FORMAT(survey_moods.date_created, '%Y-%m-%d')  date, HOUR(survey_moods.date_created) hour,survey_moods.date_created " +
             "FROM survey_moods " +
             "LEFT JOIN moods on survey_moods.mood_id = moods.id " +
             "LEFT JOIN mood_descriptions on mood_descriptions.mood_id = moods.id " +
@@ -63,7 +99,7 @@ module.exports = class Survey {
             sql += " and mood_descriptions.lang_id = ?"
             params.push(filters.lang_id);
         }
-        sql += " GROUP by date";
+        sql += " GROUP by date limit 30";
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -299,6 +335,7 @@ module.exports = class Survey {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
         sql += " order by survey_moods.patient_id desc, date desc " + filterClause;
+        
         try {
             let rows = await db.query(sql, combined);
             if (rows && rows.length > 0) {

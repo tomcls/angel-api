@@ -27,6 +27,10 @@ module.exports = class Drug {
             sql += " and drugs.id = ?"
             params.push(filters.id);
         }
+        if (filters.ids) {
+            sql += " and drugs.id in (?)"
+            params.push( filters.ids);
+        }
         if (filters.laboratory_id) {
             sql += " and drugs.laboratory_id = ? "
             params.push(filters.laboratory_id);
@@ -514,12 +518,17 @@ module.exports = class Drug {
             sql += " and doctor_patients.doctor_id = ?"
             params.push(filters.doctor_id);
         }
+        if (filters.end_date) {
+            sql += " and drug_patients.end_date >= ?"
+            params.push(filters.end_date);
+        }
         if (filters.user_id) {
             sql += " and patients.user_id = ?"
             params.push(filters.user_id);
         }
         sql += " GROUP by drug_patients.id order by drug_patients.patient_id , drug_patients.date_created desc";
         try {
+
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
                 return rows;
@@ -554,6 +563,14 @@ module.exports = class Drug {
         if (filters.nurse_id) {
             sql += " and nurse_patients.nurse_id = ?"
             params.push(filters.nurse_id);
+        }
+        if (filters.end_date) {
+            sql += " and drug_patients.end_date >= ?"
+            params.push(filters.end_date);
+        }
+        if (filters.doctor_id) {
+            sql += " and doctor_patients.doctor_id = ?"
+            params.push(filters.doctor_id);
         }
         try {
             let rows = await db.query(sql, params);

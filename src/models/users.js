@@ -79,14 +79,18 @@ module.exports = class User {
     }
     async find(filters) {
         
-        let sql = "SELECT * FROM users where 1=1 ";
+        let sql = "SELECT users.*, p.id as patient_id, d.id as doctor_id, n.id as nurse_id FROM users " +
+        " left join patients p on p.user_id = users.id " +
+        " left join doctors d on d.user_id = users.id " +
+        " left join nurses n on n.user_id = users.id " +
+        " where 1=1 ";
         let params = [];
         if (filters.id) {
-            sql += " and id = ?"
+            sql += " and users.id = ?"
             params.push(filters.id);
         }
         if (filters.user_id) {
-            sql += " and id = ?"
+            sql += " and users.id = ?"
             params.push(filters.user_id);
         }
         if (filters.firstname) {
@@ -105,7 +109,7 @@ module.exports = class User {
             sql += " and role = ?"
             params.push(filters.role);
         }
-        sql += " order by date_created desc limit 1"
+        sql += " group by users.id order by users.date_created desc limit 1"
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -200,9 +204,10 @@ module.exports = class User {
             sql += ",   active = ?"
             params.push(o.active);
         }
-        sql += ",   date_updated = ?"
+        sql += ",   date_updated = now()"
         params.push(new Date());
         sql += " where id="+o.id;
+        console.log(sql,o)
         try {
             const updated = await db.query(sql, params);
             return {
