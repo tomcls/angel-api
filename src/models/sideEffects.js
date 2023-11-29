@@ -195,15 +195,23 @@ module.exports = class sideEffect {
         }
     }
     async addSurvey(o) {
-        let sqlDelete = `DELETE FROM survey_effects where patient_id=${o.patient_id} and date_created between CURDATE() AND addtime(CURDATE(), '23:59:59')`;
+        let date= "CURDATE() AND addtime(CURDATE(), '23:59:59')";
+        let currDate = 'now()'
+        if(o.date) {
+            currDate = "'"+o.date + " 12:00:00'";
+            date = "'"+o.date+" 00:00:00' AND '"+o.date+" 23:59:59' ";
+        }
+        let sqlDelete = `DELETE FROM survey_effects where patient_id=${o.patient_id} and ${date}`;
         await db.query(sqlDelete);
         let sideEffects = o.side_effects;
         let insertBulk = '';
         Object.keys(sideEffects).forEach(key => {
-            insertBulk +=`(${o.patient_id},${key},3,now()),`;
+            insertBulk +=`(${o.patient_id},${key},3,${currDate}),`;
         });
         insertBulk = insertBulk.slice(0, -1);
+        
         let sql = "INSERT INTO survey_effects (patient_id,side_effect_id,score,date_created)  VALUES "+insertBulk;
+        console.log(sqlDelete,sql)
         try {
             const add = await db.query(sql);
             return {

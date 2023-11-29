@@ -194,13 +194,18 @@ module.exports = class Mood {
 
     
     async addSurvey(o) {
-        
-        let sqlDelete = `DELETE FROM survey_moods where patient_id=${o.patient_id} and date_created between CURDATE() AND addtime(CURDATE(), '23:59:59')`;
+        let date= "CURDATE() AND addtime(CURDATE(), '23:59:59')";
+        let currDate = 'now()'
+        if(o.date) {
+            currDate = "'"+o.date + " 12:00:00'";
+            date = "'"+o.date+" 00:00:00' AND '"+o.date+" 23:59:59' ";
+        }
+        let sqlDelete = `DELETE FROM survey_moods where patient_id=${o.patient_id} and ${date}`;
         await db.query(sqlDelete);
         let moods = o.moods;
         let insertBulk = '';
         Object.keys(moods).forEach(key => {
-            insertBulk +=`(${o.patient_id},${key},${moods[key]},now()),`;
+            insertBulk +=`(${o.patient_id},${key},${moods[key]},${currDate}),`;
         });
         insertBulk = insertBulk.slice(0, -1);
         let sql = "INSERT INTO survey_moods (patient_id,mood_id,score,date_created)  VALUES "+insertBulk;
