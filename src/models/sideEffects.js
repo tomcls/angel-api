@@ -201,7 +201,7 @@ module.exports = class sideEffect {
             currDate = "'"+o.date + " 12:00:00'";
             date = "'"+o.date+" 00:00:00' AND '"+o.date+" 23:59:59' ";
         }
-        let sqlDelete = `DELETE FROM survey_effects where patient_id=${o.patient_id} and ${date}`;
+        let sqlDelete = `DELETE FROM survey_effects where patient_id=${o.patient_id} and date_created between ${date}`;
         await db.query(sqlDelete);
         let sideEffects = o.side_effects;
         let insertBulk = '';
