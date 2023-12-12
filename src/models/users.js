@@ -268,6 +268,7 @@ module.exports = class User {
             let sql = "delete from users where id in ("+o.ids+") ";
             try {
                 const del = await db.query(sql);
+                console.log(sql)
                 return {
                     saved: del.affectedRows,
                     inserted_id: del.insertId
