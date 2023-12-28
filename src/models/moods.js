@@ -6,6 +6,7 @@ module.exports = class Mood {
         let sql = "SELECT moods.id as mood_id, mood_descriptions.id as mood_description_id, " +
             "moods.date_created, " +
             "moods.date_updated, " +
+            "mood_descriptions.question, " +
             "mood_descriptions.name, " +
             "mood_descriptions.description, " +
             "mood_descriptions.lang_id " +
@@ -71,6 +72,7 @@ module.exports = class Mood {
             "moods.date_created," +
             "moods.date_updated, "  +
             "mood_descriptions.name, " +
+            "mood_descriptions.question, " +
             "mood_descriptions.description, " +
             "mood_descriptions.lang_id " +
             "FROM moods "  +
@@ -142,6 +144,7 @@ module.exports = class Mood {
         let sql = "SELECT moods.id as mood_id," +
             "moods.id as id," +
             "mood_descriptions.name," +
+            "mood_descriptions.question," +
             "mood_descriptions.description, " +
             "moods.date_created," +
             "moods.date_updated " +

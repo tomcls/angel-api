@@ -359,16 +359,48 @@ module.exports = class Doctor {
             return error
         }
     }
+
+    async deleteDoctors(o) {
+        console.log(o)
+        if(o.ids) {
+            let sql = "delete from users where id in ( select user_id from doctors where doctors.id in ("+o.ids+") )  ";
+            try {
+                await db.query(sql, o);
+                return true
+            }
+            catch (err) {
+                return err;
+            }
+        } else {
+            return null;
+        }
+        
+    }
     async unlinkPatient(o) {
-        let sql = "delete from doctor_patients where patient_id =  "+o.patient_id+" and doctor_id ="+o.doctor_id;
-        try {
-            console.log(sql,o)
-            await db.query(sql, o);
-            return true
+        console.log(o)
+        if(o.doctor_id && o.patient_id) {
+            let sql = "delete from doctor_patients where patient_id =  "+o.patient_id+" and doctor_id ="+o.doctor_id;
+            try {
+                await db.query(sql, o);
+                return true
+            }
+            catch (err) {
+                return err;
+            }
+        } else if(o.patient_id && o.ids) {
+            let sql = "delete from doctor_patients where patient_id =  "+o.patient_id+" and doctor_id in ("+o.ids+")";
+            try {
+                console.log(sql)
+                await db.query(sql, o);
+                return true
+            }
+            catch (err) {
+                return err;
+            }
+        } else {
+            return null;
         }
-        catch (err) {
-            return err;
-        }
+        
     }
     async addPatient(o) {
         let sql = "INSERT INTO doctor_patients SET ? ";

@@ -36,14 +36,15 @@ module.exports = class Activation {
         let params = [];
         if (o.user_id) {
             sql += " and user_id = ?"
-            params.push(o.id);
+            params.push(o.user_id);
         }
         if (o.code) {
             sql += " and code = ?"
-            params.push(o.user_id);
+            params.push(o.code);
         }
         try {
             let rows = await db.query(sql, params);
+            console.log(o,rows)
             if (rows && rows.length > 0) {
                 return rows[0];
             }

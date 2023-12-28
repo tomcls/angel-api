@@ -34,6 +34,10 @@ module.exports = class MoodDescription {
             sql += ",  name = ?"
             params.push(o.name);
         }
+        if (o.question) {
+            sql += ",  question = ?"
+            params.push(o.question);
+        }
         if (o.description) {
             sql += ",  description = ?"
             params.push(o.description);

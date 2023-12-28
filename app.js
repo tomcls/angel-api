@@ -20,6 +20,7 @@ const deleteRouter = require('./routes/users/delete');
 const checkAuth = require('./routes/users/check-auth');
 const loginRouter = require('./routes/users/login');
 const uploadRouter = require('./routes/users/upload');
+const activationVerifyRouter = require('./routes/users/checkCode');
 // patient
 const patientListRouter = require('./routes/patients/list');
 const patientAddRouter = require('./routes/patients/add');
@@ -35,6 +36,7 @@ const doctorGetRouter = require('./routes/doctors/get');
 const doctorGetPatientsRouter = require('./routes/doctors/patients');
 const doctorAddPatientRouter = require('./routes/doctors/addPatient');
 const doctorUnlinkPatientRouter = require('./routes/doctors/unlinkPatient');
+const doctorDeleteRouter = require('./routes/doctors/delete');
 const nurseGetDoctorsRouter = require('./routes/doctors/doctors');
 // nurses
 const nurseListRouter = require('./routes/nurses/list');
@@ -44,6 +46,7 @@ const nurseGetRouter = require('./routes/nurses/get');
 const nurseGetPatientsRouter = require('./routes/nurses/patients');
 const nurseAddPatientRouter = require('./routes/nurses/addPatient');
 const unlinkUnlinkPatientRouter = require('./routes/nurses/unlinkPatient');
+const nurseDeleteRouter = require('./routes/nurses/delete');
 const nurseGetNursesRouter = require('./routes/nurses/nurses');
 const nurseAddTransfersRouter = require('./routes/nurses/addTransfers');
 const nurseTransfersRouter = require('./routes/nurses/transfers');
@@ -115,6 +118,7 @@ const treatmentDescriptionAddRouter = require('./routes/treatment_descriptions/a
 const treatmentDescriptionUpdateRouter = require('./routes/treatment_descriptions/update');
 // sideEffects
 const sideEffectListRouter = require('./routes/side_effects/list');
+const sideEffectDrugListRouter = require('./routes/side_effects/list-drug');
 const sideEffectAddRouter = require('./routes/side_effects/add');
 const sideEffectUpdateRouter = require('./routes/side_effects/update');
 const sideEffectGetRouter = require('./routes/side_effects/get');
@@ -175,6 +179,7 @@ app.use('/users/check-auth', checkAuth);
 app.use('/users/upload', uploadRouter);
 app.use('/users/delete', deleteRouter);
 app.use('/users/activate', userActivationRouter);
+app.use('/users/check-code', activationVerifyRouter);
 // patient
 app.use('/patients/list', patientListRouter);
 app.use('/patients/add', patientAddRouter);
@@ -190,6 +195,7 @@ app.use('/doctors/update', doctorUpdateRouter);
 app.use('/doctors/patients', doctorGetPatientsRouter);
 app.use('/doctors/add-patient', doctorAddPatientRouter);
 app.use('/doctors/unlink-patient', doctorUnlinkPatientRouter);
+app.use('/doctors/delete', doctorDeleteRouter);
 app.use('/doctors/doctors', nurseGetDoctorsRouter);
 // nurses
 app.use('/nurses/list', nurseListRouter);
@@ -199,6 +205,7 @@ app.use('/nurses/update', nurseUpdateRouter);
 app.use('/nurses/patients', nurseGetPatientsRouter);
 app.use('/nurses/add-patient', nurseAddPatientRouter);
 app.use('/nurses/unlink-patient', unlinkUnlinkPatientRouter);
+app.use('/nurses/delete', nurseDeleteRouter);
 app.use('/nurses/nurses', nurseGetNursesRouter);
 app.use('/nurses/count-transfers', nurseCountTransfersRouter);
 app.use('/nurses/transfers', nurseTransfersRouter);
@@ -268,6 +275,7 @@ app.use('/treatment-descriptions/add', treatmentDescriptionAddRouter);
 app.use('/treatment-descriptions/update', treatmentDescriptionUpdateRouter);
 // sideEffects
 app.use('/side-effects/list', sideEffectListRouter);
+app.use('/side-effects/list-drug', sideEffectDrugListRouter);
 app.use('/side-effects/add', sideEffectAddRouter);
 app.use('/side-effects/get', sideEffectGetRouter);
 app.use('/side-effects/update', sideEffectUpdateRouter);

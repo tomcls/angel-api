@@ -488,6 +488,8 @@ module.exports = class Drug {
             "drug_patients.end_date, " +
             "drugs.date_created, " +
             "drugs.date_updated, " +
+            "drug_descriptions.notice, " +
+            "drug_descriptions.description, " +
             "posologies.days, " +
             "posologies.hours, " +
             "posologies.repetition, " +
@@ -499,6 +501,7 @@ module.exports = class Drug {
             "LEFT JOIN doctor_patients ON doctor_patients.patient_id = patients.id " +
             "LEFT JOIN users ON users.id = patients.user_id " +
             "LEFT JOIN drugs on drugs.id = drug_patients.drug_id  " +
+            `LEFT JOIN drug_descriptions on drugs.id = drug_descriptions.drug_id and drug_descriptions.lang_id = '${filters.lang??'en'}'` +
             "LEFT JOIN posologies on posologies.id = drug_patients.posology_id  " +
             "WHERE 1 = 1 ";
         let params = [];

@@ -65,6 +65,82 @@ module.exports = class sideEffect {
         } catch (error) {
             return error
         }
+    }async countByDrug(filters) {
+        let sql = "SELECT count(*) as total FROM side_effects "+
+        " LEFT JOIN side_effect_descriptions on side_effects.id = side_effect_descriptions.side_effect_id " +
+        " LEFT JOIN drug_effects on side_effects.id = drug_effects.side_effect_id " +
+        " where 1=1  ";
+       
+        let params = [];
+        if (filters.side_effect_id) {
+            sql += " and side_effects.id = ?"
+            params.push(filters.id);
+        }
+        if (filters.name) {
+            sql += " and side_effect_descriptions.name like ?"
+            params.push(filters.name+'%');
+        }
+        if (filters.lang_id) {
+            sql += " and side_effect_descriptions.lang_id = ?"
+            params.push(filters.lang_id);
+        }
+        if (filters.drugIds) {
+            sql += " and drug_effects.drug_id in ("+filters.drugIds+")"
+            params.push(filters.drugIds);
+        }
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows[0].total;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+    async findAllByDrug(filters) {
+        let sql = "SELECT side_effects.id as side_effect_id, side_effect_descriptions.id as side_effect_description_id, " +
+            "side_effects.date_created, " +
+            "side_effects.date_updated, " +
+            "side_effect_descriptions.name, " +
+            "side_effect_descriptions.description, " +
+            "side_effect_descriptions.lang_id " +
+            "FROM side_effects " +
+            "LEFT JOIN side_effect_descriptions on side_effects.id = side_effect_descriptions.side_effect_id "+
+            "LEFT JOIN drug_effects on side_effects.id = drug_effects.side_effect_id " +
+            "WHERE 1=1 ";
+        let params = [];
+        let filterClause = '';
+        if (filters.side_effect_id) {
+            sql += " and side_effects.id = ?"
+            params.push(filters.side_effect_id);
+        }
+        if (filters.name) {
+            sql += " and side_effect_descriptions.name like ?"
+            params.push(filters.name+'%');
+        }
+        if (filters.lang_id) {
+            sql += " and side_effect_descriptions.lang_id = ?"
+            params.push(filters.lang_id);
+        }
+        if (filters.drugIds) {
+            sql += " and drug_effects.drug_id in ("+filters.drugIds+")"
+            params.push(filters.drugIds);
+        }
+        if (filters.limit) {
+            filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
+        }
+        sql += "group by side_effects.id order by side_effects.id desc " + filterClause;
+        console.log(sql)
+        try {
+            let rows = await db.query(sql, params);
+            if (rows && rows.length > 0) {
+                return rows;
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
     }
     async find(filters) {
         let sql = "SELECT side_effects.id as side_effect_id, side_effect_descriptions.id as side_effect_description_id, " +

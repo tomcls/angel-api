@@ -360,16 +360,45 @@ module.exports = class Nurse {
             return error
         }
     }
+    async deleteNurses(o) {
+        if(o.ids) {
+            let sql = "delete from users where id in ( select user_id from nurses where nurses.id in ("+o.ids+") )  ";
+            try {
+                console.log(sql)
+                await db.query(sql, o);
+                return true
+            }
+            catch (err) {
+                return err;
+            }
+        } else {
+            return null;
+        }
+        
+    }
     async unlinkPatient(o) {
-        let sql = "delete from nurse_patients where patient_id =  "+o.patient_id+" and nurse_id ="+o.nurse_id;
-        try {
-            console.log(sql,o)
-            await db.query(sql, o);
-            return true
+        if(o.nurse_id && o.patient_id) {
+            let sql = "delete from nurse_patients where patient_id =  "+o.patient_id+" and nurse_id ="+o.nurse_id;
+            try {
+                await db.query(sql, o);
+                return true
+            }
+            catch (err) {
+                return err;
+            }
+        } else if(o.patient_id && o.ids) {
+            let sql = "delete from nurse_patients where patient_id =  "+o.patient_id+" and nurse_id in ("+o.ids+")";
+            try {
+                await db.query(sql, o);
+                return true
+            }
+            catch (err) {
+                return err;
+            }
+        } else {
+            return null;
         }
-        catch (err) {
-            return err;
-        }
+        
     }
     async addPatient(o) {
         let sql = "INSERT INTO nurse_patients SET ? ";

@@ -4,6 +4,7 @@ const Activation = require("../../src/models/activation");
 const User = require('../../src/models/users');
 const Drug = require('../../src/models/drugs');
 const Doctor = require('../../src/models/doctors');
+const Nurse = require('../../src/models/nurses');
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function (req, res, next) {
@@ -14,9 +15,9 @@ router.post('/', async function (req, res, next) {
         const d = new Drug();
         const treatments = await d.findAll({ ids: payload.ids });
         const defaultClient = Brevo.ApiClient.instance;
-        const doc = new Doctor();
-        const doctors = await doc.getDoctors({ patient_id: user.patient_id });
-        if (doctors && doctors.length) {
+        const n = new Nurse();
+        const nurse = await n.getNurses({ patient_id: user.patient_id });
+        if (nurse && nurse.length) {
 
             // Configure API key authorization: api-key
             const apiKey = defaultClient.authentications['api-key'];
@@ -30,7 +31,7 @@ router.post('/', async function (req, res, next) {
 
             sendSmtpEmail.sender = { name: user.firstname + ' '+user.lastname, email: user.email };
 
-            sendSmtpEmail.to = [{ email: doctors[0].email }];
+            sendSmtpEmail.to = [{ email: nurse[0].email }];
 
             sendSmtpEmail.subject = 'Prescription';
             console.log('Prescription');
