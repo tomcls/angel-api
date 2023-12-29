@@ -6,7 +6,7 @@ router.post('/', async function(req, res, next) {
   const payload = req.body;
   try {
     const u = new Patient();
-    const user = await u.delete(payload);
+    const user = await u.deletePatients(payload);
     res.json(user);
   } catch (error) {
     res.json(error);

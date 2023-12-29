@@ -384,7 +384,6 @@ module.exports = class Drug {
             type: o.type,
             note: o.note
         }
-        console.log(p)
         let addPos = await posology.add(p);
         let sql = "INSERT INTO drug_patients SET ? ";
         try {

@@ -336,4 +336,20 @@ module.exports = class Patient {
             return error
         }
     }
+    async deletePatients(o) {
+        console.log(o)
+        if(o.ids) {
+            let sql = "delete from users where id in ( select user_id from patients where patients.id in ("+o.ids+") )  ";
+            try {
+                await db.query(sql, o);
+                return true
+            }
+            catch (err) {
+                return err;
+            }
+        } else {
+            return null;
+        }
+        
+    }
 }

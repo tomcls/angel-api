@@ -20,36 +20,47 @@ router.post('/', async function (req, res, next) {
         if (nurse && nurse.length) {
 
             // Configure API key authorization: api-key
-            const apiKey = defaultClient.authentications['api-key'];
-            apiKey.apiKey = "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"
-            var partnerKey = defaultClient.authentications['partner-key'];
-            partnerKey.apiKey = "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"
+            var apiKey = defaultClient.authentications['api-key'];
+            apiKey.apiKey = process.env.BREVO_APIKEY;
 
+            var partnerKey = defaultClient.authentications['partner-key'];
+            partnerKey.apiKey = process.env.BREVO_APIKEY;
             const sendSmtpEmail = new Brevo.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
 
             const apiInstance = new Brevo.TransactionalEmailsApi();
 
-            sendSmtpEmail.sender = { name: user.firstname + ' '+user.lastname, email: user.email };
+            sendSmtpEmail.sender = { name: 'MyNursingAngel', email: process.env.BREVO_EMAIL };
 
             sendSmtpEmail.to = [{ email: nurse[0].email }];
 
             sendSmtpEmail.subject = 'Prescription';
             console.log('Prescription');
             let html = '';
-            html += 'Le patient ' + user.firstname + ' ' + user.lastname + ' demande une nouvelle prescription pour la liste de medicaments suivante <br><br>';
+            // html += 'Le patient ' + user.firstname + ' ' + user.lastname + ' demande une nouvelle prescription pour la liste de medicaments suivante <br><br>';
             for (let index = 0; index < treatments.length; index++) {
-                
+
                 const element = treatments[index];
-                html += '- ' + element.drug_name + ',  code:'+element.drug_code+ ', lab:'+element.laboratory_name+ '<br>';
+                html += '- ' + element.drug_name + ',  code:' + element.drug_code + ', lab:' + element.laboratory_name + '<br>';
             }
-            sendSmtpEmail.htmlContent = html;
+            const ids = {
+                fr: 9,
+                en: 7,
+                nl: 8
+            }
+            sendSmtpEmail.templateId = ids[user.lang];
+            sendSmtpEmail.params = {
+                FIRSTNAME: nurse[0].firstname,
+                patientFirstname: user.firstname,
+                patientLastname: user.lastname,
+                products: treatments
+            }
             apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
                 console.log('API called successfully');
             }, function (error) {
                 console.error(error);
             });
         } else {
-            return res.json(false);  
+            return res.json(false);
         }
         return res.json(true);
     } catch (error) {

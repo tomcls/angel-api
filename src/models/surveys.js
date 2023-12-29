@@ -66,6 +66,7 @@ module.exports = class Survey {
         sql += " GROUP by date limit 30";
         try {
             let rows = await db.query(sql, params);
+            console.log(rows)
             if (rows && rows.length > 0) {
                 return rows;
             }

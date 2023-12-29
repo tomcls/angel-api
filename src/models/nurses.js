@@ -66,7 +66,7 @@ module.exports = class Nurse {
         if(filters.limit) {
             filterClause = " limit "+((filters.page)*filters.limit)+ ', ' + filters.limit;
         }
-        sql += " order by nurses.date_created desc "+filterClause;
+        sql += " group by nurses.id order by nurses.date_created desc "+filterClause;
         console.log(sql)
         try {
             let rows = await db.query(sql, combined);
@@ -106,6 +106,7 @@ module.exports = class Nurse {
         if (paramsSearch.length) {
             sql = sql + " AND (" + sqlSearch + ")";
         }
+        sql += " group by nurses.id ";
         const combined = [...params, ...paramsSearch];
         try {
             let rows = await db.query(sql, combined);

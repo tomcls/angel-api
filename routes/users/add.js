@@ -1,4 +1,5 @@
 const express = require('express');
+const Brevo = require('@getbrevo/brevo');
 const jwt = require("jsonwebtoken")
 const User = require("../../src/models/users");
 const Nurse = require("../../src/models/nurses");
@@ -58,9 +59,50 @@ router.post('/', async function (req, res, next) {
         user.patient_id = child.inserted_id;
         break;
     }
-   
+
     o.inserted_id = user.inserted_id;
     o.id = user.inserted_id;
+
+    //
+    
+
+      var defaultClient = Brevo.ApiClient.instance;
+
+      // Configure API key authorization: api-key
+      var apiKey = defaultClient.authentications['api-key'];
+      apiKey.apiKey = process.env.BREVO_APIKEY;
+
+      var partnerKey = defaultClient.authentications['partner-key'];
+      partnerKey.apiKey = process.env.BREVO_APIKEY;
+
+      const sendSmtpEmail = new Brevo.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+
+      const apiInstance = new Brevo.TransactionalEmailsApi();
+
+      sendSmtpEmail.sender = { name: 'MyNursingAngel', email: process.env.BREVO_EMAIL };
+
+      sendSmtpEmail.to = [{ email: o.email }];
+      const ids = {
+        fr:2,
+        en:1,
+        nl:3
+      }
+      sendSmtpEmail.templateId = ids[o.lang];
+      sendSmtpEmail.params = {
+        FIRSTNAME: o.firstname
+      }
+
+      console.log(sendSmtpEmail)
+
+      apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+        console.log('API called successfully. Returned data: ' + data);
+      }, function (error) {
+        console.error("error",error);
+      });
+
+
+
+    //
     return res.json({ inserted_id: user.inserted_id, user: o, accessToken: token });
   } catch (error) {
     console.log('error', error)
