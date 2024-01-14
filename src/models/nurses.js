@@ -24,6 +24,7 @@ module.exports = class Nurse {
     "users.date_updated,"+
     "users.birthday,"+
     "users.avatar," +
+    "nurses.position,"+
     "nurses.hospital_id,"+
     "hospitals.name hospital_name, "+
     "nurses.daysin "+
@@ -146,7 +147,8 @@ module.exports = class Nurse {
         "hospitals.city hospital_city, "+
         "hospitals.zip hospital_zip, "+
         "hospitals.country hospital_country, "+
-        "nurses.daysin "+
+        "nurses.daysin, "+
+        "nurses.position "+
         "FROM users "+
         "LEFT JOIN nurses ON users.id = nurses.user_id "+
         "LEFT JOIN hospitals ON hospitals.id = nurses.hospital_id "+
@@ -221,6 +223,10 @@ module.exports = class Nurse {
         if (o.daysin) {
             sql += ",   daysin = ?"
             params.push(o.daysin);
+        }
+        if (o.position) {
+            sql += ",   position = ?"
+            params.push(o.position);
         }
         sql += ",   date_updated = ?"
         params.push(new Date());
@@ -437,6 +443,7 @@ module.exports = class Nurse {
         "users.date_created,"+
         "users.date_updated,"+
         "users.birthday,"+
+        "nurses.position,"+
         "hospitals.name hospital_name, " +
         "users.avatar " + 
         "FROM nurse_patients "+
