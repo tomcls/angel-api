@@ -4,15 +4,16 @@ const User = require("../../src/models/users");
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function(req, res, next) {
-  
+  console.log('ccccc')
   const payload = req.body;
   if(!payload.email || !payload.password) {
+    console.log('aaaaaa')
     return res.status(400).json({error: 'Missing email or password'}); 
   }
   try {
     const u = new User();
     const user = await u.find(payload);
-    if(user && user.active) {
+    if(user && user.active == 'Y') {
         const updatedPassword = await u.updatePassword([CryptoJS.MD5(JSON.stringify(payload.password)).toString(), payload.email]);
         res.json({result: updatedPassword});
     } else {

@@ -520,15 +520,16 @@ module.exports = class Drug {
             sql += " and doctor_patients.doctor_id = ?"
             params.push(filters.doctor_id);
         }
-        if (filters.end_date) {
-            sql += " and drug_patients.end_date >= ?"
-            params.push(filters.end_date);
-        }
+        // if (filters.end_date) {
+        //     sql += " and drug_patients.end_date >= ?"
+        //     params.push(filters.end_date);
+        // }
         if (filters.user_id) {
             sql += " and patients.user_id = ?"
             params.push(filters.user_id);
         }
         sql += " GROUP by drug_patients.id order by drug_patients.patient_id , drug_patients.date_created desc";
+        console.log(sql,filters)
         try {
 
             let rows = await db.query(sql, params);

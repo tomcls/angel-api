@@ -11,6 +11,7 @@ router.get('/', async function(req, res, next) {
           res.status(403).json({error:"Authorization not valid"});
       }
       else {
+        console.log('authorized',user)
           res.json(user);
       }
   })

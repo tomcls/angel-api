@@ -64,41 +64,41 @@ router.post('/', async function (req, res, next) {
     o.id = user.inserted_id;
 
     //
-    
 
-      var defaultClient = Brevo.ApiClient.instance;
 
-      // Configure API key authorization: api-key
-      var apiKey = defaultClient.authentications['api-key'];
-      apiKey.apiKey = process.env.BREVO_APIKEY;
+    var defaultClient = Brevo.ApiClient.instance;
 
-      var partnerKey = defaultClient.authentications['partner-key'];
-      partnerKey.apiKey = process.env.BREVO_APIKEY;
+    // Configure API key authorization: api-key
+    var apiKey = defaultClient.authentications['api-key'];
+    apiKey.apiKey = process.env.BREVO_APIKEY;
 
-      const sendSmtpEmail = new Brevo.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+    var partnerKey = defaultClient.authentications['partner-key'];
+    partnerKey.apiKey = process.env.BREVO_APIKEY;
 
-      const apiInstance = new Brevo.TransactionalEmailsApi();
+    const sendSmtpEmail = new Brevo.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
 
-      sendSmtpEmail.sender = { name: 'MyNursingAngel', email: process.env.BREVO_EMAIL };
+    const apiInstance = new Brevo.TransactionalEmailsApi();
 
-      sendSmtpEmail.to = [{ email: o.email }];
-      const ids = {
-        fr:2,
-        en:1,
-        nl:3
-      }
-      sendSmtpEmail.templateId = ids[o.lang];
-      sendSmtpEmail.params = {
-        FIRSTNAME: o.firstname
-      }
+    sendSmtpEmail.sender = { name: 'MyNursingAngel', email: process.env.BREVO_EMAIL };
 
-      console.log(sendSmtpEmail)
+    sendSmtpEmail.to = [{ email: o.email }];
+    const ids = {
+      fr: 2,
+      en: 1,
+      nl: 3
+    }
+    sendSmtpEmail.templateId = ids[o.lang];
+    sendSmtpEmail.params = {
+      FIRSTNAME: o.firstname
+    }
 
-      apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
-        console.log('API called successfully. Returned data: ' + data);
-      }, function (error) {
-        console.error("error",error);
-      });
+    console.log(sendSmtpEmail)
+
+    apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+      console.log('API called successfully. Returned data: ' + data);
+    }, function (error) {
+      console.error("error", error);
+    });
 
 
 

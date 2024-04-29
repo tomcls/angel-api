@@ -11,13 +11,14 @@ router.post('/', async function(req, res, next) {
     const u = new User();
     const o = {
         email: payload.email,
-        active:1
+        active:'Y'
     }
     const user = await u.find(payload);
-    if(user && user.active) {
-        const requestEmail = await u.requestPassword(o.email);
-        if(requestEmail && requestEmail.length && (requestEmail[0].statusCode ==202 || requestEmail[0].statusCode==200 )) {
-            res.json({result: 'success',msg: requestEmail});
+   
+    if(user && user.id) {
+        const user = await u.requestPassword(o.email);
+        if(user && user.id ) {
+            res.json({result: 'success',user: user});
         } else {
             res.json({error: 'Error sending email',error:requestEmail});
         }

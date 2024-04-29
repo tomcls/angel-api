@@ -1,7 +1,6 @@
 const conn = require("../utils/conn");
 const jwt = require("jsonwebtoken")
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_APIKEY);
+const Brevo = require('@getbrevo/brevo');
 const db = conn.conn();
 module.exports = class User {
     constructor() { }
@@ -207,7 +206,7 @@ module.exports = class User {
         sql += ",   date_updated = now()"
         params.push(new Date());
         sql += " where id="+o.id;
-        console.log(sql,o)
+        
         try {
             const updated = await db.query(sql, params);
             return {
@@ -230,6 +229,7 @@ module.exports = class User {
         }
     }
     async requestPassword(email) {
+
         const user = await this.find({ email: email });
         if (user && user.id) {
             const o = {
@@ -238,21 +238,46 @@ module.exports = class User {
                 lastname: user.lastname,
                 email: user.email,
                 type: user.type,
+                lang: user.lang,
                 date_created: user.date_created
             }
             try {
-                const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "60m" });
-                const msg = {
-                    to: email,
-                    from: process.env.SENDER_EMAIL,
-                    subject: 'Reset Password',
-                    template_id: 'd-7c19f89a19fe4279afa5570c0f316ce4',
-                    dynamicTemplateData: {
-                        Weblink: process.env.APP_URL + '/reset-password?hash=' + token
-                    },
-                };
+               
                 try {
-                    return await sgMail.send(msg);
+                    const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "60m" });
+                    var defaultClient = Brevo.ApiClient.instance;
+
+                    // Configure API key authorization: api-key
+                    var apiKey = defaultClient.authentications['api-key'];
+                    apiKey.apiKey = process.env.BREVO_APIKEY;
+                
+                    var partnerKey = defaultClient.authentications['partner-key'];
+                    partnerKey.apiKey = process.env.BREVO_APIKEY;
+                
+                    const sendSmtpEmail = new Brevo.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+                
+                    const apiInstance = new Brevo.TransactionalEmailsApi();
+                
+                    sendSmtpEmail.sender = { name: 'MyNursingAngel', email: process.env.BREVO_EMAIL };
+                
+                    sendSmtpEmail.to = [{ email: o.email }];
+                    const ids = {
+                        fr: 14,
+                        en: 16,
+                        nl: 15
+                      }
+                    sendSmtpEmail.templateId = ids[o.lang];
+                    sendSmtpEmail.params = {
+                      FIRSTNAME: o.firstname,
+                      url: process.env.APP_URL + '/reset-password?hash=' + token
+                    }
+                
+                    apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+                      console.log('API called successfully. Returned data: ' + data);
+                    }, function (error) {
+                      console.error("error", error);
+                    });
+                    return o;
                 } catch (error) {
                     return error;
                 }
