@@ -520,10 +520,10 @@ module.exports = class Drug {
             sql += " and doctor_patients.doctor_id = ?"
             params.push(filters.doctor_id);
         }
-        // if (filters.end_date) {
-        //     sql += " and drug_patients.end_date >= ?"
-        //     params.push(filters.end_date);
-        // }
+        if (filters.end_date) {
+             sql += " and (drug_patients.end_date >= ? OR drug_patients.end_date is NULL)"
+             params.push(filters.end_date);
+        }
         if (filters.user_id) {
             sql += " and patients.user_id = ?"
             params.push(filters.user_id);
