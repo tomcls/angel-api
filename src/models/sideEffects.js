@@ -130,7 +130,7 @@ module.exports = class sideEffect {
         if (filters.limit) {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
-        sql += "group by side_effects.id order by side_effects.id desc " + filterClause;
+        sql += "group by side_effects.id order by side_effect_descriptions.name " + filterClause;
         console.log(sql)
         try {
             let rows = await db.query(sql, params);
