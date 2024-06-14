@@ -72,7 +72,6 @@ module.exports = class Patient {
             if(o.nurse_id) {
                 let sql = "delete from nurse_patients where patient_id in ("+o.ids+") and nurse_id = "+o.nurse_id;
                 try {
-                    console.log(sql);
                     const del = await db.query(sql);
                     return {
                         saved: del.affectedRows,
@@ -324,7 +323,6 @@ module.exports = class Patient {
         if (filters.limit) {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
-        console.log(sql)
         sql += " order by patients.date_created desc " + filterClause;
         try {
             let rows = await db.query(sql, params);
@@ -337,7 +335,6 @@ module.exports = class Patient {
         }
     }
     async deletePatients(o) {
-        console.log(o)
         if(o.ids) {
             let sql = "delete from users where id in ( select user_id from patients where patients.id in ("+o.ids+") )  ";
             try {

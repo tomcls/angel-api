@@ -63,10 +63,9 @@ module.exports = class Survey {
             sql += " and side_effect_descriptions.lang_id = ?"
             params.push(filters.lang_id);
         }
-        sql += " GROUP by date limit 30";
+        sql += " GROUP by date order by date desc limit 30";
         try {
             let rows = await db.query(sql, params);
-            console.log(rows)
             if (rows && rows.length > 0) {
                 return rows;
             }
@@ -100,7 +99,7 @@ module.exports = class Survey {
             sql += " and mood_descriptions.lang_id = ?"
             params.push(filters.lang_id);
         }
-        sql += " GROUP by date limit 30";
+        sql += " GROUP by date desc limit 30";
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -336,7 +335,6 @@ module.exports = class Survey {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
         sql += " order by survey_moods.patient_id desc, date desc " + filterClause;
-        
         try {
             let rows = await db.query(sql, combined);
             if (rows && rows.length > 0) {
@@ -676,6 +674,8 @@ module.exports = class Survey {
         }
     }
     async concatMoods(filters) {
+
+
         let sql = "SELECT date_created,avatar, firstname, lastname, patient_id,close_monitoring, GROUP_CONCAT(name) total_moods, GROUP_CONCAT( mood_cnt) mood_cnt, GROUP_CONCAT(score) score FROM ( SELECT        survey_moods.patient_id, " +
             " moods.id,  " +
             " users.avatar,  " +
@@ -741,7 +741,6 @@ module.exports = class Survey {
             " GROUP BY patient_id";
         const combined = [...params, ...paramsSearch]
 
-        console.log(sql)
         try {
             let rows = await db.query(sql, combined);
             if (rows && rows.length > 0) {

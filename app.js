@@ -148,6 +148,13 @@ const surveyGroupEffectsRouter = require('./routes/surveys/groupEffects');
 const surveyConcatEffectsRouter = require('./routes/surveys/concatEffects');
 const surveyConcatMoodsRouter = require('./routes/surveys/concatMoods');
 const surveyGroupMoodsRouter = require('./routes/surveys/groupMoods');
+
+// survey effect descriptions
+const surveyEffectDescriptionsGetRouter = require('./routes/survey_effect_descriptions/get');
+const surveyEffectDescriptionsAddRouter = require('./routes/survey_effect_descriptions/add');
+const surveyEffectDescriptionsUpdateRouter = require('./routes/survey_effect_descriptions/update');
+const surveyEffectDescriptionsUploadRouter = require('./routes/survey_effect_descriptions/upload');
+
 //  dashboard 
 const dashboardMoodsRouter = require('./routes/dashboard/moods');
 // mail 
@@ -164,6 +171,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.all('*', validateToken);
+app.use('/public/survey-effects',express.static(__dirname + '/public/survey-effects'));
 app.use('/public/uploads',express.static(__dirname + '/public/uploads'));
 app.use('/public/drugs/images',express.static(__dirname + '/public/drugs/images'));
 app.use('/public/drugs/documents',express.static(__dirname + '/public/drugs/documents'));
@@ -305,6 +313,11 @@ app.use('/surveys/group-effects', surveyGroupEffectsRouter);
 app.use('/surveys/group-moods', surveyGroupMoodsRouter);
 app.use('/surveys/concat-effects', surveyConcatEffectsRouter);
 app.use('/surveys/concat-moods', surveyConcatMoodsRouter);
+
+app.use('/survey-effect-descriptions/get', surveyEffectDescriptionsGetRouter);
+app.use('/survey-effect-descriptions/add', surveyEffectDescriptionsAddRouter);
+app.use('/survey-effect-descriptions/update', surveyEffectDescriptionsUpdateRouter);
+app.use('/survey-effect-descriptions/upload', surveyEffectDescriptionsUploadRouter);
 
 app.use('/mail/send-activation-code', sendActivationCodeRouter);
 app.use('/mail/prescription', prescriptionRouter);

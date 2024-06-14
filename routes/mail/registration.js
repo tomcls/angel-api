@@ -8,12 +8,11 @@ router.post('/', async function (req, res, next) {
     const payload = req.body;
     try {
         var val = Math.floor(1000 + Math.random() * 9000);
-        console.log(val), payload.user_id;
+       
         const a = new Activation();
         const activation = await a.insert({ user_id: payload.user_id, code: val});
         const u = new User();
         const user = await u.find({id:payload.user_id})
-console.log(user.email)
 var defaultClient = Brevo.ApiClient.instance;
 
 // Configure API key authorization: api-key
@@ -30,7 +29,6 @@ partnerKey.apiKey = process.env.BREVO_APIKEY;
 
 // var api = new Brevo.AccountApi()
 // api.getAccount().then(function(data) {
-//   console.log('API called successfully. Returned data: ' + data);
 // }, function(error) {
 //   console.error(error);
 // });
@@ -55,7 +53,6 @@ partnerKey.apiKey = process.env.BREVO_APIKEY;
        
         sendSmtpEmail.htmlContent = 'Votre code d\'activation est le '+val;
      
-        console.log(sendSmtpEmail)
 
         apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
         console.log('API called successfully. Returned data: ' + data);

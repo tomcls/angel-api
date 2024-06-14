@@ -46,8 +46,6 @@ router.post('/', async function (req, res, next) {
             code:val
         }
 
-        console.log( user,sendSmtpEmail)
-
         apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
             console.log('API called successfully. Returned data: ' + data);
         }, function (error) {

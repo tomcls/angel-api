@@ -195,7 +195,6 @@ module.exports = class Notification {
         }
         
         sql += " where id=" + o.id
-        console.log(sql);
         try {
             const updated = await db.query(sql, params);
             return {

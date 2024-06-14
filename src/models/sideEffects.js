@@ -131,7 +131,6 @@ module.exports = class sideEffect {
             filterClause = " limit " + ((filters.page) * filters.limit) + ', ' + (filters.limit * (filters.page + 1));
         }
         sql += "group by side_effects.id order by side_effect_descriptions.name " + filterClause;
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -277,17 +276,16 @@ module.exports = class sideEffect {
             currDate = "'"+o.date + " 12:00:00'";
             date = "'"+o.date+" 00:00:00' AND '"+o.date+" 23:59:59' ";
         }
-        // let sqlDelete = `DELETE FROM survey_effects where patient_id=${o.patient_id} and date_created between ${date}`;
-        // await db.query(sqlDelete);
+         let sqlDelete = `DELETE FROM survey_effects where patient_id=${o.patient_id} and date_created between ${date}`;
+         await db.query(sqlDelete);
         let sideEffects = o.side_effects;
         let insertBulk = '';
         Object.keys(sideEffects).forEach(key => {
-            insertBulk +=`(${o.patient_id},${key},3,${currDate}),`;
+            insertBulk +=`(${o.patient_id},${key},3,now()),`;
         });
         insertBulk = insertBulk.slice(0, -1);
         
         let sql = "INSERT INTO survey_effects (patient_id,side_effect_id,score,date_created)  VALUES "+insertBulk;
-        console.log(sql)
         try {
             const add = await db.query(sql);
             return {

@@ -38,7 +38,5 @@ hashPwd().then(async () => {
         const accessToken = generateAccessToken({ name: 'tom', email: 'tomclassius@gmail.com' })
         const refreshToken = generateRefreshToken({ name: 'tom', email: 'tomclassius@gmail.com' })
         
-    } else {
-        console.log("mert")
-    }
+    } 
 });

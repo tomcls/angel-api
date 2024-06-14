@@ -50,7 +50,6 @@ module.exports = class Laboratory {
             filterClause = " limit "+((filters.page)*filters.limit)+', '+(filters.limit*(filters.page+1));
         }
         sql += " order by date_created desc "+filterClause;
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {

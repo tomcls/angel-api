@@ -53,7 +53,6 @@ module.exports = class Transfer {
         sql += " order by patient_transfers.date_created desc ";
         try {
             let rows = await db.query(sql);
-            console.log('TOTAzfzefze',rows)
             if (rows && rows.length > 0) {
                 return rows;
             }
@@ -68,12 +67,10 @@ module.exports = class Transfer {
             async function (callback) {
                 // add to transfer table
                 async.eachSeries(o.patients, function (element, cb) {
-                    console.log("aaaaaaa",o.patients)
                     let sql = " INSERT INTO patient_transfers (patient_id, nurse_from, nurse_to) " +
                         " VALUES " +
                         "(" + element + ", " + o.nurse_from + ", " + o.nurse_to + ") ";
                          db.query(sql).then(function() {
-                            console.log('aaaaaaaaaaa');
                             cb();
                         });
                        
@@ -89,11 +86,9 @@ module.exports = class Transfer {
             async function (callback) {
                 // delete from nurse_patients
                 async.eachSeries(o.patients,  function (element, cb) {
-                    console.log("bbbb",o.patients)
                     let sql = " DELETE FROM nurse_patients " +
                         " WHERE patient_id = " + element + " and  nurse_id =  " + o.nurse_from + ";"
                         db.query(sql).then(function() {
-                            console.log('bbbbbbbbb');
                             cb();
                         });
                 }, function (err) {
@@ -111,7 +106,6 @@ module.exports = class Transfer {
                         " VALUES " +
                         "(" + element + ", " + o.nurse_to + ") ";
                          db.query(sql).then(function() {
-                            console.log('ccccccc');
                             cb();
                         });
                 }, function (err) {
@@ -123,16 +117,13 @@ module.exports = class Transfer {
                 });
             }
         ], function (err, results) {
-            console.log(results)
             return results;
         });
     }
     recover(o) {
-        console.log(o)
        // add to transfer table
        let sql = "SELECT * from patient_transfers where id = "+o.transfer_id;
        db.query(sql).then(function(result) {
-        console.log(result[0])
            let sqlUpdate = "UPDATE nurse_patients set nurse_id = " + result[0].nurse_from +
            " WHERE nurse_id = " + result[0].nurse_to +
            " AND  patient_id = " + result[0].patient_id +" ; ";

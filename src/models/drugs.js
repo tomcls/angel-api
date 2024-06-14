@@ -86,7 +86,6 @@ module.exports = class Drug {
         if (sqlSearch !== '') {
             sql += ' AND (' + sqlSearch + ') ';
         }
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {
@@ -266,7 +265,7 @@ module.exports = class Drug {
                         newDesciptions.push(newDescription) ;                
                     });
                     modelDescription.add(newDesciptions, function(a) {
-                        //console.log('newDescriptions',a);       
+                             
                     }) ;
                 });
             }
@@ -387,7 +386,6 @@ module.exports = class Drug {
         let addPos = await posology.add(p);
         let sql = "INSERT INTO drug_patients SET ? ";
         try {
-            console.log(addPos)
             let t = {
                 drug_id: o.drug_id,
                 patient_id: o.patient_id,
@@ -529,7 +527,7 @@ module.exports = class Drug {
             params.push(filters.user_id);
         }
         sql += " GROUP by drug_patients.id order by drug_patients.patient_id , drug_patients.date_created desc";
-        console.log(sql,filters)
+        
         try {
 
             let rows = await db.query(sql, params);
@@ -644,7 +642,6 @@ module.exports = class Drug {
             params.push(filters.lang_id);
         }
         sql += " order by side_effect_descriptions.name asc " + filterClause;
-        console.log(sql)
         try {
             let rows = await db.query(sql, params);
             if (rows && rows.length > 0) {

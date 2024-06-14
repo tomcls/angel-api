@@ -68,7 +68,6 @@ module.exports = class Nurse {
             filterClause = " limit "+((filters.page)*filters.limit)+ ', ' + filters.limit;
         }
         sql += " group by nurses.id order by nurses.date_created desc "+filterClause;
-        console.log(sql)
         try {
             let rows = await db.query(sql, combined);
             if (rows && rows.length > 0) {
@@ -371,7 +370,6 @@ module.exports = class Nurse {
         if(o.ids) {
             let sql = "delete from users where id in ( select user_id from nurses where nurses.id in ("+o.ids+") )  ";
             try {
-                console.log(sql)
                 await db.query(sql, o);
                 return true
             }
@@ -410,7 +408,6 @@ module.exports = class Nurse {
     async addPatient(o) {
         let sql = "INSERT INTO nurse_patients SET ? ";
         try {
-            console.log(o, sql)
             const add = await db.query(sql, o);
             return {
                 saved: add.affectedRows,

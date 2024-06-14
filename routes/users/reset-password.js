@@ -4,10 +4,8 @@ const User = require("../../src/models/users");
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function(req, res, next) {
-  console.log('ccccc')
   const payload = req.body;
   if(!payload.email || !payload.password) {
-    console.log('aaaaaa')
     return res.status(400).json({error: 'Missing email or password'}); 
   }
   try {
