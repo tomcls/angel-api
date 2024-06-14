@@ -6,7 +6,6 @@ module.exports = class Activation {
         let sql = "INSERT INTO activations SET ? ";
         try {
             const add = await db.query(sql, o);
-            console.log(add)
             return {
                 saved: add.affectedRows,
                 inserted_id: add.insertId
@@ -44,7 +43,6 @@ module.exports = class Activation {
         }
         try {
             let rows = await db.query(sql, params);
-            console.log(o,rows)
             if (rows && rows.length > 0) {
                 return rows[0];
             }

@@ -34,7 +34,6 @@ router.post('/', async function (req, res, next) {
             sendSmtpEmail.to = [{ email: nurse[0].email }];
 
             sendSmtpEmail.subject = 'Prescription';
-            console.log('Prescription');
             let html = '';
             // html += 'Le patient ' + user.firstname + ' ' + user.lastname + ' demande une nouvelle prescription pour la liste de medicaments suivante <br><br>';
             for (let index = 0; index < treatments.length; index++) {
