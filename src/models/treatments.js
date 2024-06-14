@@ -233,8 +233,6 @@ module.exports = class Treatment {
             return err;
         }
     }
- 
-   
     async delete(o) {
         if(o && o.ids) {
             let sql = '';
