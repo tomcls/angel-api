@@ -26,6 +26,7 @@ echo ".............................Build done, execute cmd docker run ${serviceN
 
 docker run  --name ${serviceName}  \
 -v /data/www/${serviceName}/.env.prod:/usr/src/app/.env \
+-v /data/www/${serviceName}/public/survey-effects:/usr/src/app/public/survey-effects \
 -v /data/www/${serviceName}/public/images:/usr/src/app/public/images \
 -v /data/www/${serviceName}/public/drugs:/usr/src/app/public/drugs \
 -p ${portOut}:${portIn} \
