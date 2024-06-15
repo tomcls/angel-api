@@ -1,15 +1,13 @@
 const express = require('express');
-const User = require("../../src/models/users");
-const Activation = require('../../src/models/activation');
+const SideEffect = require("../../src/models/sideEffects");
 const router = express.Router();
 router.use(express.json())
 router.post('/', async function(req, res, next) {
   const payload = req.body;
   try {
-    
-    const a = new Activation();
-    let code = await a.find({user_id:payload.user_id,code:payload.code})
-    return res.json(code);
+    const u = new SideEffect();
+    const s = await u.updateSurvey(payload);
+    return res.json(s);
   } catch (error) {
     return res.json(error);
   }

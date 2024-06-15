@@ -423,12 +423,16 @@ module.exports = class Survey {
             "LEFT JOIN side_effect_descriptions on side_effect_descriptions.side_effect_id = side_effects.id " +
             "LEFT JOIN patients on survey_effects.patient_id = patients.id " +
             "LEFT JOIN users on patients.user_id = users.id " +
-            "WHERE  ";
+            "WHERE 1 = 1 ";
         let params = [];
         let filterClause = '';
         if (filters.patient_id) {
-            sql += "  survey_effects.patient_id = ?"
+            sql += "  AND survey_effects.patient_id = ?"
             params.push(filters.patient_id);
+        }
+        if (filters.survey_effect_description_id) {
+            sql += " AND  survey_effects.survey_effect_description_id = ?"
+            params.push(filters.survey_effect_description_id);
         }
         if (filters.from_date) {
             sql += ((params.length) ? ' AND ' : '') + "  survey_effects.date_created >= ?"

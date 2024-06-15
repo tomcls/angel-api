@@ -8,16 +8,41 @@ module.exports = class SurveyEffectDescriptions {
         let sql = "SELECT survey_effect_descriptions.id,survey_effect_descriptions.user_id, image, " +
         "DATE_FORMAT(survey_effect_descriptions.date, '%Y-%m-%d')  date_created " +
         "FROM survey_effect_descriptions " +
-        "where DATE_FORMAT(now(), '%Y-%m-%d') = DATE_FORMAT(survey_effect_descriptions.date, '%Y-%m-%d')" ;
+        //"where DATE_FORMAT(now(), '%Y-%m-%d') = DATE_FORMAT(survey_effect_descriptions.date, '%Y-%m-%d')" ;
+        " WHERE 1 =1 ";
         if (filters.user_id) {
             sql += " AND survey_effect_descriptions.user_id = ?"
             params.push(filters.user_id);
         }
+        if(filters.survey_effect_description_id) {
+            sql += " AND survey_effect_descriptions.id = ?"
+            params.push(filters.survey_effect_description_id);
+        }
         try {
             let rows = await db.query(sql,params);
-            
             if (rows && rows.length > 0) {
                 return rows[0];
+            }
+            return null;
+        } catch (error) {
+            return error
+        }
+    }
+    async list(filters) {
+        const params = [];
+        let sql = "SELECT survey_effect_descriptions.id,survey_effect_descriptions.user_id, image, date, " +
+        "date  date_created " +
+        "FROM survey_effect_descriptions " +
+        "where 1 = 1" ;
+        if (filters.user_id) {
+            sql += " AND survey_effect_descriptions.user_id = ?"
+            params.push(filters.user_id);
+        }
+        sql += ' order by date desc';
+        try {
+            let rows = await db.query(sql,params);
+            if (rows && rows.length > 0) {
+                return rows;
             }
             return null;
         } catch (error) {
@@ -38,7 +63,8 @@ module.exports = class SurveyEffectDescriptions {
         try {
             const updated = await db.query(sql, params);
             return {
-                saved: updated
+                saved: updated,
+                id: o.id
             };
         }
         catch (err) {
@@ -51,7 +77,7 @@ module.exports = class SurveyEffectDescriptions {
             const add = await db.query(sql, params);
             return {
                 saved: add.affectedRows,
-                inserted_id: add.insertId
+                id: add.insertId
             };
         }
         catch (err) {

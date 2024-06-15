@@ -125,6 +125,7 @@ const sideEffectGetRouter = require('./routes/side_effects/get');
 const sideEffectSearchRouter = require('./routes/side_effects/search');
 const sideEffectDeleteRouter = require('./routes/side_effects/delete');
 const sideEffectAddSurveyRouter = require('./routes/side_effects/addSurvey');
+const sideEffectUpdateSurveyRouter = require('./routes/side_effects/updateSurvey');
 //  sideEffect descriptions
 const sideEffectDescriptionAddRouter = require('./routes/side_effect_descriptions/add');
 const sideEffectDescriptionUpdateRouter = require('./routes/side_effect_descriptions/update');
@@ -149,8 +150,9 @@ const surveyConcatEffectsRouter = require('./routes/surveys/concatEffects');
 const surveyConcatMoodsRouter = require('./routes/surveys/concatMoods');
 const surveyGroupMoodsRouter = require('./routes/surveys/groupMoods');
 
-// survey effect descriptions
+// survey effect descriptions 
 const surveyEffectDescriptionsGetRouter = require('./routes/survey_effect_descriptions/get');
+const surveyEffectDescriptionsListRouter = require('./routes/survey_effect_descriptions/list');
 const surveyEffectDescriptionsAddRouter = require('./routes/survey_effect_descriptions/add');
 const surveyEffectDescriptionsUpdateRouter = require('./routes/survey_effect_descriptions/update');
 const surveyEffectDescriptionsUploadRouter = require('./routes/survey_effect_descriptions/upload');
@@ -290,6 +292,7 @@ app.use('/side-effects/update', sideEffectUpdateRouter);
 app.use('/side-effects/search', sideEffectSearchRouter);
 app.use('/side-effects/delete', sideEffectDeleteRouter);
 app.use('/side-effects/add-survey', sideEffectAddSurveyRouter);
+app.use('/side-effects/update-survey', sideEffectUpdateSurveyRouter);
 // side effects descriptions
 app.use('/side-effect-descriptions/add', sideEffectDescriptionAddRouter);
 app.use('/side-effect-descriptions/update', sideEffectDescriptionUpdateRouter);
@@ -315,6 +318,7 @@ app.use('/surveys/concat-effects', surveyConcatEffectsRouter);
 app.use('/surveys/concat-moods', surveyConcatMoodsRouter);
 
 app.use('/survey-effect-descriptions/get', surveyEffectDescriptionsGetRouter);
+app.use('/survey-effect-descriptions/list', surveyEffectDescriptionsListRouter);
 app.use('/survey-effect-descriptions/add', surveyEffectDescriptionsAddRouter);
 app.use('/survey-effect-descriptions/update', surveyEffectDescriptionsUpdateRouter);
 app.use('/survey-effect-descriptions/upload', surveyEffectDescriptionsUploadRouter);

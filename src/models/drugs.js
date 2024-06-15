@@ -527,7 +527,6 @@ module.exports = class Drug {
             params.push(filters.user_id);
         }
         sql += " GROUP by drug_patients.id order by drug_patients.patient_id , drug_patients.date_created desc";
-        
         try {
 
             let rows = await db.query(sql, params);
