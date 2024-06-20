@@ -15,6 +15,7 @@ router.post('/', async function (req, res, next) {
   }
   const payload = req.body;
   try {
+    console.group(payload);
     const u = new User();
     const user = await u.find(payload);
     if (user && user.active) {
@@ -50,6 +51,9 @@ router.post('/', async function (req, res, next) {
           user.scientist_id = scientist.scientist_id;
         }
         const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20000m" });
+        if(payload.token_notification && payload.token_notification != '') {
+          await u.update({'id':user.id,'token_notification':payload.token_notification});
+        }
         return  res.json({user:user, accessToken: token});
       } else {
         return  res.json({ error: 'password not correct' });

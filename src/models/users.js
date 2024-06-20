@@ -203,10 +203,13 @@ module.exports = class User {
             sql += ",   active = ?"
             params.push(o.active);
         }
+        if (o.token_notification) {
+            sql += ",   token_notification = ?"
+            params.push(o.token_notification);
+        }
         sql += ",   date_updated = now()"
         params.push(new Date());
         sql += " where id="+o.id;
-        
         try {
             const updated = await db.query(sql, params);
             return {
