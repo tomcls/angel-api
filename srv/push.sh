@@ -7,7 +7,7 @@
 # build with dockerfile
 
 serviceName=angel-job
-APP_ROOT=/data/www/${serviceName}	
+APP_ROOT=/home/www/${serviceName}	
 cd $APP_ROOT
 # Build with dockerfile
 docker rm -f ${serviceName}
