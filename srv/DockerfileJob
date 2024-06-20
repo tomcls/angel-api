@@ -3,4 +3,4 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 COPY . .
-CMD node 'push.js'
+CMD env TZ='Europe/Paris' node 'push.js'
