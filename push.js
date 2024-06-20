@@ -13,7 +13,6 @@ async function getPatientTreatments(user) {
     const patientTreatments = await drugModel.getUserDrugs({
         for_push: 'y',
     });
-	console.log(patientTreatments);
     const weekDay = {
         1: 'mon',
         2: 'tue',
