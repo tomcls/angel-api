@@ -475,6 +475,7 @@ module.exports = class Drug {
             "users.avatar, " +
             "users.firstname, " +
             "users.lastname, " +
+            "users.token_notification, " +
             "drugs.name, " +
             "drugs.image," +
             "drugs.molecule_name," +
@@ -504,6 +505,10 @@ module.exports = class Drug {
         let params = [];
         if (filters.drug_id) {
             sql += " and drug_patients.drug_id = ?"
+            params.push(filters.drug_id);
+        }
+        if (filters.for_push) {
+            sql += " AND (drug_patients.end_date > now() OR drug_patients.end_date is null) AND users.token_notification is not null "
             params.push(filters.drug_id);
         }
         if (filters.patient_id) {
