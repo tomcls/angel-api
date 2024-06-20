@@ -13,6 +13,7 @@ async function getPatientTreatments(user) {
     const patientTreatments = await drugModel.getUserDrugs({
         for_push: 'y',
     });
+	console.log(patientTreatments);
     const weekDay = {
         1: 'mon',
         2: 'tue',
@@ -30,15 +31,13 @@ async function getPatientTreatments(user) {
     if (patientTreatments && patientTreatments.length) {
 
         const dayOfTheWeek = today.getDay();
-
         for (let index = 0; index < patientTreatments.length; index++) {
             const element = patientTreatments[index];
             if (
                 new Date(element.start_date).getTime() <= today.getTime() &&
-                new Date(element.end_date).getTime() >= today.getTime()
+                (new Date(element.end_date).getTime() >= today.getTime() || element.end_date == null)
             ) {
                 let days = JSON.parse(element.days ? element.days : '') ?? null;
-
                 if (
                     (element.repetition === 'week' &&
                         days.indexOf(weekDay[dayOfTheWeek]) > -1) ||
