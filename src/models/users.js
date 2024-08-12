@@ -1,6 +1,7 @@
 const conn = require("../utils/conn");
 const jwt = require("jsonwebtoken")
 const Brevo = require('@getbrevo/brevo');
+
 const db = conn.conn();
 module.exports = class User {
     constructor() { }
@@ -207,13 +208,22 @@ module.exports = class User {
             sql += ",   token_notification = ?"
             params.push(o.token_notification);
         }
+        let u = null;
+        if (o.new_token) {
+            console.log('new token');
+            const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20000m" });
+            u = await this.find({id:o.id});
+            u.token = token;
+        }
         sql += ",   date_updated = now()"
         params.push(new Date());
         sql += " where id="+o.id;
         try {
             const updated = await db.query(sql, params);
+            console.log('new token',u);
             return {
-                saved: updated
+                saved: updated,
+                user:u
             };
         }
         catch (err) {
