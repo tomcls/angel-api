@@ -33,10 +33,16 @@ module.exports = class SurveyEffectDescriptions {
         let sql = "SELECT survey_effect_descriptions.id,survey_effect_descriptions.user_id, image, date, " +
         "date  date_created " +
         "FROM survey_effect_descriptions " +
+        " left join users on users.id = survey_effect_descriptions.user_id " +
+        " left join patients on users.id = patients.user_id " +
         "where 1 = 1" ;
         if (filters.user_id) {
             sql += " AND survey_effect_descriptions.user_id = ?"
             params.push(filters.user_id);
+        }
+        if (filters.patient_id) {
+            sql += " AND patients.id = ?"
+            params.push(filters.patient_id);
         }
         sql += ' order by date desc';
         try {
