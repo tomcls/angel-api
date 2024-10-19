@@ -471,6 +471,7 @@ module.exports = class Drug {
         }
     }
     async getUserDrugs(filters) {
+        console.log(filters);
         let sql = "SELECT drugs.id as drug_id, drug_patients.id id, " +
             "users.avatar, " +
             "users.firstname, " +

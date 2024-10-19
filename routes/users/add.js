@@ -12,23 +12,26 @@ router.use(express.json())
 router.post('/', async function (req, res, next) {
   const payload = req.body;
   try {
+    
     let o = {
       firstname: payload.firstname,
       lastname: payload.lastname,
       email: payload.email.toLowerCase(),
-      phone: payload.phone,
-      sex: payload.sex,
-      address: payload.address,
-      street_number: payload.street_number,
-      zip: payload.zip,
-      city: payload.city,
-      country: payload.country,
-      lang: payload.lang,
-      birthday: payload.birthday,
+      phone: payload.phone ?? null,
+      sex: payload.sex ?? null,
+      address: payload.address ?? null,
+      street_number: payload.street_number ?? null,
+      zip: payload.zip ?? null,
+      city: payload.city ?? null,
+      country: payload.country ?? null,
+      lang: payload.lang ?? 'en',
+      birthday: payload.birthday ?? null,
       role: payload.role ? payload.role : 'V',
       password: payload.password ? CryptoJS.MD5(JSON.stringify(payload.password)).toString() : CryptoJS.MD5(JSON.stringify('Password must be changed')).toString(),
       active: payload.active ? payload.active : 'N'
     }
+    console.log('payload',payload)
+    console.log('o',o)
     const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20000m" });
     const u = new User();
     let userExist = await u.find({ email: o.email });
