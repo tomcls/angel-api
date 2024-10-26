@@ -50,7 +50,7 @@ router.post('/', async function (req, res, next) {
         if(scientist && scientist.user_id) {
           user.scientist_id = scientist.scientist_id;
         }
-        const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20000m" });
+        const token = jwt.sign(o, process.env.API_SECRET);
         if(payload.token_notification && payload.token_notification != '') {
           await u.update({'id':user.id,'token_notification':payload.token_notification});
         }

@@ -211,7 +211,7 @@ module.exports = class User {
         let u = null;
         if (o.new_token) {
             console.log('new token');
-            const token = jwt.sign(o, process.env.API_SECRET, { expiresIn: "20000m" });
+            const token = jwt.sign(o, process.env.API_SECRET);
             u = await this.find({id:o.id});
             u.token = token;
         }
